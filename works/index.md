@@ -16,6 +16,7 @@
     "echo-chamber",
     "paper-signals",
     "after-image"
-  ]
+  ],
+  "seriesIds": ["wenxin"]
 }
 ```
