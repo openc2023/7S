@@ -26,6 +26,11 @@ function browserChecks(){
       const page=document.body.dataset.page;
       assert(document.querySelectorAll('.worksDropdown a').length>=2,'desktop-series-nav');
       assert(document.querySelectorAll('.mobileSeriesLink').length>=1,'mobile-series-nav');
+      const worksTopLink=document.querySelector('[data-nav="works"]');
+      worksTopLink.focus();
+      assert(getComputedStyle(document.querySelector('.worksDropdown')).visibility==='visible','works-dropdown-keyboard-focus');
+      worksTopLink.blur();
+
       const toggle=document.querySelector('.mobileMenuToggle');
       assert(!!toggle,'mobile-toggle');
       toggle.click();
@@ -34,6 +39,11 @@ function browserChecks(){
       const drawerStyle=getComputedStyle(drawer);
       assert(drawerStyle.position==='fixed'&&drawerStyle.right==='0px','drawer-fixed-to-right');
       assert(drawer.offsetWidth<=innerWidth,'drawer-width');
+      assert(drawer.offsetWidth>=innerWidth*.65,'drawer-not-too-narrow');
+      const veil=document.querySelector('.mobileNavBackdrop');
+      assert(Number(drawerStyle.zIndex)>Number(getComputedStyle(veil).zIndex),'drawer-above-backdrop');
+      assert(drawer.querySelector('.mobileNavItem.is-active')!==null,'drawer-active-section');
+
       drawer.querySelector('.mobileNavClose').click();
       assert(!document.body.classList.contains('mobileNavOpen'),'drawer-close');
       if(page==='wenxin'){
@@ -58,6 +68,12 @@ function browserChecks(){
       if(page==='works'){
         assert(document.querySelectorAll('#catPills [data-cat]').length>=2,'works-original-categories');
         assert(document.querySelectorAll('#grid .work').length>=7,'works-original-projects');
+        const category=document.querySelector('#catPills [data-cat="New Media Art"]');
+        assert(!!category,'works-category-present');
+        if(category){category.click();assert(document.querySelectorAll('#grid .work').length===2,'works-category-filter');
+          document.querySelector('#catPills [data-cat="All"]').click();
+          assert(document.querySelectorAll('#grid .work').length>=7,'works-category-reset');}
+
       }
     }catch(e){errors.push(String(e))}
     document.body.dataset.browserSmoke=errors.length?'fail:'+errors.join('|'):'ok';
