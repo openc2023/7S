@@ -53,10 +53,14 @@ function browserChecks(){
         assert(count()===8,'eight-MD-placeholder-cards:'+count());
         // Match WORKS card markup and animations, not just the number of cards.
         const placeholders=[...document.querySelectorAll('#wenxinGrid .wenxinPlaceholder')];
-        assert(placeholders.every(card=>card.matches('.work')&&card.querySelector('.cover .wenxinPlaceholderArt')&&card.querySelector('.workName .arr')&&card.querySelector('.cover .view')&&card.querySelector('.workMeta .ct')),'works-card-markup');
+        assert(placeholders.every(card=>card.matches('.work')&&card.querySelector('.cover img')&&card.querySelector('.workName .arr')&&card.querySelector('.cover .view')&&card.querySelector('.workMeta .ct')),'works-card-markup');
+        assert(new Set(placeholders.map(card=>card.querySelector('.cover img').src)).size===8,'eight-unique-cover-images');
+        assert(placeholders.every((card,i)=>card.querySelector('.cover img').src.endsWith('/works/wenxin/media/'+String(i+1).padStart(2,'0')+'.svg')),'covers-loaded-from-markdown');
+        assert(placeholders.filter(card=>card.querySelector('.wenxinVideoOverlay')).length===1,'video-play-overlay');
         const first=placeholders[0];
         assert(getComputedStyle(first.querySelector('.cover')).transitionProperty.includes('clip-path'),'works-cover-reveal');
-        assert(getComputedStyle(first.querySelector('.wenxinPlaceholderArt')).transitionProperty.includes('transform'),'works-artwork-zoom');
+        assert(getComputedStyle(first.querySelector('.cover img')).transitionProperty.includes('transform'),'works-artwork-zoom');
+        assert(!first.querySelector('.wenxinPlaceholderArt'),'no-custom-gradient-placeholder');
         if(innerWidth<=760){
           const cardWidth=first.getBoundingClientRect().width;
           const gridWidth=document.querySelector('#wenxinGrid').getBoundingClientRect().width;
@@ -79,7 +83,7 @@ function browserChecks(){
         const listCard=document.querySelector('#wenxinGrid .wenxinPlaceholder');
         listCard.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:200,clientY:200}));
         assert(document.querySelector('#peek').classList.contains('on'),'works-list-hover-preview-visible');
-        assert(document.querySelector('#peek img').src.startsWith('data:image/svg+xml'),'works-list-hover-preview-source');
+        assert(document.querySelector('#peek img').src.endsWith('/works/wenxin/media/01.svg'),'works-list-hover-preview-source');
 
         document.querySelector('[data-wenxin-view="grid"]').click();
         assert(!document.querySelector('#wenxinGrid').classList.contains('list'),'grid-view');
