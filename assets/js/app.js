@@ -163,27 +163,35 @@ function wenxin(){
     <div class="foot"><span id="wenxinCount"></span><span>WENXIN / 07S</span></div>
   </section>`;
   const tabs=$('#wenxinTabs'),grid=$('#wenxinGrid');
-  function render(){
-    const filtered=items.filter(p=>(filter==='all'||p.chapter===filter)&&(!search||[p.title,p.type,p.chapter].join(' ').toLowerCase().includes(search)));
-    if(sort==='az')filtered.sort((a,b)=>a.title.localeCompare(b.title));
-    if(sort==='za')filtered.sort((a,b)=>b.title.localeCompare(a.title));
-    tabs.innerHTML=[{id:'all',name:ui.all||'ALL'},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
-    $$('[data-wenxin-tab]',tabs).forEach(btn=>btn.onclick=()=>{filter=btn.dataset.wenxinTab;render()});
-    $$('[data-wenxin-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.wenxinView===view));
-    grid.className='workGrid '+(view==='list'?'list':'');
-    grid.innerHTML=filtered.map((p,i)=>p.planned?`<article class="work wenxinPlaceholder in" aria-label="${esc(p.title)} — ${esc(p.type==='video'?ui.videoPending:ui.imagePending)}">
-      <div class="cover wenxinEmpty">
-        <span class="wenxinPlaceholderIndex">${pad(i+1)} / ${pad(items.length)}</span>
-        <span class="${p.type==='video'?'wenxinPlay':'wenxinSymbol'}">${p.type==='video'?'▶':esc(config.title)}</span>
-        <span class="wenxinPending">${p.type==='video'?esc(ui.videoPending):esc(ui.imagePending)}</span>
-      </div>
-      <span class="idx">${pad(i+1)}</span>
-      <div class="workName"><span>${esc(p.title)}</span></div>
-      <div class="workMeta"><span class="ct">${esc(chapters.find(c=>c.id===p.chapter)?.name||'')}</span><span class="yr">${p.type==='video'?'VIDEO':'IMAGE'}</span></div>
-    </article>`:workCard(p,i)).join('')||'<div class="empty">'+esc(ui.empty||'No works yet.')+'</div>';
-    $('#wenxinCount').textContent=`${filtered.length} ${ui.works||'WORKS'} · ${filtered.filter(p=>!p.planned).length} ${ui.published||'PUBLISHED'} · ${filtered.filter(p=>p.planned).length} ${ui.planned||'PLANNED'}`;
-    observe(grid);
-  }
+  // Planned media share the WORKS card structure and IntersectionObserver animations.
+function placeholderCard(p,i,q){
+  const isVideo=p.type==='video';
+  const pending=isVideo?ui.videoPending:ui.imagePending;
+  const chapter=chapters.find(c=>c.id===p.chapter)?.name||'';
+  return `<article class="work wenxinPlaceholder" style="--i:${i}" aria-label="${esc(p.title)} — ${esc(pending||'COMING SOON')}">
+    <div class="cover wenxinEmpty">
+      <div class="wenxinPlaceholderArt" aria-hidden="true"><span class="${isVideo?'wenxinPlay':'wenxinSymbol'}">${isVideo?'▶':esc(config.title)}</span></div>
+      <span class="wenxinPlaceholderIndex">${pad(i+1)} / ${pad(items.length)}</span>
+      <span class="wenxinPending">${esc(pending)}</span>
+      <span class="view wenxinPreviewLabel">${esc(ui.previewPending||'COMING SOON')}</span>
+    </div>
+    <span class="idx">${pad(i+1)}</span>
+    <div class="workName"><span>${hl(p.title,q)}</span><span class="arr" aria-hidden="true">↗</span></div>
+    <div class="workMeta"><span class="ct">${esc(chapter)}</span><span class="loc">${esc(ui.planned||'PLANNED')}</span><span class="yr">${isVideo?'VIDEO':'IMAGE'}</span></div>
+  </article>`;
+}
+function render(){
+  const filtered=items.filter(p=>(filter==='all'||p.chapter===filter)&&(!search||[p.title,p.type,p.chapter].join(' ').toLowerCase().includes(search)));
+  if(sort==='az')filtered.sort((a,b)=>a.title.localeCompare(b.title));
+  if(sort==='za')filtered.sort((a,b)=>b.title.localeCompare(a.title));
+  tabs.innerHTML=[{id:'all',name:ui.all||'ALL'},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
+  $$('[data-wenxin-tab]',tabs).forEach(btn=>btn.onclick=()=>{filter=btn.dataset.wenxinTab;render()});
+  $$('[data-wenxin-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.wenxinView===view));
+  grid.className='workGrid '+(view==='list'?'list':'');
+  grid.innerHTML=filtered.map((p,i)=>p.planned?placeholderCard(p,i,search):workCard(p,i,search)).join('')||'<div class="empty">'+esc(ui.empty||'No works yet.')+'</div>';
+  $('#wenxinCount').textContent=`${filtered.length} ${ui.works||'WORKS'} · ${filtered.filter(p=>!p.planned).length} ${ui.published||'PUBLISHED'} · ${filtered.filter(p=>p.planned).length} ${ui.planned||'PLANNED'}`;
+  observe(grid);
+}
   $('#wenxinSearch').oninput=e=>{search=e.target.value.trim().toLowerCase();render()};
   $('#wenxinSort').onchange=e=>{sort=e.target.value;render()};
   $$('[data-wenxin-view]').forEach(btn=>btn.onclick=()=>{view=btn.dataset.wenxinView;render()});
