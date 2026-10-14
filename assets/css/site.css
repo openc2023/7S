@@ -291,3 +291,20 @@ html.lenis,html.lenis body{height:auto}
 .projectContent code{font-family:Consolas,monospace;font-size:.9em}
 .projectContent table{display:block;overflow-x:auto;border-collapse:collapse;margin:24px 0}
 .projectContent th,.projectContent td{border:1px solid var(--line);padding:10px 14px;text-align:left}
+
+/* 07S artwork covers: subtle muted gallery tone; original images and Markdown stay unchanged. */
+.workGrid:not(.list) .work .cover img,
+#peek img,
+.previewCard .cover img{
+  filter:saturate(82%) brightness(98%) contrast(96%);
+}
+@media (hover:hover){
+  .workGrid:not(.list) .work:hover .cover img,
+  .workGrid:not(.list) .work:focus-within .cover img,
+  .previewCard .work:hover .cover img{
+    filter:saturate(100%) brightness(100%) contrast(100%);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .workGrid .cover img,#peek img,.previewCard .cover img{transition:none}
+}
