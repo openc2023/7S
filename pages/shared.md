@@ -15,6 +15,9 @@
 | navWorks | 作品导航 |
 | navStudio | 工作室导航 |
 | navContact | 联系导航 |
+| menuTitle / menuIndex | 手机侧边栏标题和导航小标题 |
+| menuSeries / menuWorksAll | WORKS 子菜单文案 |
+| menuOpen / menuClose | 侧边栏开关的无障碍标签 |
 | footerCopyright | 页脚版权和年份 |
 | footerSlogan | 页脚标语 |
 | clockTimezone | 天气未加载时的备用时区；天气成功后跟随该城市时区。时间不再显示城市前缀 |
@@ -56,6 +59,12 @@
   "navWorks": "WORKS",
   "navStudio": "STUDIO",
   "navContact": "CONTACT",
+  "menuTitle": "MENU",
+  "menuIndex": "NAVIGATION",
+  "menuSeries": "PROJECT SERIES",
+  "menuWorksAll": "ALL WORKS",
+  "menuOpen": "Open menu",
+  "menuClose": "Close menu",
   "footerCopyright": "© 2026 07S STUDIO",
   "footerSlogan": "SEVEN IS MORE THAN A NUMBER.",
   "clockTimezone": "Asia/Seoul",
