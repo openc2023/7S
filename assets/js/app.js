@@ -262,7 +262,7 @@ worksLink.setAttribute('aria-haspopup','true');
 const seriesMenu=document.createElement('div');
 seriesMenu.className='worksDropdown';
 seriesMenu.innerHTML='<span class="dropdownEyebrow">'+esc(raw('shared','menuSeries'))+'</span>'+
-  '<a class="dropdownAll" href="'+siteUrl('works/')+'">ALL WORKS <span>↗</span></a>'+
+  '<a class="dropdownAll" href="'+siteUrl('works/')+'">' + esc(raw('shared','menuWorksAll')) + ' <span>↗</span></a>'+
   series.map((item,i)=>'<a href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="dropdownNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+' <small>'+esc(item.subtitle||'')+'</small></span><span>↗</span></a>').join('');
 worksMenu.append(seriesMenu);
 
@@ -276,7 +276,7 @@ menuToggle.innerHTML='<span></span><span></span>';
 const mobileNav=document.createElement('aside');
 mobileNav.id='mobileNavPanel';
 mobileNav.className='mobileNavPanel';
-mobileNav.setAttribute('aria-label','Site navigation');
+mobileNav.setAttribute('aria-label',raw('shared','menuIndex'))
 mobileNav.setAttribute('aria-hidden','true');
 mobileNav.inert=true;
 const navLinks=$$('[data-nav]',nav);
@@ -290,7 +290,7 @@ mobileNav.innerHTML='<div class="mobileNavHeader"><div class="mobileNavBrand">'+
 const mobileBackdrop=document.createElement('button');
 mobileBackdrop.type='button';
 mobileBackdrop.className='mobileNavBackdrop';
-mobileBackdrop.setAttribute('aria-label','Close menu');
+mobileBackdrop.setAttribute('aria-label',raw('shared','menuClose'))
 const setMobileNav=open=>{
   document.body.classList.toggle('mobileNavOpen',open);
   menuToggle.setAttribute('aria-expanded',String(open));
@@ -307,7 +307,7 @@ const activeNavSection=activeRoute==='wenxin'||activeRoute==='project'?'works':a
 navLinks.forEach((link,i)=>{
   if(link.dataset.nav===activeNavSection){
     const item=mobileNav.querySelectorAll('.mobileNavItem')[i];
-    if(item){item.classList.add('is-active');item.querySelector('.mobileNavPrimary').setAttribute('aria-current',activeRoute==='wenxin'?'false':'page');}
+    if(item){item.classList.add('is-active');if(activeRoute!=='wenxin')item.querySelector('.mobileNavPrimary').setAttribute('aria-current','page');}
   }
 });
 series.forEach((item,i)=>{
