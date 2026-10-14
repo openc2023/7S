@@ -2,7 +2,7 @@
 
 此页面属于 WORKS 的子页面。将来可在作品 settings.md 添加 `"series": "wenxin"` 和 `"chapter": "seven-aspects"`，系列画廊会自动读取该作品。
 
-以下为**尚未上传真实作品素材的展示位置**，不代表作品已正式发布。上传完成后，可以在此列表中修改名称和类型；真实作品以 works/index.md 的已发布项目为准。
+以下为**尚未上传真实作品素材的展示位置**，不代表作品已正式发布。当前 `media/01.svg`—`media/08.svg` 直接复用了 WORKS 已定稿的 07S SVG 封面占位风格，视频占位沿用同系列 SVG，并在页面叠加播放标记。之后上传真实图片时，替换本列表中对应的 `cover`（如 `media/01.webp`），无需修改 HTML、JS 或 CSS；真实作品以 works/index.md 的已发布项目为准。
 
 ```json wenxin
 {
@@ -32,14 +32,14 @@
     {"id":"original-mind","name":"本心"}
   ],
   "planned": [
-    {"title":"我相","chapter":"seven-aspects","type":"image"},
-    {"title":"人相","chapter":"seven-aspects","type":"image"},
-    {"title":"众生相","chapter":"seven-aspects","type":"image"},
-    {"title":"寿者相","chapter":"seven-aspects","type":"image"},
-    {"title":"法相","chapter":"seven-aspects","type":"image"},
-    {"title":"文字相","chapter":"seven-aspects","type":"image"},
-    {"title":"执著相","chapter":"seven-aspects","type":"image"},
-    {"title":"七相 · 影像","chapter":"seven-aspects","type":"video"}
+    {"title":"我相","chapter":"seven-aspects","type":"image","cover":"media/01.svg"},
+    {"title":"人相","chapter":"seven-aspects","type":"image","cover":"media/02.svg"},
+    {"title":"众生相","chapter":"seven-aspects","type":"image","cover":"media/03.svg"},
+    {"title":"寿者相","chapter":"seven-aspects","type":"image","cover":"media/04.svg"},
+    {"title":"法相","chapter":"seven-aspects","type":"image","cover":"media/05.svg"},
+    {"title":"文字相","chapter":"seven-aspects","type":"image","cover":"media/06.svg"},
+    {"title":"执著相","chapter":"seven-aspects","type":"image","cover":"media/07.svg"},
+    {"title":"七相 · 影像","chapter":"seven-aspects","type":"video","cover":"media/08.svg"}
   ]
 }
 ```
