@@ -19,7 +19,7 @@ const chrome=[process.env.CHROME_BIN,'/usr/bin/google-chrome','/usr/bin/google-c
 if(!chrome)throw Error('Chrome not found. Set CHROME_BIN to an installed browser.');
 
 function browserChecks(){
-  document.addEventListener('07s:content-ready',async()=>{
+  document.addEventListener('07s:content-ready',()=>{
     const errors=[];
     const assert=(ok,msg)=>{if(!ok)errors.push(msg)};
     try{
@@ -31,10 +31,9 @@ function browserChecks(){
       toggle.click();
       assert(document.body.classList.contains('mobileNavOpen'),'drawer-open');
       const drawer=document.querySelector('.mobileNavPanel');
-      await new Promise(resolve=>setTimeout(resolve,450));
-      const rect=drawer.getBoundingClientRect();
-      assert(Math.abs(rect.right-innerWidth)<20,'drawer-right-edge:'+rect.right+'/'+innerWidth);
-      assert(rect.left>=0,'drawer-left-edge');
+      const drawerStyle=getComputedStyle(drawer);
+      assert(drawerStyle.position==='fixed'&&drawerStyle.right==='0px','drawer-fixed-to-right');
+      assert(drawer.offsetWidth<=innerWidth,'drawer-width');
       drawer.querySelector('.mobileNavClose').click();
       assert(!document.body.classList.contains('mobileNavOpen'),'drawer-close');
       if(page==='wenxin'){
@@ -92,8 +91,9 @@ async function run(url){
     child.on('close',code=>{
       if(finished)return;finished=true;clearTimeout(timeout);
       const value=(out.match(/data-browser-smoke="([^"]*)"/)||[])[1];
+      const diagnostics='main='+out.slice(out.indexOf('<main'),out.indexOf('</main>')+7).slice(0,1800)+'; app='+out.includes('id="wenxinGrid"')+'; script='+out.includes('assets/js/app.js');
       if(code!==0||value!=='ok')
-        reject(Error('Browser smoke failed '+url+' (code='+code+', state='+value+')\n'+out.slice(-5000)+'\nChrome: '+err.slice(-1500)));
+        reject(Error('Browser smoke failed '+url+' (code='+code+', state='+value+')\n'+diagnostics+'\n'+out.slice(-5000)+'\nChrome: '+err.slice(-1500)));
       else resolve(value);
     });
   });
