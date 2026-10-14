@@ -96,7 +96,7 @@ function works(){
   const years=[...new Set(pub().map(p=>String(p.year)))].sort((a,b)=>b-a);
   if(!years.includes(ws.year))ws.year='All';
   app.innerHTML=`<section class="panel">${head(txt('works','eyebrow'),txt('works','title'),txt('works','intro'))}
-    <div class="pillrow" id="catPills"></div>
+    <div class="pillrow" id="catPills"></div><div class="seriesEntry"><a class="ulink" href="${siteUrl('works/wenxin/')}">SERIES 001 — 問心 / WENXIN ↗</a></div>
     <div class="tools">
       <div class="searchBox" id="sbox"><input class="field" id="find" placeholder="${txt('works','search')}" value="${esc(ws.search)}" autocomplete="off"><kbd>/</kbd><button class="clear" id="clr" title="${txt('works','clear')}">×</button></div>
       <select class="select" id="yearSel" title="${txt('works','year')}"><option value="All">${txt('works','allYears')}</option>${years.map(y=>`<option ${ws.year===y?'selected':''}>${y}</option>`).join('')}</select>
@@ -136,6 +136,42 @@ function renderWorks(){
   const r=$('#resetF');if(r)r.onclick=()=>{ws={...ws,filter:'All',year:'All',search:''};works()};
   $('#count').textContent=raw('works','count',{shown:list.length,total:pub().length,sort:SORTS[ws.sort][0]});
   bindCards(grid);observe(grid);
+}
+
+
+/* ================= WORKS / WENXIN series ================= */
+function wenxin(){
+  const config=window.SITE_DATA.wenxin;
+  const chapters=config.chapters;
+  const published=pub().filter(p=>p.series==='wenxin'&&chapters.some(c=>c.id===p.chapter));
+  const draftSlots=config.planned||[];
+  let filter='all';
+  app.innerHTML=`<section class="panel">
+    <div class="eyebrow"><span><a class="ulink" href="${siteUrl('works/')}">WORKS</a> / SERIES 001</span><span>07S</span></div>
+    <h1 class="pageTitle">${esc(config.title)}</h1>
+    <p class="small muted">${esc(config.subtitle)}</p>
+    <p class="lead">${esc(config.description)}</p>
+    <div class="pillrow" id="wenxinTabs"></div>
+    <div class="workGrid" id="wenxinGrid"></div>
+    <div class="foot"><span id="wenxinCount"></span><span>WENXIN / 07S</span></div>
+  </section>`;
+  function render(){
+    const tabs=[{id:'all',name:'全部 / ALL'},...chapters];
+    $('#wenxinTabs').innerHTML=tabs.map(t=>`<button class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}">${esc(t.name)} <span class="n">${t.id==='all'?published.length:published.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
+    $('[data-wenxin-tab]').forEach(b=>b.onclick=()=>{filter=b.dataset.wenxinTab;render()});
+    const real=published.filter(p=>filter==='all'||p.chapter===filter);
+    // Planning placeholders are shown only while this series has no published work.
+    const placeholders=published.length?[]:draftSlots.filter(p=>filter==='all'||p.chapter===filter);
+    $('#wenxinGrid').innerHTML=real.map((p,i)=>workCard(p,i)).join('')+placeholders.map((p,i)=>`<div class="work wenxinPlaceholder in">
+      <div class="cover wenxinEmpty">${p.type==='video'?'<span class="wenxinPlay">▶</span>':'<span class="wenxinSymbol">問心</span>'}<span class="wenxinPending">MEDIA PENDING</span></div>
+      <span class="idx">${pad(i+1)}</span>
+      <div class="workName"><span>${esc(p.title)}</span></div>
+      <div class="workMeta"><span class="ct">${esc(chapters.find(c=>c.id===p.chapter)?.name||'')}</span><span class="yr">${p.type==='video'?'VIDEO':'IMAGE'}</span></div>
+    </div>`).join('')||'<p class="muted">该章节尚无已发布作品。</p>';
+    $('#wenxinCount').textContent=`${real.length} PUBLISHED${placeholders.length?' · '+placeholders.length+' PLANNED':''}`;
+    observe($('#wenxinGrid'));
+  }
+  render();
 }
 
 /* ================= 详情 + 灯箱 ================= */
@@ -247,5 +283,5 @@ tick();setInterval(tick,30000);
 /* Physical static pages: every work has its own shareable URL. */
 const name=document.body.dataset.page||'home';
 $$('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===(name==='project'?'works':name)));
-({home,works,studio,contact,project:()=>detail(document.body.dataset.project)})[name]?.();
+({home,works,wenxin,studio,contact,project:()=>detail(document.body.dataset.project)})[name]?.();
 observe();onScroll();
