@@ -8,6 +8,12 @@ const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const site=JSON.parse(read('site.config.json'));
 const home=JSON.parse(read('home.config.json'));
 const selected=home.selectedWorks;
+if(typeof site.hideEmptyCategories!=='boolean'||!Array.isArray(site.categories))throw Error('site.config.json: categories must be an array and hideEmptyCategories must be true or false');
+const categorySettings=new Map();
+for(const c of site.categories){
+  if(!c||typeof c.name!=='string'||!c.name.trim()||c.name!==c.name.trim()||c.name==='All'||typeof c.enabled!=='boolean'||categorySettings.has(c.name))throw Error('site.config.json: categories need a unique name (not All) and enabled: true or false');
+  categorySettings.set(c.name,c.enabled);
+}
 for(const key of ['eyebrow','title','linkLabel'])if(typeof selected?.[key]!=='string')throw Error(`home.config.json: ${key} must be text`);
 if(!Array.isArray(selected.projectIds)||selected.projectIds.some(id=>typeof id!=='string')||new Set(selected.projectIds).size!==selected.projectIds.length)throw Error('home.config.json: projectIds must contain unique work folder names');
 const template=read('templates/site.html');
@@ -24,7 +30,7 @@ const projects=fs.readdirSync(path.join(root,'works'),{withFileTypes:true}).filt
   const p=JSON.parse(read(`works/${slug}/project.json`));
   for(const key of ['title','category','year','description','cover'])if(typeof p[key]!=='string'||!p[key].trim())throw Error(`${slug}: missing text field ${key}`);
   if(!['publish','draft'].includes(p.status))throw Error(`${slug}: status must be publish or draft`);
-  if(!Number.isFinite(p.order)||typeof p.featured!=='boolean'||!Array.isArray(p.gallery))throw Error(`${slug}: invalid order, featured or gallery`);
+  if(!Number.isFinite(p.order)||!Array.isArray(p.gallery))throw Error(`${slug}: invalid order or gallery`);
   const created=Date.parse(p.added);
   if(!Number.isFinite(created))throw Error(`${slug}: added must be an ISO date`);
   if(p.video&&!/^https?:\/\//i.test(p.video))throw Error(`${slug}: video must be an http(s) link; use content.html for local video`);
@@ -34,13 +40,17 @@ const projects=fs.readdirSync(path.join(root,'works'),{withFileTypes:true}).filt
   }
   return {...p,id:slug,cat:p.category,desc:p.description,image:asset(slug,p.cover),gallery:p.gallery.map(x=>asset(slug,x)),content,created};
 }).sort((a,b)=>a.order-b.order||a.id.localeCompare(b.id));
-const published=projects.filter(p=>p.status==='publish');
+const selectedIds=new Set(selected.projectIds);
+const published=projects.filter(p=>p.status==='publish').map(p=>({...p,featured:selectedIds.has(p.id)}));
 const featured=selected.projectIds.map(id=>{
   const p=published.find(p=>p.id===id);
   if(!p)throw Error(`home.config.json: selected work "${id}" does not exist or is a draft; update projectIds or publish the work`);
   return p;
 });
-const categories=[...new Set([...site.categories,...published.map(p=>p.cat)])];
+const usedCategories=new Set(published.map(p=>p.cat));
+// New work categories appear automatically; explicit disabled categories stay hidden.
+for(const name of usedCategories)if(!categorySettings.has(name))categorySettings.set(name,true);
+const categories=[...categorySettings].filter(([name,enabled])=>enabled&&(!site.hideEmptyCategories||usedCategories.has(name))).map(([name])=>name);
 
 if(path.dirname(output)!==root||path.basename(output)!=='dist')throw Error('Output must stay inside this project.');
 fs.rmSync(output,{recursive:true,force:true});
@@ -50,7 +60,7 @@ function write(file,text){const dest=path.join(output,file);fs.mkdirSync(path.di
 write('.nojekyll','');
 // Draft data and draft media are never copied into the public site.
 write('assets/js/data.js','window.SITE_DATA='+JSON.stringify({site,home,categories,projects:published}).replaceAll('<','\\u003c')+';\n');
-const card=(p,base)=>`<a class="work" href="${base}works/${p.id}/"><div class="cover"><img src="${base}${esc(p.image)}" alt="${esc(p.title)}" loading="lazy"></div><div class="workName">${esc(p.title)} ↗</div><div class="workMeta">${esc(p.cat)} / ${esc(p.year)}</div></a>`;
+const card=(p,base)=>`<a class="work" href="${base}works/${p.id}/"><div class="cover"><img src="${base}${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">${p.featured?'<span class="badge">★ FEATURED</span>':''}</div><div class="workName">${esc(p.title)} ↗</div><div class="workMeta">${esc(p.cat)} / ${esc(p.year)}</div></a>`;
 function page(file,name,id,title,description,content){
   const depth=file.split('/').length-1,base='../'.repeat(depth)||'./';
   const hero=name==='home'?`<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script><script type="module" src="${base}assets/js/hero.js"></script>`:'';

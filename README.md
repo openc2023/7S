@@ -55,14 +55,13 @@
 | 字段 | 用途 |
 | --- | --- |
 | title | 标题 |
-| category | 分类；新分类会自动进入筛选，分类顺序可在 site.config.json 调整 |
+| category | 分类；新分类会自动进入筛选，显示开关和分类顺序在 site.config.json 调整 |
 | year | 年份，使用带引号的字符串，例如 "2026" |
 | location / technology | 地点与技术 |
 | description | 简介，参与搜索，并用于网页描述 |
 | cover | 封面路径，例如 "media/cover.webp" |
 | gallery | 图库路径数组，例如 ["media/01.webp", "media/02.webp"] |
 | video | YouTube/Vimeo 网页链接，可自动嵌入；其他 http(s) 视频链接显示观看按钮 |
-| featured | true 表示作品卡片显示 ★ FEATURED 标记；首页展示哪些作品由 home.config.json 控制 |
 | status | publish 发布 / draft 草稿 |
 | order | 排序数字，越小越靠前 |
 | added | 添加日期，例如 "2026-10-14"，用于最近添加排序 |
@@ -86,7 +85,25 @@
 
 `eyebrow` 是上面的编号和小字，`title` 是大标题，`linkLabel` 是右侧作品列表链接的文字。`projectIds` 填 `works/` 下的作品文件夹名，列出哪些就显示哪些，数组顺序就是首页顺序，没有固定 4 个的限制。空数组表示不展示精选卡片。这里填写的作品必须存在且为 publish；删除或转为草稿时也要从这个数组移除，构建会提醒无效引用。
 
+精选只有这一处设置：`projectIds` 里的作品会同时显示在首页，并在所有作品卡片上显示 ★ FEATURED 标记。作品自己的 project.json 不再需要 featured 字段。
+
 改完运行 `npm run build` 并刷新预览；推送 GitHub 后自动更新。这里的设置同时用于静态 HTML 和浏览器交互页面，不需要修改生成的 dist 或 assets/js/data.js。
+
+## 分类显示开关与空分类
+
+在 `site.config.json` 中修改：
+
+```json
+"hideEmptyCategories": true,
+"categories": [
+  { "name": "New Media Art", "enabled": true },
+  { "name": "Spatial & Exhibition", "enabled": false }
+]
+```
+
+`enabled: true` 显示分类入口，`false` 隐藏。隐藏只影响首页和作品列表的分类入口，作品仍在 All 和自己的独立页面中正常展示，也可以搜索到。已经选中的分类被关闭后，刷新会自动回到 All。
+
+`hideEmptyCategories: true` 自动隐藏没有已发布作品的分类；只有草稿的分类也会隐藏。设为 false 可以保留启用但暂无作品的分类。分类排列按数组顺序；作品中出现的新分类默认启用，想手动关闭它就把它加入这个数组并设置 enabled 为 false。名称必须与作品的 category 完全一致。
 
 ## 本地构建与预览
 

@@ -5,10 +5,11 @@
   "email": "hello@your-domain.com",
   "contactNote": "For collaborations and project inquiries, please get in touch by email.",
   "socials": [],
+  "hideEmptyCategories": true,
   "categories": [
-    "New Media Art",
-    "Spatial & Exhibition",
-    "Interactive Experiences",
-    "Visual & Moving Image"
+    { "name": "New Media Art", "enabled": true },
+    { "name": "Spatial & Exhibition", "enabled": true },
+    { "name": "Interactive Experiences", "enabled": true },
+    { "name": "Visual & Moving Image", "enabled": true }
   ]
 }
