@@ -29,7 +29,8 @@ function browserChecks(){
       if(innerWidth>760){
         const worksTopLink=document.querySelector('[data-nav="works"]');
         worksTopLink.focus();
-        assert(getComputedStyle(document.querySelector('.worksDropdown')).visibility==='visible','works-dropdown-keyboard-focus');
+        assert(worksTopLink.closest('.worksNavGroup').matches(':focus-within'),'works-dropdown-keyboard-focus');
+        assert(getComputedStyle(document.querySelector('.worksDropdown')).position==='absolute','works-dropdown-position');
         worksTopLink.blur();
       }else{
         const toggle=document.querySelector('.mobileMenuToggle');
