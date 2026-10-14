@@ -1,0 +1,529 @@
+{
+  "shared": {
+    "brand": {
+      "type": "string",
+      "placeholders": []
+    },
+    "brandSuffix": {
+      "type": "string",
+      "placeholders": []
+    },
+    "prefix": {
+      "type": "string",
+      "placeholders": []
+    },
+    "navHome": {
+      "type": "string",
+      "placeholders": []
+    },
+    "navWorks": {
+      "type": "string",
+      "placeholders": []
+    },
+    "navStudio": {
+      "type": "string",
+      "placeholders": []
+    },
+    "navContact": {
+      "type": "string",
+      "placeholders": []
+    },
+    "footerCopyright": {
+      "type": "string",
+      "placeholders": []
+    },
+    "footerSlogan": {
+      "type": "string",
+      "placeholders": []
+    },
+    "clockLabel": {
+      "type": "string",
+      "placeholders": []
+    },
+    "clockTimezone": {
+      "type": "string",
+      "placeholders": []
+    },
+    "backTop": {
+      "type": "string",
+      "placeholders": []
+    },
+    "featured": {
+      "type": "string",
+      "placeholders": []
+    },
+    "viewProject": {
+      "type": "string",
+      "placeholders": []
+    },
+    "emptySelected": {
+      "type": "string",
+      "placeholders": []
+    },
+    "undo": {
+      "type": "string",
+      "placeholders": []
+    },
+    "copyFailed": {
+      "type": "string",
+      "placeholders": []
+    },
+    "weatherPlaceholder": {
+      "type": "string",
+      "placeholders": []
+    },
+    "weatherUseLocation": {
+      "type": "string",
+      "placeholders": []
+    },
+    "weatherCredit": {
+      "type": "string",
+      "placeholders": []
+    },
+    "weatherLocal": {
+      "type": "string",
+      "placeholders": []
+    },
+    "weatherTitle": {
+      "type": "string",
+      "placeholders": [
+        "location",
+        "condition"
+      ]
+    },
+    "weatherAria": {
+      "type": "string",
+      "placeholders": [
+        "location",
+        "condition",
+        "temperature"
+      ]
+    },
+    "weatherFailedTitle": {
+      "type": "string",
+      "placeholders": []
+    },
+    "weatherFailedAria": {
+      "type": "string",
+      "placeholders": []
+    },
+    "weatherInsecure": {
+      "type": "string",
+      "placeholders": []
+    },
+    "weatherDenied": {
+      "type": "string",
+      "placeholders": []
+    },
+    "weatherUnavailable": {
+      "type": "string",
+      "placeholders": []
+    },
+    "clear": {
+      "type": "string",
+      "placeholders": []
+    },
+    "overcast": {
+      "type": "string",
+      "placeholders": []
+    },
+    "cloudy": {
+      "type": "string",
+      "placeholders": []
+    },
+    "fog": {
+      "type": "string",
+      "placeholders": []
+    },
+    "drizzle": {
+      "type": "string",
+      "placeholders": []
+    },
+    "rain": {
+      "type": "string",
+      "placeholders": []
+    },
+    "snow": {
+      "type": "string",
+      "placeholders": []
+    },
+    "showers": {
+      "type": "string",
+      "placeholders": []
+    },
+    "snowShowers": {
+      "type": "string",
+      "placeholders": []
+    },
+    "thunderstorm": {
+      "type": "string",
+      "placeholders": []
+    },
+    "heroLetters": {
+      "type": "string",
+      "placeholders": []
+    }
+  },
+  "home": {
+    "eyebrow": {
+      "type": "string",
+      "placeholders": []
+    },
+    "disciplines": {
+      "type": "string",
+      "placeholders": []
+    },
+    "heroLines": {
+      "type": "array",
+      "placeholders": []
+    },
+    "intro": {
+      "type": "string",
+      "placeholders": []
+    },
+    "artHint": {
+      "type": "string",
+      "placeholders": []
+    },
+    "artFoot": {
+      "type": "string",
+      "placeholders": []
+    },
+    "explore": {
+      "type": "string",
+      "placeholders": []
+    },
+    "marquee": {
+      "type": "array",
+      "placeholders": []
+    },
+    "aboutLabel": {
+      "type": "string",
+      "placeholders": []
+    },
+    "aboutText": {
+      "type": "string",
+      "placeholders": []
+    },
+    "collaborateLabel": {
+      "type": "string",
+      "placeholders": []
+    },
+    "collaborateTitle": {
+      "type": "string",
+      "placeholders": []
+    },
+    "collaborateLink": {
+      "type": "string",
+      "placeholders": []
+    }
+  },
+  "works": {
+    "browserTitle": {
+      "type": "string",
+      "placeholders": []
+    },
+    "eyebrow": {
+      "type": "string",
+      "placeholders": []
+    },
+    "title": {
+      "type": "string",
+      "placeholders": []
+    },
+    "intro": {
+      "type": "string",
+      "placeholders": []
+    },
+    "all": {
+      "type": "string",
+      "placeholders": []
+    },
+    "search": {
+      "type": "string",
+      "placeholders": []
+    },
+    "clear": {
+      "type": "string",
+      "placeholders": []
+    },
+    "year": {
+      "type": "string",
+      "placeholders": []
+    },
+    "allYears": {
+      "type": "string",
+      "placeholders": []
+    },
+    "sort": {
+      "type": "string",
+      "placeholders": []
+    },
+    "view": {
+      "type": "string",
+      "placeholders": []
+    },
+    "twoColumns": {
+      "type": "string",
+      "placeholders": []
+    },
+    "threeColumns": {
+      "type": "string",
+      "placeholders": []
+    },
+    "list": {
+      "type": "string",
+      "placeholders": []
+    },
+    "sortManual": {
+      "type": "string",
+      "placeholders": []
+    },
+    "sortNew": {
+      "type": "string",
+      "placeholders": []
+    },
+    "sortOld": {
+      "type": "string",
+      "placeholders": []
+    },
+    "sortAZ": {
+      "type": "string",
+      "placeholders": []
+    },
+    "sortZA": {
+      "type": "string",
+      "placeholders": []
+    },
+    "sortRecent": {
+      "type": "string",
+      "placeholders": []
+    },
+    "noResults": {
+      "type": "string",
+      "placeholders": []
+    },
+    "noMatches": {
+      "type": "string",
+      "placeholders": []
+    },
+    "reset": {
+      "type": "string",
+      "placeholders": []
+    },
+    "filters": {
+      "type": "string",
+      "placeholders": []
+    },
+    "clearAll": {
+      "type": "string",
+      "placeholders": []
+    },
+    "count": {
+      "type": "string",
+      "placeholders": [
+        "shown",
+        "total",
+        "sort"
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "placeholders": []
+    }
+  },
+  "studio": {
+    "browserTitle": {
+      "type": "string",
+      "placeholders": []
+    },
+    "eyebrow": {
+      "type": "string",
+      "placeholders": []
+    },
+    "title": {
+      "type": "string",
+      "placeholders": []
+    },
+    "intro": {
+      "type": "string",
+      "placeholders": []
+    },
+    "heroLines": {
+      "type": "array",
+      "placeholders": []
+    },
+    "body": {
+      "type": "string",
+      "placeholders": []
+    },
+    "projects": {
+      "type": "string",
+      "placeholders": []
+    },
+    "disciplines": {
+      "type": "string",
+      "placeholders": []
+    },
+    "years": {
+      "type": "string",
+      "placeholders": []
+    },
+    "luckyLabel": {
+      "type": "string",
+      "placeholders": []
+    },
+    "luckyNumber": {
+      "type": "number",
+      "placeholders": []
+    },
+    "servicesLabel": {
+      "type": "string",
+      "placeholders": []
+    },
+    "services": {
+      "type": "array",
+      "placeholders": []
+    },
+    "contactLink": {
+      "type": "string",
+      "placeholders": []
+    }
+  },
+  "contact": {
+    "browserTitle": {
+      "type": "string",
+      "placeholders": []
+    },
+    "metaDescription": {
+      "type": "string",
+      "placeholders": []
+    },
+    "eyebrow": {
+      "type": "string",
+      "placeholders": []
+    },
+    "title": {
+      "type": "string",
+      "placeholders": []
+    },
+    "intro": {
+      "type": "string",
+      "placeholders": []
+    },
+    "headingLines": {
+      "type": "array",
+      "placeholders": []
+    },
+    "inquiries": {
+      "type": "string",
+      "placeholders": []
+    },
+    "copyEmail": {
+      "type": "string",
+      "placeholders": []
+    },
+    "emailCopied": {
+      "type": "string",
+      "placeholders": []
+    },
+    "social": {
+      "type": "string",
+      "placeholders": []
+    },
+    "socialEmpty": {
+      "type": "string",
+      "placeholders": []
+    }
+  },
+  "project": {
+    "titleSuffix": {
+      "type": "string",
+      "placeholders": []
+    },
+    "backWorks": {
+      "type": "string",
+      "placeholders": []
+    },
+    "technologyFallback": {
+      "type": "string",
+      "placeholders": []
+    },
+    "overview": {
+      "type": "string",
+      "placeholders": []
+    },
+    "copyLink": {
+      "type": "string",
+      "placeholders": []
+    },
+    "watchVideo": {
+      "type": "string",
+      "placeholders": []
+    },
+    "details": {
+      "type": "string",
+      "placeholders": []
+    },
+    "year": {
+      "type": "string",
+      "placeholders": []
+    },
+    "category": {
+      "type": "string",
+      "placeholders": []
+    },
+    "location": {
+      "type": "string",
+      "placeholders": []
+    },
+    "technology": {
+      "type": "string",
+      "placeholders": []
+    },
+    "film": {
+      "type": "string",
+      "placeholders": []
+    },
+    "videoTitle": {
+      "type": "string",
+      "placeholders": [
+        "title"
+      ]
+    },
+    "gallery": {
+      "type": "string",
+      "placeholders": [
+        "count"
+      ]
+    },
+    "galleryAlt": {
+      "type": "string",
+      "placeholders": [
+        "number"
+      ]
+    },
+    "moreIn": {
+      "type": "string",
+      "placeholders": [
+        "category"
+      ]
+    },
+    "related": {
+      "type": "string",
+      "placeholders": []
+    },
+    "keyboardHint": {
+      "type": "string",
+      "placeholders": []
+    },
+    "linkCopied": {
+      "type": "string",
+      "placeholders": []
+    },
+    "lightboxClose": {
+      "type": "string",
+      "placeholders": []
+    }
+  }
+}

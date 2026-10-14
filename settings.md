@@ -10,7 +10,7 @@
 | 字段 | 你可以改什么 |
 | --- | --- |
 | title | 浏览器标签页的网站标题 |
-| description | 首页简介和网页描述 |
+| description | 网页搜索引擎描述；首页可见简介另在 pages/home.md 的 intro 修改 |
 | period | 作品页顶部的展示年份范围 |
 | email | 联系页邮箱，请替换演示邮箱 |
 | contactNote | 联系页说明文字，填写英文 |
@@ -97,5 +97,9 @@
 - 作品素材：works/作品文件夹/media/。
 - 新增作品：复制整个 templates/work/ 到 works/，重命名为小写英文文件夹名，再照其中中文提示修改。
 
-网页布局、首页动效和工作室长篇文案仍在 templates/site.html、assets/css/site.css 和 assets/js/app.js；这些不属于本文件的设置项。
+各页面文字请改 pages/ 下对应 MD（含中文字段说明）：home.md 首页、works.md 列表、studio.md 工作室、contact.md 联系、project.md 详情共用文字、shared.md 导航页脚和时钟。
+
+布局与样式仍在 templates/site.html、assets/css/site.css；首页 3D 图形程序在 assets/js/hero.js。
+
+双击 07S-Manager.bat 可预览、创建/恢复备份、登录和推送 GitHub。完整编辑入口见 _说明_从这里开始.md。
 不要修改 dist/ 或 assets/js/data.js，它们会在构建时自动生成。

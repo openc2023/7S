@@ -1,5 +1,7 @@
 (() => {
   'use strict';
+  const text=window.SITE_DATA.text.shared;
+  const label=(key,values={})=>String(text[key]).replace(/\{(\w+)\}/g,(match,name)=>Object.hasOwn(values,name)?values[name]:match);
   const config=window.SITE_DATA?.site.weather;
   const button=document.getElementById('weather');
   const credit=document.getElementById('weatherCredit');
@@ -10,15 +12,15 @@
   let point={latitude:config.latitude,longitude:config.longitude,label:config.defaultLabel||'BUSAN'};
   let timer,busy=false,request=0;
   const describe=(code,day)=>{
-    if(code===0)return [day?'☀':'☾','Clear'];
-    if(code<=3)return ['☁',code===3?'Overcast':'Partly cloudy'];
-    if(code<=48)return ['≋','Fog'];
-    if(code<=57)return ['☂','Drizzle'];
-    if(code<=67)return ['☂','Rain'];
-    if(code<=77)return ['❄','Snow'];
-    if(code<=82)return ['☂','Rain showers'];
-    if(code<=86)return ['❄','Snow showers'];
-    return ['ϟ','Thunderstorm'];
+    if(code===0)return [day?'☀':'☾',label('clear')];
+    if(code<=3)return ['☁',code===3?label('overcast'):label('cloudy')];
+    if(code<=48)return ['≋',label('fog')];
+    if(code<=57)return ['☂',label('drizzle')];
+    if(code<=67)return ['☂',label('rain')];
+    if(code<=77)return ['❄',label('snow')];
+    if(code<=82)return ['☂',label('showers')];
+    if(code<=86)return ['❄',label('snowShowers')];
+    return ['ϟ',label('thunderstorm')];
   };
   async function update(){
     const current=++request;
@@ -37,14 +39,14 @@
       if(!weather||typeof weather.temperature_2m!=='number'||!Number.isFinite(weather.temperature_2m)||typeof weather.weather_code!=='number')throw Error('Invalid weather response');
       if(current!==request)return;
       const [icon,condition]=describe(weather.weather_code,weather.is_day);
-      button.textContent=`${point.label==='LOCAL'?'LOCAL ':''}${icon} ${Math.round(weather.temperature_2m)}°C`;
-      button.title=`${point.label}: ${condition}. Use current location (approximate coordinates sent to Open-Meteo).`;
-      button.setAttribute('aria-label',`${point.label} weather: ${condition}, ${Math.round(weather.temperature_2m)} degrees Celsius. Use current location.`);
+      button.textContent=`${point.label==='LOCAL'?label('weatherLocal')+' ':''}${icon} ${Math.round(weather.temperature_2m)}°C`;
+      button.title=label('weatherTitle',{location:point.label==='LOCAL'?label('weatherLocal'):point.label,condition});
+      button.setAttribute('aria-label',label('weatherAria',{location:point.label==='LOCAL'?label('weatherLocal'):point.label,condition,temperature:Math.round(weather.temperature_2m)}));
     }catch{
       if(current!==request)return;
-      button.textContent='WEATHER —';
-      button.title='Weather unavailable. Click to try your current location.';
-      button.setAttribute('aria-label','Weather unavailable. Try current location.');
+      button.textContent=label('weatherPlaceholder');
+      button.title=label('weatherFailedTitle');
+      button.setAttribute('aria-label',label('weatherFailedAria'));
     }finally{
       clearTimeout(timeout);
       if(current===request){button.removeAttribute('aria-busy');timer=setTimeout(update,interval);}
@@ -53,7 +55,7 @@
   button.addEventListener('click',()=>{
     if(busy)return;
     if(!window.isSecureContext||!navigator.geolocation){
-      button.title='Location requires HTTPS and browser support. Showing default location.';
+      button.title=label('weatherInsecure');
       return;
     }
     busy=true;
@@ -65,7 +67,7 @@
       update();
     },error=>{
       busy=false;button.disabled=false;button.removeAttribute('aria-busy');
-      button.title=error.code===1?'Location permission denied. Using the displayed location.':'Location unavailable. Using the displayed location.';
+      button.title=error.code===1?label('weatherDenied'):label('weatherUnavailable');
     },{enableHighAccuracy:false,timeout:10000,maximumAge:300000});
   });
   window.addEventListener('pagehide',()=>{clearTimeout(timer);request++;});

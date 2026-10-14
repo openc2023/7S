@@ -22,7 +22,7 @@ window.HERO3D=function(el){
   const fill=new THREE.DirectionalLight(0xffffff,.6);fill.position.set(-10,-6,4);scene.add(fill);
 
   // 立体字母 0 / 7 / S，每个字母各有黑、白、灰三种材质
-  const geos=['0','7','S'].map(ch=>{const g=new TextGeometry(ch,{font,size:2,height:.75,depth:.75,curveSegments:10,bevelEnabled:true,bevelThickness:.08,bevelSize:.05,bevelSegments:3});g.center();g.computeVertexNormals();return g});
+  const geos=[...window.SITE_DATA.text.shared.heroLetters].map(ch=>{const g=new TextGeometry(ch,{font,size:2,height:.75,depth:.75,curveSegments:10,bevelEnabled:true,bevelThickness:.08,bevelSize:.05,bevelSegments:3});g.center();g.computeVertexNormals();return g});
   const mats=[
     new THREE.MeshPhysicalMaterial({color:0xededf0,roughness:.25,clearcoat:1}),
     new THREE.MeshPhysicalMaterial({color:0x08080a,roughness:.1,clearcoat:1,clearcoatRoughness:.05}),

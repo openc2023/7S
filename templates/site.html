@@ -12,22 +12,22 @@
 <div id="progress"></div>
 <div class="shell">
   <header class="top" id="top">
-    <a href="{{base}}" class="logo"><span class="seven">07S</span><sup>®</sup></a>
+    <a href="{{base}}" class="logo"><span class="seven">{{brand}}</span><sup>{{brandSuffix}}</sup></a>
     <nav class="nav">
-      <span class="conditions"><button type="button" class="weather" id="weather" title="Show weather for your current location" hidden>WEATHER —</button><span class="small muted clock" id="clock"></span></span>
-      <a href="{{base}}" data-nav="home">HOME</a>
-      <a href="{{base}}works/" data-nav="works">WORKS</a>
-      <a href="{{base}}studio/" data-nav="studio">STUDIO</a>
-      <a href="{{base}}contact/" data-nav="contact">CONTACT</a>
+      <span class="conditions"><button type="button" class="weather" id="weather" title="{{weatherUseLocation}}" hidden>{{weatherPlaceholder}}</button><span class="small muted clock" id="clock"></span></span>
+      <a href="{{base}}" data-nav="home">{{navHome}}</a>
+      <a href="{{base}}works/" data-nav="works">{{navWorks}}</a>
+      <a href="{{base}}studio/" data-nav="studio">{{navStudio}}</a>
+      <a href="{{base}}contact/" data-nav="contact">{{navContact}}</a>
     </nav>
   </header>
   <main id="app">{{content}}</main>
-  <footer><span>© 2026 07S STUDIO <a id="weatherCredit" class="weatherCredit" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" hidden>Weather: Open-Meteo</a></span><span>SEVEN IS MORE THAN A NUMBER.</span></footer>
+  <footer><span>{{footerCopyright}} <a id="weatherCredit" class="weatherCredit" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" hidden>{{weatherCredit}}</a></span><span>{{footerSlogan}}</span></footer>
 </div>
 <div id="loader"><div class="bar"><i id="ldBar"></i></div><div class="num" id="ldNum">000</div></div>
 <div id="toast"></div>
 <div id="peek"><img alt=""></div>
-<button id="toTop" title="Back to top">↑</button>
+<button id="toTop" title="{{backTop}}">↑</button>
 
 <noscript><style>#loader{display:none}.reveal,.work,.sw{opacity:1;transform:none}</style></noscript>
 <script defer src="{{base}}assets/js/data.js"></script>

@@ -1,5 +1,7 @@
 # 07S 静态作品网站
 
+**先看 [_说明_从这里开始.md](_说明_从这里开始.md)：各页面文字已分到 pages/ 下的 MD，双击 07S-Manager.bat 可预览、备份、恢复和推送。**
+
 **日常设置入口：[settings.md](settings.md)。所有字段均有中文说明，直接修改其中的配置值即可生效。**
 
 以这个「07s作品」文件夹作为 GitHub 仓库根目录。网站发布后的文件是普通 HTML、CSS、JavaScript 和媒体文件，不需要服务器后台。作品正文用 Markdown 编辑，构建时转换为 HTML；首次使用需要运行 npm ci 安装解析器。
@@ -11,6 +13,9 @@
 ```text
 07s作品/
 ├── settings.md                  带中文说明的全站设置：资料、天气、分类、首页精选
+├── 07S-Manager.bat              双击：预览、备份、恢复、登录、推送
+├── _说明_从这里开始.md           中文编辑索引和使用说明
+├── pages/                       每个页面的文字设置 MD，均带中文说明
 ├── assets/
 │   ├── css/site.css              全站样式
 │   ├── js/app.js                 列表筛选、详情、灯箱和页面交互
@@ -167,7 +172,7 @@ npm run preview
 
 工作流遵循 [GitHub Pages 官方自定义工作流说明](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。只发布 dist，不发布源模板、配置、原型备份和草稿。`dist/` 已在 .gitignore 中，GitHub 会自行生成它。
 
-联系页使用邮件链接，会打开访客的邮件软件。请在 `settings.md` 里将演示邮箱换成真实邮箱，并添加实际社交链接。首页与工作室介绍的具体文案目前在 `assets/js/app.js` 中，页面布局在共用模板和脚本中统一修改。
+联系页使用邮件链接，会打开访客的邮件软件。请在 `settings.md` 里将演示邮箱换成真实邮箱，并添加实际社交链接。首页、工作室、联系页、列表页、详情共用标题、导航和页脚的文字均在 `pages/` 对应 MD 中编辑，字段有中文说明。页面布局仍在共用模板和脚本中修改。
 
 ## 已绑定的仓库与日常同步
 

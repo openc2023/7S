@@ -1,10 +1,14 @@
 
 /* ================= 数据 ================= */
-const svg=(a,b,c)=>'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="900" height="680"><defs><linearGradient id="g"><stop stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient><pattern id="p" width="160" height="160" patternUnits="userSpaceOnUse" patternTransform="rotate(-28)"><rect width="160" height="160" fill="url(#g)"/><text x="-7" y="110" fill="${c}" font-size="86" font-family="Arial" font-weight="900">07S</text></pattern></defs><rect width="900" height="680" fill="url(#p)"/><circle cx="675" cy="310" r="190" fill="none" stroke="${c}" stroke-width="32" opacity=".4"/></svg>`);
+const svg=(a,b,c)=>'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="900" height="680"><defs><linearGradient id="g"><stop stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient><pattern id="p" width="160" height="160" patternUnits="userSpaceOnUse" patternTransform="rotate(-28)"><rect width="160" height="160" fill="url(#g)"/><text x="-7" y="110" fill="${c}" font-size="86" font-family="Arial" font-weight="900">${esc(copy.shared.brand)}</text></pattern></defs><rect width="900" height="680" fill="url(#p)"/><circle cx="675" cy="310" r="190" fill="none" stroke="${c}" stroke-width="32" opacity=".4"/></svg>`);
 
 const siteRoot=new URL('../../',document.currentScript.src);
 const siteUrl=path=>new URL(path,siteRoot).href;
 const projectUrl=id=>siteUrl('works/'+encodeURIComponent(id)+'/');
+const copy=window.SITE_DATA.text;
+const raw=(scope,key,values={})=>String(copy[scope][key]).replace(/\{(\w+)\}/g,(match,name)=>Object.hasOwn(values,name)?values[name]:match);
+const txt=(scope,key,values)=>esc(raw(scope,key,values));
+const titleLines=(scope,key)=>copy[scope][key].map(line=>`<span class="ln"><span>${esc(line)}</span></span>`).join('');
 const cats=window.SITE_DATA.categories;
 const projects=window.SITE_DATA.projects.map(p=>({...p,image:siteUrl(p.image),gallery:p.gallery.map(siteUrl)}));
 /* ================= 工具 ================= */
@@ -18,16 +22,16 @@ const pub=()=>projects.filter(p=>p.status==='publish');
 let toastTimer;
 function toast(msg,undo){
   const t=$('#toast');clearTimeout(toastTimer);
-  t.innerHTML=esc(msg)+(undo?'<button>Undo</button>':'');
+  t.innerHTML=esc(msg)+(undo?`<button>${txt('shared','undo')}</button>`:'');
   if(undo)t.querySelector('button').onclick=()=>{undo();t.classList.remove('on')};
   t.classList.add('on');toastTimer=setTimeout(()=>t.classList.remove('on'),undo?5000:2600);
 }
-const head=(a,b,c)=>`<div class="eyebrow"><span>07S / ${a}</span><span>${esc(window.SITE_DATA.site.period)}</span></div><h1 class="pageTitle">${b}</h1><p class="lead">${c}</p>`;
+const head=(a,b,c)=>`<div class="eyebrow"><span>${txt('shared','prefix')}${a}</span><span>${esc(window.SITE_DATA.site.period)}</span></div><h1 class="pageTitle">${b}</h1><p class="lead">${c}</p>`;
 
 /* ================= 卡片 ================= */
 function workCard(p,i=0,q=''){
   return `<a href="${projectUrl(p.id)}" class="work" style="--i:${i}" data-project="${esc(p.id)}" tabindex="0">
-    <div class="cover"><img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">${p.featured?'<span class="badge">★ FEATURED</span>':''}<span class="view">VIEW PROJECT ↗</span></div>
+    <div class="cover"><img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">${p.featured?`<span class="badge">${txt('shared','featured')}</span>`:''}<span class="view">${txt('shared','viewProject')}</span></div>
     <span class="idx">${pad(i+1)}</span>
     <div class="workName"><span>${hl(p.title,q)}</span><span class="arr">↗</span></div>
     <div class="workMeta"><span class="ct">${hl(p.cat,q)}</span><span class="loc">${hl(p.location||'',q)}</span><span class="yr">${esc(p.year)}</span></div>
@@ -41,21 +45,21 @@ function bindCards(root=app){
 function home(){
   const selected=window.SITE_DATA.home.selectedWorks;
   const featured=selected.projectIds.map(id=>pub().find(p=>p.id===id)).filter(Boolean);
-  const words=['ART DIRECTION','✦','VISUAL DESIGN','✦','MOVING IMAGE','✦','INTERACTIVE EXPERIENCE','✦','SPATIAL','✦'];
+  const words=copy.home.marquee;
   app.innerHTML=`<section class="panel">
-    <div class="eyebrow"><span>07S / INDEPENDENT CREATIVE STUDIO</span><span>ART · DESIGN · IMAGE · DIGITAL</span></div>
-    <h1 class="heroTitle"><span class="ln"><span>SEVEN IS</span></span><span class="ln"><span>MORE THAN</span></span><span class="ln"><span>A NUMBER.</span></span></h1>
-    <p class="lead">Art, Design, Moving Image & Digital Experiences.</p>
-    <div class="heroArt" id="heroArt"><i></i><span class="hint">MOVE · CLICK</span></div>
-    <div class="foot"><span>INFINITE IDEAS. NEW PERSPECTIVES.</span><a href="${siteUrl('works/')}" class="ulink">EXPLORE WORKS ↗</a></div>
-    <div class="marquee"><div>${[...words,...words].map(w=>`<span>${w}</span>`).join('')}</div></div>
+    <div class="eyebrow"><span>${txt('shared','prefix')}${txt('home','eyebrow')}</span><span>${txt('home','disciplines')}</span></div>
+    <h1 class="heroTitle">${titleLines('home','heroLines')}</h1>
+    <p class="lead">${txt('home','intro')}</p>
+    <div class="heroArt" data-brand="${txt('shared','brand')}" id="heroArt"><i></i><span class="hint">${txt('home','artHint')}</span></div>
+    <div class="foot"><span>${txt('home','artFoot')}</span><a href="${siteUrl('works/')}" class="ulink">${txt('home','explore')}</a></div>
+    <div class="marquee"><div>${[...words,...words].map(w=>`<span>${esc(w)}</span>`).join('')}</div></div>
     <div class="sectiontop reveal"><div><div class="small muted">${esc(selected.eyebrow)}</div><h2>${esc(selected.title)}</h2></div><a href="${siteUrl('works/')}" class="small ulink">${esc(selected.linkLabel)} (${pub().length}) ↗</a></div>
-    <div class="workGrid">${featured.map((p,i)=>workCard(p,i)).join('')||'<p class="muted">No selected works yet.</p>'}</div>
+    <div class="workGrid">${featured.map((p,i)=>workCard(p,i)).join('')||`<p class="muted">${txt('shared','emptySelected')}</p>`}</div>
     <div class="line"></div>
-    <div class="reveal"><div class="small muted">02 / ABOUT & EXPERTISE</div><p class="editorial">We create visual experiences where art, design and technology meet.</p></div>
+    <div class="reveal"><div class="small muted">${txt('home','aboutLabel')}</div><p class="editorial">${txt('home','aboutText')}</p></div>
     <div class="pillrow reveal">${cats.map(c=>`<a class="pill" href="${siteUrl('works/')}" data-gocat="${esc(c)}">${esc(c)} <span class="n">${pub().filter(p=>p.cat===c).length}</span></a>`).join('')}</div>
     <div class="line"></div>
-    <div class="reveal"><div class="small muted">03 / COLLABORATE</div><h2 class="pageTitle">HAVE AN IDEA?</h2><a href="${siteUrl('contact/')}" class="action primary">LET’S TALK <span class="arr">↗</span></a></div>
+    <div class="reveal"><div class="small muted">${txt('home','collaborateLabel')}</div><h2 class="pageTitle">${txt('home','collaborateTitle')}</h2><a href="${siteUrl('contact/')}" class="action primary">${txt('home','collaborateLink')} <span class="arr">↗</span></a></div>
   </section>`;
   bindCards();
   $$('[data-gocat]').forEach(a=>a.onclick=()=>{ws.filter=a.dataset.gocat;saveWs()});
@@ -72,12 +76,12 @@ function mountHero(el){
 
 /* ================= Works: categories, year, sorting and search ================= */
 const SORTS={
-  manual:['Recommended',(a,b)=>a.order-b.order],
-  new:['Year · Newest first',(a,b)=>b.year-a.year||a.order-b.order],
-  old:['Year · Oldest first',(a,b)=>a.year-b.year||a.order-b.order],
-  az:['Title · A–Z',(a,b)=>a.title.localeCompare(b.title)],
-  za:['Title · Z–A',(a,b)=>b.title.localeCompare(a.title)],
-  recent:['Recently added',(a,b)=>b.created-a.created]
+  manual:[raw('works','sortManual'),(a,b)=>a.order-b.order],
+  new:[raw('works','sortNew'),(a,b)=>b.year-a.year||a.order-b.order],
+  old:[raw('works','sortOld'),(a,b)=>a.year-b.year||a.order-b.order],
+  az:[raw('works','sortAZ'),(a,b)=>a.title.localeCompare(b.title)],
+  za:[raw('works','sortZA'),(a,b)=>b.title.localeCompare(a.title)],
+  recent:[raw('works','sortRecent'),(a,b)=>b.created-a.created]
 };
 let ws={filter:'All',year:'All',sort:'manual',view:'grid',search:'',...(()=>{try{return JSON.parse(sessionStorage.getItem('07sWorks-en'))||{}}catch(e){return{}}})()};
 const saveWs=()=>{try{sessionStorage.setItem('07sWorks-en',JSON.stringify(ws))}catch(e){}};
@@ -91,17 +95,17 @@ function works(){
   if(ws.filter!=='All'&&!cats.includes(ws.filter))ws.filter='All';
   const years=[...new Set(pub().map(p=>String(p.year)))].sort((a,b)=>b-a);
   if(!years.includes(ws.year))ws.year='All';
-  app.innerHTML=`<section class="panel">${head('SELECTED WORKS','WORKS','Exploring the boundaries of art, technology and storytelling.')}
+  app.innerHTML=`<section class="panel">${head(txt('works','eyebrow'),txt('works','title'),txt('works','intro'))}
     <div class="pillrow" id="catPills"></div>
     <div class="tools">
-      <div class="searchBox" id="sbox"><input class="field" id="find" placeholder="Search titles, technologies, locations…" value="${esc(ws.search)}" autocomplete="off"><kbd>/</kbd><button class="clear" id="clr" title="Clear">×</button></div>
-      <select class="select" id="yearSel" title="Year"><option value="All">All years</option>${years.map(y=>`<option ${ws.year===y?'selected':''}>${y}</option>`).join('')}</select>
-      <select class="select" id="sortSel" title="Sort">${Object.entries(SORTS).map(([k,[n]])=>`<option value="${k}" ${ws.sort===k?'selected':''}>${n}</option>`).join('')}</select>
-      <div class="seg" role="group" aria-label="View"><button data-view="grid" title="Two columns">▦</button><button class="c3" data-view="cols3" title="Three columns">▩</button><button data-view="list" title="List">☰</button></div>
+      <div class="searchBox" id="sbox"><input class="field" id="find" placeholder="${txt('works','search')}" value="${esc(ws.search)}" autocomplete="off"><kbd>/</kbd><button class="clear" id="clr" title="${txt('works','clear')}">×</button></div>
+      <select class="select" id="yearSel" title="${txt('works','year')}"><option value="All">${txt('works','allYears')}</option>${years.map(y=>`<option ${ws.year===y?'selected':''}>${y}</option>`).join('')}</select>
+      <select class="select" id="sortSel" title="${txt('works','sort')}">${Object.entries(SORTS).map(([k,[n]])=>`<option value="${k}" ${ws.sort===k?'selected':''}>${esc(n)}</option>`).join('')}</select>
+      <div class="seg" role="group" aria-label="${txt('works','view')}"><button data-view="grid" title="${txt('works','twoColumns')}">▦</button><button class="c3" data-view="cols3" title="${txt('works','threeColumns')}">▩</button><button data-view="list" title="${txt('works','list')}">☰</button></div>
     </div>
     <div class="activeFilters" id="chips"></div>
     <div class="workGrid" id="grid"></div>
-    <div class="foot"><span id="count"></span><span>07S STUDIO</span></div>
+    <div class="foot"><span id="count"></span><span>${txt('works','signature')}</span></div>
   </section>`;
   const find=$('#find');
   let t;find.oninput=()=>{clearTimeout(t);t=setTimeout(()=>{ws.search=find.value;renderWorks()},120);$('#sbox').classList.toggle('has',!!find.value)};
@@ -117,20 +121,20 @@ function renderWorks(){
   saveWs();
   const q=ws.search.trim();
   const base=pub().filter(p=>!q||`${p.title} ${p.cat} ${p.desc} ${p.technology} ${p.location}`.toLowerCase().includes(q.toLowerCase()));
-  $('#catPills').innerHTML=['All',...cats].map(c=>`<button class="pill ${ws.filter===c?'active':''}" data-cat="${esc(c)}">${esc(c)} <span class="n">${c==='All'?base.length:base.filter(p=>p.cat===c).length}</span></button>`).join('');
+  $('#catPills').innerHTML=['All',...cats].map(c=>`<button class="pill ${ws.filter===c?'active':''}" data-cat="${esc(c)}">${c==='All'?txt('works','all'):esc(c)} <span class="n">${c==='All'?base.length:base.filter(p=>p.cat===c).length}</span></button>`).join('');
   $$('[data-cat]').forEach(b=>b.onclick=()=>{ws.filter=b.dataset.cat;renderWorks()});
   $$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===ws.view));
   const list=queryWorks(),grid=$('#grid');
   grid.className='workGrid '+(ws.view==='grid'?'':ws.view);
-  grid.innerHTML=list.length?list.map((p,i)=>workCard(p,i,q)).join(''):`<div class="empty" style="grid-column:1/-1"><b>NO RESULTS</b>No matching projects.<br><br><button class="pill" id="resetF">Reset filters</button></div>`;
+  grid.innerHTML=list.length?list.map((p,i)=>workCard(p,i,q)).join(''):`<div class="empty" style="grid-column:1/-1"><b>${txt('works','noResults')}</b>${txt('works','noMatches')}<br><br><button class="pill" id="resetF">${txt('works','reset')}</button></div>`;
   const chips=[];
   if(ws.filter!=='All')chips.push(['filter',ws.filter]);
   if(ws.year!=='All')chips.push(['year',ws.year]);
   if(q)chips.push(['search','“'+q+'”']);
-  $('#chips').innerHTML=chips.length?'Filters: '+chips.map(([k,v])=>`<button class="chip" data-chip="${k}">${esc(v)} <b>×</b></button>`).join('')+(chips.length>1?`<button class="chip" data-chip="all">Clear all</button>`:''):'';
+  $('#chips').innerHTML=chips.length?txt('works','filters')+chips.map(([k,v])=>`<button class="chip" data-chip="${k}">${esc(v)} <b>×</b></button>`).join('')+(chips.length>1?`<button class="chip" data-chip="all">${txt('works','clearAll')}</button>`:''):'';
   $$('[data-chip]').forEach(b=>b.onclick=()=>{const k=b.dataset.chip;if(k==='filter'||k==='all')ws.filter='All';if(k==='year'||k==='all'){ws.year='All';$('#yearSel').value='All'}if(k==='search'||k==='all'){ws.search='';$('#find').value='';$('#sbox').classList.remove('has')}renderWorks()});
   const r=$('#resetF');if(r)r.onclick=()=>{ws={...ws,filter:'All',year:'All',search:''};works()};
-  $('#count').textContent=`SHOWING ${list.length} / ${pub().length} PROJECTS · ${SORTS[ws.sort][0]}`;
+  $('#count').textContent=raw('works','count',{shown:list.length,total:pub().length,sort:SORTS[ws.sort][0]});
   bindCards(grid);observe(grid);
 }
 
@@ -141,28 +145,28 @@ function detail(id){
   const imgs=[p.image,...(p.gallery||[])];
   const related=arr.filter(x=>x.cat===p.cat&&x.id!==p.id).slice(0,2);
   app.innerHTML=`<section class="panel">
-    <div class="eyebrow"><span><a class="ulink" href="${siteUrl('works/')}">← WORKS</a> / ${esc(p.cat)}</span><span>${pad(i+1)} / ${pad(arr.length)}</span></div>
-    <h1 class="pageTitle">${esc(p.title)}</h1><p class="lead">${esc(p.cat)} / ${esc(p.technology||'Creative Studio')}</p>
+    <div class="eyebrow"><span><a class="ulink" href="${siteUrl('works/')}">${txt('project','backWorks')}</a> / ${esc(p.cat)}</span><span>${pad(i+1)} / ${pad(arr.length)}</span></div>
+    <h1 class="pageTitle">${esc(p.title)}</h1><p class="lead">${esc(p.cat)} / ${esc(p.technology||raw('project','technologyFallback'))}</p>
     <div class="feature" style="margin:35px 0" data-lb="0"><img src="${esc(p.image)}" alt="${esc(p.title)}"></div>
-    <div class="cols"><div class="reveal"><div class="small muted">PROJECT OVERVIEW</div><p class="editorial" style="font-size:24px">${esc(p.desc)}</p>
-      <div class="actions"><button class="pill" id="share">Copy link ⧉</button>${p.video?`<a class="pill" href="${esc(safeUrl(p.video))}" target="_blank" rel="noopener noreferrer">WATCH VIDEO ↗</a>`:''}</div></div>
-      <div class="reveal"><div class="small muted">PROJECT DETAILS</div>${[['YEAR',p.year],['CATEGORY',p.cat],['LOCATION',p.location||'—'],['TECHNOLOGY',p.technology||'—']].map(([a,b])=>`<div class="projectMeta"><span class="muted">${a}</span><span>${esc(b)}</span></div>`).join('')}</div></div>
+    <div class="cols"><div class="reveal"><div class="small muted">${txt('project','overview')}</div><p class="editorial" style="font-size:24px">${esc(p.desc)}</p>
+      <div class="actions"><button class="pill" id="share">${txt('project','copyLink')}</button>${p.video?`<a class="pill" href="${esc(safeUrl(p.video))}" target="_blank" rel="noopener noreferrer">${txt('project','watchVideo')}</a>`:''}</div></div>
+      <div class="reveal"><div class="small muted">${txt('project','details')}</div>${[[raw('project','year'),p.year],[raw('project','category'),p.cat],[raw('project','location'),p.location||'—'],[raw('project','technology'),p.technology||'—']].map(([a,b])=>`<div class="projectMeta"><span class="muted">${esc(a)}</span><span>${esc(b)}</span></div>`).join('')}</div></div>
     <div class="projectContent">${p.content||''}</div>
-    ${embedUrl(p.video)?`<div class="line"></div><div class="small muted">FILM</div><div class="video"><iframe src="${esc(embedUrl(p.video))}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="${esc(p.title)} video"></iframe></div>`:''}
-    <div class="line"></div><div class="small muted">PROJECT GALLERY · ${imgs.length}</div>
-    <div class="gallery" style="margin-top:17px">${imgs.map((im,k)=>`<div data-lb="${k}"><img src="${esc(im)}" alt="Gallery image ${k+1}" loading="lazy"></div>`).join('')}</div>
-    ${related.length?`<div class="line"></div><div class="sectiontop"><div><div class="small muted">MORE IN ${esc(p.cat)}</div><h2>RELATED</h2></div></div><div class="workGrid">${related.map((r,k)=>workCard(r,k)).join('')}</div>`:''}
+    ${embedUrl(p.video)?`<div class="line"></div><div class="small muted">${txt('project','film')}</div><div class="video"><iframe src="${esc(embedUrl(p.video))}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="${txt('project','videoTitle',{title:p.title})}"></iframe></div>`:''}
+    <div class="line"></div><div class="small muted">${txt('project','gallery',{count:imgs.length})}</div>
+    <div class="gallery" style="margin-top:17px">${imgs.map((im,k)=>`<div data-lb="${k}"><img src="${esc(im)}" alt="${txt('project','galleryAlt',{number:k+1})}" loading="lazy"></div>`).join('')}</div>
+    ${related.length?`<div class="line"></div><div class="sectiontop"><div><div class="small muted">${txt('project','moreIn',{category:p.cat})}</div><h2>${txt('project','related')}</h2></div></div><div class="workGrid">${related.map((r,k)=>workCard(r,k)).join('')}</div>`:''}
     <div class="line"></div>
-    <div class="foot"><a href="${projectUrl(prev.id)}" class="ulink">← ${esc(prev.title)}</a><span class="muted">← → Use arrow keys to navigate</span><a href="${projectUrl(next.id)}" class="ulink">${esc(next.title)} →</a></div>
+    <div class="foot"><a href="${projectUrl(prev.id)}" class="ulink">← ${esc(prev.title)}</a><span class="muted">${txt('project','keyboardHint')}</span><a href="${projectUrl(next.id)}" class="ulink">${esc(next.title)} →</a></div>
   </section>`;
   bindCards();
   $$('[data-lb]').forEach(el=>el.onclick=()=>lightbox(imgs,+el.dataset.lb));
-  $('#share').onclick=()=>copyText(location.href,'Link copied');
+  $('#share').onclick=()=>copyText(location.href,raw('project','linkCopied'));
   pageKeys=e=>{if(document.querySelector('.lightbox,.modal')||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if(e.key==='ArrowRight')location.href=projectUrl(next.id);if(e.key==='ArrowLeft')location.href=projectUrl(prev.id)};
 }
 function lightbox(imgs,i){
   const lb=document.createElement('div');lb.className='lightbox';
-  const draw=()=>{lb.innerHTML=`<img src="${esc(imgs[i])}" alt=""><button class="close">ESC ×</button>${imgs.length>1?`<button class="lbBtn prev">←</button><button class="lbBtn next">→</button>`:''}<span class="count">${i+1} / ${imgs.length}</span>`};
+  const draw=()=>{lb.innerHTML=`<img src="${esc(imgs[i])}" alt=""><button class="close">${txt('project','lightboxClose')}</button>${imgs.length>1?`<button class="lbBtn prev">←</button><button class="lbBtn next">→</button>`:''}<span class="count">${i+1} / ${imgs.length}</span>`};
   const go=d=>{i=(i+d+imgs.length)%imgs.length;draw()};
   const close=()=>{lb.remove();document.removeEventListener('keydown',key);lenis?.start()};
   const key=e=>{if(e.key==='Escape')close();if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)};
@@ -174,21 +178,21 @@ function lightbox(imgs,i){
 /* ================= Studio / Contact ================= */
 function studio(){
   const n=pub().length,yrs=new Set(pub().map(p=>p.year)).size;
-  app.innerHTML=`<section class="panel">${head('ABOUT US','STUDIO','Independent Creative Studio.')}<div class="line"></div>
-    <h2 class="heroTitle" style="font-size:clamp(42px,7vw,86px)"><span class="ln"><span>SEVEN IS</span></span><span class="ln"><span>MORE THAN</span></span><span class="ln"><span>A NUMBER.</span></span></h2>
-    <p class="editorial reveal">07S is a multidisciplinary creative studio exploring the intersection of art, design, moving images and emerging technologies.</p>
-    <div class="stats reveal"><div class="stat"><b data-count="${n}">0</b><span>PROJECTS</span></div><div class="stat"><b data-count="${cats.length}">0</b><span>DISCIPLINES</span></div><div class="stat"><b data-count="${yrs}">0</b><span>YEARS ACTIVE</span></div><div class="stat"><b data-count="7">0</b><span>LUCKY NUMBER</span></div></div>
-    <div class="heroArt" id="heroArt" style="height:290px"><i></i></div>
-    <div class="small muted">WHAT WE DO</div>${['CREATIVE & VISUAL DESIGN','ART & INSTALLATION','FILM & MOTION','DIGITAL & INTERACTIVE'].map((s,i)=>`<div class="service reveal"><span>${pad(i+1)} &nbsp; ${s}</span><span class="arr">↗</span></div>`).join('')}
-    <div class="line"></div><a class="action primary" href="${siteUrl('contact/')}">START A CONVERSATION <span class="arr">↗</span></a></section>`;
+  app.innerHTML=`<section class="panel">${head(txt('studio','eyebrow'),txt('studio','title'),txt('studio','intro'))}<div class="line"></div>
+    <h2 class="heroTitle" style="font-size:clamp(42px,7vw,86px)">${titleLines('studio','heroLines')}</h2>
+    <p class="editorial reveal">${txt('studio','body')}</p>
+    <div class="stats reveal"><div class="stat"><b data-count="${n}">0</b><span>${txt('studio','projects')}</span></div><div class="stat"><b data-count="${cats.length}">0</b><span>${txt('studio','disciplines')}</span></div><div class="stat"><b data-count="${yrs}">0</b><span>${txt('studio','years')}</span></div><div class="stat"><b data-count="${Number(copy.studio.luckyNumber)}">0</b><span>${txt('studio','luckyLabel')}</span></div></div>
+    <div class="heroArt" data-brand="${txt('shared','brand')}" id="heroArt" style="height:290px"><i></i></div>
+    <div class="small muted">${txt('studio','servicesLabel')}</div>${copy.studio.services.map((s,i)=>`<div class="service reveal"><span>${pad(i+1)} &nbsp; ${esc(s)}</span><span class="arr">↗</span></div>`).join('')}
+    <div class="line"></div><a class="action primary" href="${siteUrl('contact/')}">${txt('studio','contactLink')} <span class="arr">↗</span></a></section>`;
 }
 async function copyText(value,message){
-  try{await navigator.clipboard.writeText(value);toast(message)}catch{toast('Copy unavailable. Please copy from the page or address bar.')}
+  try{await navigator.clipboard.writeText(value);toast(message)}catch{toast(raw('shared','copyFailed'))}
 }
 function contact(){
   const s=window.SITE_DATA.site;
-  app.innerHTML=`<section class="panel">${head('GET IN TOUCH','CONTACT',"Have a project in mind? Let's make it happen.")}<div class="line"></div><div class="cols"><div><h2 class="pageTitle">LET'S<br>TALK.</h2><div class="small muted">GENERAL INQUIRIES</div><p><a class="action primary" href="mailto:${esc(s.email)}">${esc(s.email)} ↗</a></p><button class="pill" id="copyMail">Copy email ⧉</button></div><div><div class="small muted">SOCIAL</div><p>${s.socials.filter(x=>safeUrl(x.url)).map(x=>`<a class="ulink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name)} ↗</a>`).join('<br>')||'Social links coming soon.'}</p><p class="lead">${esc(s.contactNote)}</p></div></div></section>`;
-  $('#copyMail').onclick=()=>copyText(s.email,'Email copied');
+  app.innerHTML=`<section class="panel">${head(txt('contact','eyebrow'),txt('contact','title'),txt('contact','intro'))}<div class="line"></div><div class="cols"><div><h2 class="pageTitle">${copy.contact.headingLines.map(esc).join('<br>')}</h2><div class="small muted">${txt('contact','inquiries')}</div><p><a class="action primary" href="mailto:${esc(s.email)}">${esc(s.email)} ↗</a></p><button class="pill" id="copyMail">${txt('contact','copyEmail')}</button></div><div><div class="small muted">${txt('contact','social')}</div><p>${s.socials.filter(x=>safeUrl(x.url)).map(x=>`<a class="ulink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name)} ↗</a>`).join('<br>')||txt('contact','socialEmpty')}</p><p class="lead">${esc(s.contactNote)}</p></div></div></section>`;
+  $('#copyMail').onclick=()=>copyText(s.email,raw('contact','emailCopied'));
 }
 
 // YouTube / Vimeo 链接转为可嵌入播放器地址
@@ -243,7 +247,7 @@ addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;
 },{passive:true});
 (function loop(){cx+=(mx-cx)*.18;cy+=(my-cy)*.18;peek.style.left=(cx+150)+'px';peek.style.top=cy+'px';requestAnimationFrame(loop)})();
 // 时钟
-const tick=()=>$('#clock').textContent='SEOUL '+new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit'});tick();setInterval(tick,30000);
+const tick=()=>$('#clock').textContent=raw('shared','clockLabel')+' '+new Date().toLocaleTimeString('en-GB',{timeZone:raw('shared','clockTimezone'),hour:'2-digit',minute:'2-digit'});tick();setInterval(tick,30000);
 
 /* Physical static pages: every work has its own shareable URL. */
 const name=document.body.dataset.page||'home';
