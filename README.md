@@ -115,4 +115,19 @@ npm run preview
 
 联系页使用邮件链接，会打开访客的邮件软件。请在 `site.config.json` 里将演示邮箱换成真实邮箱，并添加实际社交链接。首页与工作室介绍的具体文案目前在 `assets/js/app.js` 中，页面布局在共用模板和脚本中统一修改。
 
-当前只完成本地整理和预览，尚未绑定 GitHub 仓库或实际发布。
+## 已绑定的仓库与日常同步
+
+仓库：[openc2023/7S](https://github.com/openc2023/7S)
+
+网站：[https://openc2023.github.io/7S/](https://openc2023.github.io/7S/)
+
+本地目录已关联 origin 和 main，GitHub Pages 已设置为 GitHub Actions 模式。以后修改首页配置、作品内容或图片，在本文件夹运行：
+
+```powershell
+npm run build
+git add .
+git commit -m "Update portfolio"
+git push
+```
+
+每次推送后，可在 [Actions](https://github.com/openc2023/7S/actions) 查看构建与部署结果。只有部署成功后线上内容才会更新；若配置里的作品名不存在、作品仍为草稿或媒体文件缺失，构建会报告错误。
