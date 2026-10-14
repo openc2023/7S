@@ -261,7 +261,7 @@ worksMenu.append(worksLink);
 worksLink.setAttribute('aria-haspopup','true');
 const seriesMenu=document.createElement('div');
 seriesMenu.className='worksDropdown';
-seriesMenu.innerHTML='<span class="dropdownEyebrow">WORKS / SERIES</span>'+
+seriesMenu.innerHTML='<span class="dropdownEyebrow">'+esc(raw('shared','menuSeries'))+'</span>'+
   '<a class="dropdownAll" href="'+siteUrl('works/')+'">ALL WORKS <span>↗</span></a>'+
   series.map((item,i)=>'<a href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="dropdownNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+' <small>'+esc(item.subtitle||'')+'</small></span><span>↗</span></a>').join('');
 worksMenu.append(seriesMenu);
@@ -269,7 +269,7 @@ worksMenu.append(seriesMenu);
 const menuToggle=document.createElement('button');
 menuToggle.type='button';
 menuToggle.className='mobileMenuToggle';
-menuToggle.setAttribute('aria-label','Open menu');
+menuToggle.setAttribute('aria-label',raw('shared','menuOpen'));
 menuToggle.setAttribute('aria-expanded','false');
 menuToggle.setAttribute('aria-controls','mobileNavPanel');
 menuToggle.innerHTML='<span></span><span></span>';
@@ -281,7 +281,7 @@ mobileNav.setAttribute('aria-hidden','true');
 mobileNav.inert=true;
 const navLinks=$$('[data-nav]',nav);
 const seriesItems=series.map((item,i)=>'<a class="mobileSeriesLink" href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="mobileSeriesNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+'<small>'+esc(item.subtitle||'')+'</small></span><span class="mobileSeriesArrow">↗</span></a>').join('');
-mobileNav.innerHTML='<div class="mobileNavHeader"><div class="mobileNavBrand">'+esc(copy.shared.brand)+'<span>MENU / 07S</span></div><button type="button" class="mobileNavClose" aria-label="Close menu">×</button></div>'+
+mobileNav.innerHTML='<div class="mobileNavHeader"><div class="mobileNavBrand">'+esc(copy.shared.brand)+'<sup>'+esc(copy.shared.brandSuffix)+'</sup><span>'+esc(raw('shared','menuIndex'))+' / '+esc(copy.shared.brand)+'</span></div><button type="button" class="mobileNavClose" aria-label="'+esc(raw('shared','menuClose'))+'">×</button></div>'+
   '<div class="mobileNavBody">'+
   navLinks.map((a,i)=>'<div class="mobileNavItem"><a class="mobileNavPrimary" href="'+esc(a.href)+'"><span class="mobileNavIndex">'+pad(i+1)+'</span>'+esc(a.textContent)+'<span class="mobileNavArrow">↗</span></a>'+
     (a.dataset.nav==='works'&&series.length?'<div class="mobileNavSeries"><div class="mobileNavSeriesCaption">PROJECT SERIES</div>'+seriesItems+'</div>':'')+
@@ -294,13 +294,28 @@ mobileBackdrop.setAttribute('aria-label','Close menu');
 const setMobileNav=open=>{
   document.body.classList.toggle('mobileNavOpen',open);
   menuToggle.setAttribute('aria-expanded',String(open));
-  menuToggle.setAttribute('aria-label',open?'Close menu':'Open menu');
+  menuToggle.setAttribute('aria-label',raw('shared',open?'menuClose':'menuOpen'));
   mobileNav.setAttribute('aria-hidden',String(!open));
   mobileNav.inert=!open;
   if(open)mobileNav.querySelector('.mobileNavClose').focus({preventScroll:true});
   else if(mobileNav.contains(document.activeElement))menuToggle.focus({preventScroll:true});
 };
 menuToggle.onclick=()=>setMobileNav(!document.body.classList.contains('mobileNavOpen'));
+// The active section and nested project series stay visible and distinct.
+const activeRoute=document.body.dataset.page;
+const activeNavSection=activeRoute==='wenxin'||activeRoute==='project'?'works':activeRoute;
+navLinks.forEach((link,i)=>{
+  if(link.dataset.nav===activeNavSection){
+    const item=mobileNav.querySelectorAll('.mobileNavItem')[i];
+    if(item){item.classList.add('is-active');item.querySelector('.mobileNavPrimary').setAttribute('aria-current',activeRoute==='wenxin'?'false':'page');}
+  }
+});
+series.forEach((item,i)=>{
+  if(location.pathname===new URL('works/'+item.id+'/',siteRoot).pathname){
+    const target=mobileNav.querySelectorAll('.mobileSeriesLink')[i];
+    if(target){target.classList.add('is-active');target.setAttribute('aria-current','page')}
+  }
+});
 mobileNav.querySelector('.mobileNavClose').onclick=()=>setMobileNav(false);
 mobileNav.querySelectorAll('a').forEach(a=>a.onclick=()=>setMobileNav(false));
 mobileBackdrop.onclick=()=>setMobileNav(false);
