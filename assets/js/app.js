@@ -143,6 +143,7 @@ function renderWorks(){
 function wenxin(){
   const config=window.SITE_DATA.wenxin;
   const chapters=config.chapters||[];
+  const ui=config.ui||{};
   const published=pub().filter(p=>p.series==='wenxin'&&chapters.some(c=>c.id===p.chapter));
   const planned=(config.planned||[]).map((p,i)=>({...p,order:i,planned:true}));
   const items=[...published,...planned.filter(p=>!published.some(real=>real.title===p.title&&real.chapter===p.chapter))];
@@ -154,9 +155,9 @@ function wenxin(){
     <p class="lead">${esc(config.description)}</p>
     <div class="pillrow" id="wenxinTabs" aria-label="Wenxin chapters"></div>
     <div class="tools wenxinTools">
-      <div class="searchBox" id="wenxinSearchBox"><input class="field" id="wenxinSearch" type="search" placeholder="Search works / 搜索作品" autocomplete="off"><kbd>/</kbd></div>
-      <select class="select" id="wenxinSort" aria-label="Sort works"><option value="manual">Recommended</option><option value="az">Title A–Z</option><option value="za">Title Z–A</option></select>
-      <div class="seg" role="group" aria-label="Gallery view"><button data-wenxin-view="grid" class="active" title="Grid">▦</button><button data-wenxin-view="list" title="List">☰</button></div>
+      <div class="searchBox" id="wenxinSearchBox"><input class="field" id="wenxinSearch" type="search" placeholder="${esc(ui.search||'Search works')}" autocomplete="off"><kbd>/</kbd></div>
+      <select class="select" id="wenxinSort" aria-label="Sort works"><option value="manual">${esc(ui.sortManual||'Recommended')}</option><option value="az">${esc(ui.sortAZ||'Title A-Z')}</option><option value="za">${esc(ui.sortZA||'Title Z-A')}</option></select>
+      <div class="seg" role="group" aria-label="Gallery view"><button data-wenxin-view="grid" class="active" title="${esc(ui.gridView||'Grid view')}">▦</button><button data-wenxin-view="list" title="${esc(ui.listView||'List view')}">☰</button></div>
     </div>
     <div class="workGrid" id="wenxinGrid"></div>
     <div class="foot"><span id="wenxinCount"></span><span>WENXIN / 07S</span></div>
@@ -166,21 +167,21 @@ function wenxin(){
     const filtered=items.filter(p=>(filter==='all'||p.chapter===filter)&&(!search||[p.title,p.type,p.chapter].join(' ').toLowerCase().includes(search)));
     if(sort==='az')filtered.sort((a,b)=>a.title.localeCompare(b.title));
     if(sort==='za')filtered.sort((a,b)=>b.title.localeCompare(a.title));
-    tabs.innerHTML=[{id:'all',name:'全部 / ALL'},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
+    tabs.innerHTML=[{id:'all',name:ui.all||'ALL'},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
     $$('[data-wenxin-tab]',tabs).forEach(btn=>btn.onclick=()=>{filter=btn.dataset.wenxinTab;render()});
     $$('[data-wenxin-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.wenxinView===view));
     grid.className='workGrid '+(view==='list'?'list':'');
-    grid.innerHTML=filtered.map((p,i)=>p.planned?`<article class="work wenxinPlaceholder in" aria-label="${esc(p.title)} - media pending">
+    grid.innerHTML=filtered.map((p,i)=>p.planned?`<article class="work wenxinPlaceholder in" aria-label="${esc(p.title)} — ${esc(p.type==='video'?ui.videoPending:ui.imagePending)}">
       <div class="cover wenxinEmpty">
-        <span class="wenxinPlaceholderIndex">${pad(i+1)} / 08</span>
-        <span class="${p.type==='video'?'wenxinPlay':'wenxinSymbol'}">${p.type==='video'?'▶':'問心'}</span>
-        <span class="wenxinPending">${p.type==='video'?'VIDEO · COMING SOON':'IMAGE · COMING SOON'}</span>
+        <span class="wenxinPlaceholderIndex">${pad(i+1)} / ${pad(items.length)}</span>
+        <span class="${p.type==='video'?'wenxinPlay':'wenxinSymbol'}">${p.type==='video'?'▶':esc(config.title)}</span>
+        <span class="wenxinPending">${p.type==='video'?esc(ui.videoPending):esc(ui.imagePending)}</span>
       </div>
       <span class="idx">${pad(i+1)}</span>
       <div class="workName"><span>${esc(p.title)}</span></div>
       <div class="workMeta"><span class="ct">${esc(chapters.find(c=>c.id===p.chapter)?.name||'')}</span><span class="yr">${p.type==='video'?'VIDEO':'IMAGE'}</span></div>
-    </article>`:workCard(p,i)).join('')||'<div class="empty">该章节暂无作品 / No works yet.</div>';
-    $('#wenxinCount').textContent=`${filtered.length} WORKS · ${filtered.filter(p=>!p.planned).length} PUBLISHED · ${filtered.filter(p=>p.planned).length} PLANNED`;
+    </article>`:workCard(p,i)).join('')||'<div class="empty">'+esc(ui.empty||'No works yet.')+'</div>';
+    $('#wenxinCount').textContent=`${filtered.length} ${ui.works||'WORKS'} · ${filtered.filter(p=>!p.planned).length} ${ui.published||'PUBLISHED'} · ${filtered.filter(p=>p.planned).length} ${ui.planned||'PLANNED'}`;
     observe(grid);
   }
   $('#wenxinSearch').oninput=e=>{search=e.target.value.trim().toLowerCase();render()};
@@ -250,32 +251,78 @@ function contact(){
 function embedUrl(v){const u=safeUrl(v||'');if(!u)return '';let m=u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([\w-]{11})/);if(m)return 'https://www.youtube-nocookie.com/embed/'+m[1];m=u.match(/vimeo\.com\/(?:video\/)?(\d+)/);if(m)return 'https://player.vimeo.com/video/'+m[1];return ''}
 function safeUrl(s){try{let u=new URL(s);return ['https:','http:'].includes(u.protocol)?u.href:''}catch{return ''}}
 
-/* Desktop WORKS dropdown + mobile navigation with nested series. */
+/* WORKS series navigation: sourced from works/index.md and each series index.md. */
+const series=window.SITE_DATA.series||[];
 const nav=$('.nav');
 const worksLink=$('[data-nav="works"]',nav);
 const worksMenu=document.createElement('div');
 worksMenu.className='worksNavGroup';
 worksLink.parentNode.insertBefore(worksMenu,worksLink);
 worksMenu.append(worksLink);
+worksLink.setAttribute('aria-haspopup','true');
 const seriesMenu=document.createElement('div');
 seriesMenu.className='worksDropdown';
-seriesMenu.innerHTML='<a href="'+siteUrl('works/')+'">ALL WORKS</a><a href="'+siteUrl('works/wenxin/')+'">問心 / WENXIN</a>';
+seriesMenu.innerHTML='<span class="dropdownEyebrow">'+esc(raw('shared','menuSeries'))+'</span>'+
+  '<a class="dropdownAll" href="'+siteUrl('works/')+'">' + esc(raw('shared','menuWorksAll')) + ' <span>↗</span></a>'+
+  series.map((item,i)=>'<a href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="dropdownNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+' <small>'+esc(item.subtitle||'')+'</small></span><span>↗</span></a>').join('');
 worksMenu.append(seriesMenu);
+
 const menuToggle=document.createElement('button');
-menuToggle.type='button';menuToggle.className='mobileMenuToggle';menuToggle.setAttribute('aria-label','Open navigation');menuToggle.setAttribute('aria-expanded','false');
-menuToggle.setAttribute('aria-controls','mobileNavPanel');menuToggle.textContent='☰';
-const mobileNav=document.createElement('div');mobileNav.id='mobileNavPanel';mobileNav.className='mobileNavPanel';
+menuToggle.type='button';
+menuToggle.className='mobileMenuToggle';
+menuToggle.setAttribute('aria-label',raw('shared','menuOpen'));
+menuToggle.setAttribute('aria-expanded','false');
+menuToggle.setAttribute('aria-controls','mobileNavPanel');
+menuToggle.innerHTML='<span></span><span></span>';
+const mobileNav=document.createElement('aside');
+mobileNav.id='mobileNavPanel';
+mobileNav.className='mobileNavPanel';
+mobileNav.setAttribute('aria-label',raw('shared','menuIndex'))
+mobileNav.setAttribute('aria-hidden','true');
+mobileNav.inert=true;
 const navLinks=$$('[data-nav]',nav);
-mobileNav.innerHTML='<div class="mobileNavHead"><span>07S / MENU</span><button type="button" class="mobileNavClose" aria-label="Close navigation">×</button></div>'+navLinks.map(a=>'<a href="'+esc(a.href)+'">'+esc(a.textContent)+'</a>'+(a.dataset.nav==='works'?'<div class="mobileSubNav"><a href="'+siteUrl('works/wenxin/')+'">↳ 問心 / WENXIN</a></div>':'')).join('');
-const closeMobileNav=()=>{document.body.classList.remove('mobileNavOpen');menuToggle.setAttribute('aria-expanded','false');menuToggle.textContent='☰';document.body.style.overflow='';};
-menuToggle.onclick=()=>{const open=document.body.classList.toggle('mobileNavOpen');menuToggle.setAttribute('aria-expanded',String(open));menuToggle.textContent=open?'×':'☰';document.body.style.overflow=open?'hidden':'';};
-mobileNav.querySelectorAll('a').forEach(a=>a.onclick=closeMobileNav);
-mobileNav.querySelector('.mobileNavClose').onclick=closeMobileNav;
+const seriesItems=series.map((item,i)=>'<a class="mobileSeriesLink" href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="mobileSeriesNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+'<small>'+esc(item.subtitle||'')+'</small></span><span class="mobileSeriesArrow">↗</span></a>').join('');
+mobileNav.innerHTML='<div class="mobileNavHeader"><div class="mobileNavBrand">'+esc(copy.shared.brand)+'<sup>'+esc(copy.shared.brandSuffix)+'</sup><span>'+esc(raw('shared','menuIndex'))+' / '+esc(copy.shared.brand)+'</span></div><button type="button" class="mobileNavClose" aria-label="'+esc(raw('shared','menuClose'))+'">×</button></div>'+
+  '<div class="mobileNavBody">'+
+  navLinks.map((a,i)=>'<div class="mobileNavItem"><a class="mobileNavPrimary" href="'+esc(a.href)+'"><span class="mobileNavIndex">'+pad(i+1)+'</span>'+esc(a.textContent)+'<span class="mobileNavArrow">↗</span></a>'+
+    (a.dataset.nav==='works'&&series.length?'<div class="mobileNavSeries"><div class="mobileNavSeriesCaption">'+esc(raw('shared','menuSeries'))+' <span>'+pad(series.length)+'</span></div>'+seriesItems+'</div>':'')+
+    '</div>').join('')+
+  '</div><div class="mobileNavFooter">'+esc(raw('shared','footerSlogan'))+'</div>';
+const mobileBackdrop=document.createElement('button');
+mobileBackdrop.type='button';
+mobileBackdrop.className='mobileNavBackdrop';
+mobileBackdrop.setAttribute('aria-label',raw('shared','menuClose'))
+const setMobileNav=open=>{
+  document.body.classList.toggle('mobileNavOpen',open);
+  menuToggle.setAttribute('aria-expanded',String(open));
+  menuToggle.setAttribute('aria-label',raw('shared',open?'menuClose':'menuOpen'));
+  mobileNav.setAttribute('aria-hidden',String(!open));
+  mobileNav.inert=!open;
+  if(open)mobileNav.querySelector('.mobileNavClose').focus({preventScroll:true});
+  else if(mobileNav.contains(document.activeElement))menuToggle.focus({preventScroll:true});
+};
+menuToggle.onclick=()=>setMobileNav(!document.body.classList.contains('mobileNavOpen'));
+// The active section and nested project series stay visible and distinct.
+const activeRoute=document.body.dataset.page;
+const activeNavSection=activeRoute==='wenxin'||activeRoute==='project'?'works':activeRoute;
+navLinks.forEach((link,i)=>{
+  if(link.dataset.nav===activeNavSection){
+    const item=mobileNav.querySelectorAll('.mobileNavItem')[i];
+    if(item){item.classList.add('is-active');if(activeRoute!=='wenxin')item.querySelector('.mobileNavPrimary').setAttribute('aria-current','page');}
+  }
+});
+series.forEach((item,i)=>{
+  if(location.pathname===new URL('works/'+item.id+'/',siteRoot).pathname){
+    const target=mobileNav.querySelectorAll('.mobileSeriesLink')[i];
+    if(target){target.classList.add('is-active');target.setAttribute('aria-current','page')}
+  }
+});
+mobileNav.querySelector('.mobileNavClose').onclick=()=>setMobileNav(false);
+mobileNav.querySelectorAll('a').forEach(a=>a.onclick=()=>setMobileNav(false));
+mobileBackdrop.onclick=()=>setMobileNav(false);
 document.querySelector('.top').append(menuToggle);
-document.body.append(mobileNav);
-const mobileBackdrop=document.createElement('button');mobileBackdrop.type='button';mobileBackdrop.className='mobileNavBackdrop';mobileBackdrop.setAttribute('aria-label','Close navigation');document.body.append(mobileBackdrop);mobileBackdrop.onclick=closeMobileNav;
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileNav()});
-document.addEventListener('click',e=>{if(document.body.classList.contains('mobileNavOpen')&&!e.target.closest('.top'))closeMobileNav()});
+document.body.append(mobileBackdrop,mobileNav);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setMobileNav(false)});
 
 /* ================= 全局交互 ================= */
 let pageKeys=null,cleanups=[];

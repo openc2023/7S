@@ -1,0 +1,18 @@
+name: Browser smoke (MD works)
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+      - run: npm run package
+      - name: Render WORKS and WENXIN in Chrome
+        run: npm run smoke

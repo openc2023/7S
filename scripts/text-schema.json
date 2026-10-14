@@ -158,6 +158,30 @@
     "heroLetters": {
       "type": "string",
       "placeholders": []
+    },
+    "menuTitle": {
+      "type": "string",
+      "placeholders": []
+    },
+    "menuIndex": {
+      "type": "string",
+      "placeholders": []
+    },
+    "menuSeries": {
+      "type": "string",
+      "placeholders": []
+    },
+    "menuWorksAll": {
+      "type": "string",
+      "placeholders": []
+    },
+    "menuOpen": {
+      "type": "string",
+      "placeholders": []
+    },
+    "menuClose": {
+      "type": "string",
+      "placeholders": []
     }
   },
   "home": {

@@ -318,23 +318,97 @@ html.lenis,html.lenis body{height:auto}
 .wenxinPending{position:absolute;bottom:12px;left:14px;font-size:9px;letter-spacing:.13em;color:#777}
 .wenxinPlaceholder .workName,.wenxinPlaceholder .workMeta{opacity:1!important;transform:none!important}
 
-/* Mobile-first header and compact Works filters. Desktop remains unchanged. */
-.mobileMenuToggle,.mobileNavPanel{display:none}
-@media(max-width:700px){
+
+/* ---------- WORKS / SERIES NAVIGATION ---------- */
+.nav{flex-wrap:nowrap}
+.worksNavGroup{display:flex;align-items:center;position:relative}
+.worksDropdown{position:absolute;top:100%;left:-24px;z-index:60;width:270px;padding:16px;background:#1b1c21;border:1px solid #393a42;border-radius:14px;box-shadow:0 24px 72px #000b;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(9px);transition:opacity .23s var(--ease),transform .23s var(--ease),visibility .23s}
+.worksNavGroup:hover .worksDropdown,.worksNavGroup:focus-within .worksDropdown{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+.worksDropdown .dropdownEyebrow{display:block;padding:0 7px 9px;color:#8d8e97;font-size:10px;letter-spacing:.18em}
+.worksDropdown>a{display:flex;align-items:center;gap:13px;padding:12px 7px!important;color:#e9e9ed!important;border-top:1px solid #35363d;font-size:12px!important;letter-spacing:.03em!important}
+.worksDropdown>a>span:last-child{margin-left:auto;color:#888}
+.worksDropdown>a:hover{color:var(--accent)!important}
+.worksDropdown>a:hover:after,.worksDropdown>a:after{display:none}
+.worksDropdown small{display:block;color:#81838d;font-size:9px;letter-spacing:.035em}
+.dropdownNumber{font-size:10px;color:#8c8e97;letter-spacing:.08em}
+.mobileMenuToggle,.mobileNavPanel,.mobileNavBackdrop{display:none}
+
+/* ---------- WENXIN / MD-DRIVEN ARTWORK GALLERY ---------- */
+.wenxinPanel .wenxinTools{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;margin:19px 0 8px;align-items:center}
+.wenxinPanel .wenxinTools .searchBox{min-width:0}
+.wenxinPanel .wenxinTools .select{min-width:156px}
+.wenxinPanel .wenxinTools .seg{justify-self:end}
+.wenxinPanel .workGrid{margin-top:21px}
+.wenxinPanel .wenxinPlaceholder{opacity:1;transform:none;min-width:0;cursor:default}
+.wenxinPanel .wenxinPlaceholder .cover{display:flex;align-items:center;justify-content:center;position:relative;aspect-ratio:1.32;min-height:0;overflow:hidden;border:1px solid #36373c;border-radius:9px;background:radial-gradient(ellipse at 75% 20%,#292a31 0%,#17181d 45%,#0b0c0e 100%);transition:border-color .25s,filter .25s}
+.wenxinPanel .wenxinPlaceholder:nth-child(2n) .cover{background:radial-gradient(ellipse at 25% 85%,#2e2d32 0%,#16171b 50%,#0b0c0e 100%)}
+.wenxinPanel .wenxinPlaceholder:nth-child(3n) .cover{background:radial-gradient(ellipse at 50% 20%,#24272d 0%,#16171b 50%,#0b0c0e 100%)}
+.wenxinPanel .wenxinPlaceholder:hover .cover{border-color:#81828c;filter:brightness(1.09)}
+.wenxinPanel .wenxinPlaceholderIndex{position:absolute;top:12px;left:14px;font-size:10px;letter-spacing:.16em;color:#888}
+.wenxinPanel .wenxinSymbol{font-family:serif;font-size:clamp(28px,5vw,55px);font-weight:400;letter-spacing:.08em;color:#adaeb5}
+.wenxinPanel .wenxinPlay{display:grid;place-items:center;width:60px;height:60px;border:1px solid #777985;border-radius:50%;font-size:19px;padding-left:4px;color:#ececf0}
+.wenxinPanel .wenxinPending{position:absolute;bottom:12px;left:14px;font-size:9px;letter-spacing:.12em;color:#92949c}
+.wenxinPanel .wenxinPlaceholder .workName,.wenxinPanel .wenxinPlaceholder .workMeta{display:flex;opacity:1!important;transform:none!important;min-width:0}
+.wenxinPanel .wenxinPlaceholder .workName{font-weight:650}
+.wenxinPanel .workGrid.list .wenxinPlaceholder{display:grid;grid-template-columns:48px minmax(0,1fr) minmax(100px,.7fr);gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:17px 4px}
+.wenxinPanel .workGrid.list .wenxinPlaceholder .cover{display:none}
+.wenxinPanel .workGrid.list .wenxinPlaceholder .idx{display:block;grid-column:1;grid-row:1}
+.wenxinPanel .workGrid.list .wenxinPlaceholder .workName{display:block;grid-column:2;grid-row:1;margin:0}
+.wenxinPanel .workGrid.list .wenxinPlaceholder .workMeta{display:flex;grid-column:3;grid-row:1;margin:0}
+.wenxinPanel .workGrid.list .wenxinPlaceholder .workMeta span{display:inline}
+
+/* ---------- MOBILE HEADER / RIGHT DRAWER ---------- */
+@media(max-width:760px){
   .shell{width:calc(100% - 24px)}
-  .top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;padding:14px 0;align-items:center}
-  .top.scrolled{padding:10px 0}
-  .logo{font-size:25px;white-space:nowrap}
-  .nav{justify-content:flex-end;min-width:0;gap:0;flex-wrap:nowrap}
-  .nav>a{display:none}
-  .conditions{gap:6px;min-width:0;max-width:100%;justify-content:flex-end;overflow:hidden}
-  .weather{font-size:10px;overflow:hidden;text-overflow:ellipsis}
-  .nav .clock{font-size:10px;flex:none}
-  .mobileMenuToggle{display:grid;place-items:center;width:39px;height:39px;border:1px solid var(--line2);border-radius:50%;background:#17181c;color:#fff;font-size:20px;line-height:1;z-index:51}
-  .mobileNavPanel{display:flex;position:fixed;right:0;top:0;height:100dvh;width:min(300px,82vw);padding:90px 28px 30px;flex-direction:column;gap:4px;background:#17181c;border-left:1px solid #393a40;box-shadow:-25px 0 70px #0009;transform:translateX(110%);visibility:hidden;transition:transform .3s var(--ease),visibility .3s;z-index:50}
-  .mobileNavOpen .mobileNavPanel{transform:translateX(0);visibility:visible}
-  .mobileNavPanel a{display:block;padding:16px 4px;border-bottom:1px solid #393a40;font-size:15px;letter-spacing:.12em}
-  .panel{padding:20px 15px;border-radius:12px}
+  .top,.top.scrolled{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:13px 0;transform:none}
+  .top.hide{transform:none}
+  .top .logo{font-size:25px;white-space:nowrap}
+  .top .nav{min-width:0;justify-content:flex-end;gap:0;flex-wrap:nowrap}
+  .top .nav>a,.top .nav .worksNavGroup{display:none}
+  .top .conditions{display:inline-flex;justify-content:flex-end;min-width:0;max-width:100%;gap:7px;white-space:nowrap;overflow:hidden}
+  .top .weather{font-size:10px;max-width:130px;overflow:hidden;text-overflow:ellipsis}
+  .top .clock{font-size:10px;flex-shrink:0}
+  .mobileMenuToggle{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:42px;height:42px;border:1px solid #45464c;border-radius:50%;background:#191a1f;color:#fff;transition:background .2s,border-color .2s}
+  .mobileMenuToggle span{width:17px;height:1.5px;background:currentColor;border-radius:2px}
+  .mobileMenuToggle:hover{border-color:#eee;background:#26272d}
+  .mobileNavBackdrop{display:block;position:fixed;inset:0;padding:0;border:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);z-index:100;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .32s,visibility .32s}
+  .mobileNavPanel{display:flex;flex-direction:column;position:fixed;right:0;top:0;bottom:0;isolation:isolate;width:min(388px,91vw);height:100dvh;max-height:none;overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(150deg,#202126 0%,#17181c 31%,#121317 100%);border-left:1px solid #50515a;box-shadow:-24px 0 90px #000c;z-index:101;transform:translate3d(105%,0,0);visibility:hidden;pointer-events:none;padding:max(32px,env(safe-area-inset-top)) 27px max(30px,env(safe-area-inset-bottom));transition:transform .38s var(--ease),visibility .38s}
+  body.mobileNavOpen{overflow:hidden}
+  body.mobileNavOpen .mobileNavBackdrop{opacity:1;visibility:visible;pointer-events:auto}
+  body.mobileNavOpen .mobileNavPanel{transform:translateX(0);visibility:visible;pointer-events:auto}
+  .mobileNavHeader{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:24px;border-bottom:1px solid #404148}
+  .mobileNavBrand{font-size:34px;font-weight:850;letter-spacing:-.095em;line-height:1}
+  .mobileNavBrand span{display:block;margin-top:9px;color:#90919c;font-size:10px;font-weight:500;letter-spacing:.21em}
+  .mobileNavClose{display:grid;place-items:center;width:43px;height:43px;flex:none;border:1px solid #555760;border-radius:50%;background:#25262c;color:#f7f7f7;font-size:26px;font-weight:300;line-height:1;transition:transform .18s,border-color .18s,background .18s}
+  .mobileNavClose:hover{border-color:#ddd}
+  .mobileNavBody{margin-top:20px;flex:1}
+  .mobileNavItem{position:relative;border-bottom:1px solid #373942}
+  .mobileNavPrimary{display:flex;align-items:center;gap:14px;min-height:76px;padding:15px 7px;font-size:24px;letter-spacing:-.04em;font-weight:730;line-height:1.2;transition:color .22s,transform .22s}
+  .mobileNavPrimary:hover,.mobileSeriesLink:hover{color:var(--accent)}
+  .mobileNavIndex{font-size:10px;font-weight:550;letter-spacing:.07em;color:#888b95;min-width:23px}
+  .mobileNavArrow{margin-left:auto;color:#7a7d87;font-size:18px;font-weight:400;transition:transform .2s,color .2s}
+  .mobileNavSeries{position:relative;margin:0 2px 20px 34px;padding:15px 13px 14px;border:1px solid #41434b;border-radius:11px;background:linear-gradient(120deg,#28292f,#1f2026);box-shadow:0 6px 16px #0002}
+  .mobileNavSeriesCaption{display:flex;align-items:center;justify-content:space-between;font-size:10px;letter-spacing:.13em;color:#a8a9b1;margin-bottom:11px}
+  .mobileSeriesLink{display:flex;align-items:center;gap:12px;min-height:57px;padding:11px 8px;border-top:1px solid #44464f;font-size:17px;font-weight:650;line-height:1.2;transition:background .22s,color .22s}
+  .mobileSeriesNumber{color:#9d9faa;font-size:10px;font-weight:500}
+  .mobileSeriesLink small{display:block;margin-top:4px;color:#8b8e99;font-size:9px;font-weight:450;letter-spacing:.025em;line-height:1.4}
+  .mobileSeriesArrow{margin-left:auto;color:#9799a2;font-size:17px}
+  .mobileNavFooter{margin-top:28px;padding-top:20px;border-top:1px solid #40424a;color:#9698a2;font-size:10px;letter-spacing:.16em;line-height:1.8}
+  .mobileNavPanel:before{content:"";position:absolute;left:27px;top:0;width:61px;height:3px;background:var(--accent);border-radius:0 0 3px 3px}
+  .mobileNavBrand sup{font-size:11px;font-weight:650;letter-spacing:0;position:relative;top:-15px;margin-left:3px}
+  .mobileNavClose:hover,.mobileNavClose:focus-visible{border-color:#f3f3f5;background:#33353e;transform:rotate(90deg)}
+  .mobileNavItem.is-active>.mobileNavPrimary{color:#fff}
+  .mobileNavItem.is-active>.mobileNavPrimary:before{content:"";position:absolute;left:-10px;top:calc(38px - 11px);width:3px;height:22px;border-radius:2px;background:var(--accent)}
+  .mobileNavItem.is-active .mobileNavIndex{color:var(--accent)}
+  .mobileNavPrimary:focus-visible,.mobileSeriesLink:focus-visible{outline:1px solid var(--accent);outline-offset:-1px}
+  .mobileNavPrimary:hover,.mobileNavPrimary:focus-visible{transform:translateX(3px)}
+  .mobileNavPrimary:hover .mobileNavArrow{transform:translate(2px,-2px);color:var(--accent)}
+  .mobileNavSeriesCaption span{font-variant-numeric:tabular-nums;color:#b3b4bc}
+  .mobileSeriesLink.is-active{color:#fff;background:linear-gradient(90deg,#393a40 0%,transparent 96%)}
+  .mobileSeriesLink.is-active .mobileSeriesNumber,.mobileSeriesLink.is-active .mobileSeriesArrow{color:var(--accent)}
+  .mobileMenuToggle:focus-visible,.mobileNavClose:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+  .panel{padding:20px 15px;border-radius:12px;min-height:60vh}
   .pageTitle{margin-top:18px}
   .pillrow{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;margin:18px 0 14px;padding-bottom:3px}
   .pillrow::-webkit-scrollbar{display:none}
@@ -345,72 +419,19 @@ html.lenis,html.lenis body{height:auto}
   .tools #yearSel,.tools #sortSel{width:100%;min-width:0;max-width:100%}
   .tools .seg{grid-column:1/-1;justify-self:end}
   .workGrid{margin-top:18px}
-}
-
-/* WORKS navigation: desktop hover/focus submenu, mobile nested series. */
-.worksNavGroup{position:relative;display:flex;align-items:center}
-.worksDropdown{position:absolute;top:100%;left:-18px;min-width:200px;padding:12px 14px;background:#17181c;border:1px solid var(--line2);border-radius:10px;box-shadow:0 18px 40px #0008;opacity:0;visibility:hidden;transform:translateY(7px);transition:opacity .2s,transform .2s,visibility .2s;z-index:65}
-.worksDropdown a{display:block!important;padding:10px 6px!important;white-space:nowrap}
-.worksNavGroup:hover .worksDropdown,.worksNavGroup:focus-within .worksDropdown{opacity:1;visibility:visible;transform:translateY(0)}
-.mobileSubNav{padding:0 0 6px 16px;border-left:1px solid #444}
-.mobileSubNav a{font-size:13px!important;color:#c8c8ce!important}
-@media(max-width:700px){
-  .nav .worksNavGroup{display:none}
-  .mobileNavPanel{display:flex}
-  .mobileNavPanel a{font-size:15px}
-  .mobileSubNav a{padding:12px 4px}
-}
-
-/* 2026-10 Wenxin: visible artwork placeholders and polished viewport drawer */
-.wenxinPanel .wenxinTools{margin:18px 0 12px}
-.wenxinPanel .wenxinTools .searchBox{flex:1;min-width:180px}
-.wenxinPanel .wenxinTools .select{min-width:160px}
-.wenxinPanel .wenxinTools .seg{flex:none}
-.wenxinPanel .wenxinPlaceholder{opacity:1;transform:none}
-.wenxinPanel .wenxinEmpty{aspect-ratio:1.32;min-height:0;overflow:hidden;border:1px solid #34363c;background:radial-gradient(ellipse at 75% 20%,#292a31 0%,#17181d 45%,#0b0c0e 100%);transition:border-color .25s,background .25s}
-.wenxinPanel .wenxinPlaceholder:nth-child(2n) .wenxinEmpty{background:radial-gradient(ellipse at 25% 80%,#2d2c31 0%,#16171b 50%,#0b0c0e 100%)}
-.wenxinPanel .wenxinPlaceholder:nth-child(3n) .wenxinEmpty{background:radial-gradient(ellipse at 50% 20%,#24272c 0%,#16171b 50%,#0b0c0e 100%)}
-.wenxinPanel .wenxinPlaceholder:hover .wenxinEmpty{border-color:#777982}
-.wenxinPlaceholderIndex{position:absolute;top:12px;left:14px;font-size:10px;letter-spacing:.16em;color:#777}
-.wenxinPanel .wenxinSymbol{font-family:serif;font-size:clamp(27px,5vw,52px);font-weight:400;letter-spacing:.1em;color:#a0a0a6}
-.wenxinPanel .wenxinPlay{display:grid;place-items:center;width:56px;height:56px;border:1px solid #73757d;border-radius:50%;font-size:19px;color:#dedee2}
-.wenxinPanel .wenxinPending{bottom:12px;font-size:9px}
-.wenxinPanel .workGrid.list .wenxinPlaceholder{display:grid;grid-template-columns:48px minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:14px 0}
-.wenxinPanel .workGrid.list .wenxinPlaceholder .cover{display:none}
-.wenxinPanel .workGrid.list .wenxinPlaceholder .idx{grid-column:1;grid-row:1}
-.wenxinPanel .workGrid.list .wenxinPlaceholder .workName{grid-column:2;grid-row:1}
-.wenxinPanel .workGrid.list .wenxinPlaceholder .workMeta{grid-column:3;grid-row:1}
-.mobileNavBackdrop{display:none}
-@media(max-width:700px){
-  .mobileNavBackdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.58);border:0;padding:0;z-index:70;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s,visibility .28s}
-  .mobileNavOpen .mobileNavBackdrop{opacity:1;visibility:visible;pointer-events:auto}
-  .mobileNavPanel{position:fixed!important;inset:0 0 0 auto!important;top:0!important;right:0!important;left:auto!important;bottom:0!important;width:min(320px,85vw)!important;height:100dvh!important;max-height:none!important;padding:88px 26px 36px!important;border-radius:0!important;z-index:71!important;overflow-y:auto;gap:0!important;background:#141519!important;box-shadow:-20px 0 60px #0009}
-  .mobileNavOpen .mobileNavPanel{transform:translateX(0)!important}
-  .mobileMenuToggle{position:relative;z-index:72!important}
-  .mobileNavOpen .mobileMenuToggle{position:fixed;right:22px;top:calc(env(safe-area-inset-top) + 15px)}
-  .mobileNavPanel>a{font-size:16px!important;font-weight:600;letter-spacing:.13em;padding:19px 4px!important}
-  .mobileSubNav{margin:0 0 10px 8px;padding-left:15px;border-left:2px solid #555}
-  .mobileSubNav a{border:0!important;font-size:13px!important;color:#d0d0d5!important;padding:12px 4px!important}
-  .wenxinPanel .wenxinTools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
-  .wenxinPanel .wenxinTools .searchBox{grid-column:1/-1;min-width:0}
+  .wenxinPanel .wenxinTools{grid-template-columns:minmax(0,1fr) auto;gap:9px;margin:18px 0 12px}
+  .wenxinPanel .wenxinTools .searchBox{grid-column:1/-1}
   .wenxinPanel .wenxinTools .select{grid-column:1;min-width:0;width:100%}
   .wenxinPanel .wenxinTools .seg{grid-column:2;justify-self:end}
-  .wenxinPanel .workGrid:not(.list){grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px}
-  .wenxinPanel .workGrid:not(.list) .wenxinPlaceholder .cover{min-height:0}
-  .wenxinPanel .wenxinSymbol{font-size:27px}
-  .wenxinPanel .wenxinPlay{width:42px;height:42px}
-  .wenxinPanel .wenxinPending{font-size:8px;left:8px;bottom:8px}
-  .wenxinPanel .wenxinPlaceholderIndex{left:8px;top:8px}
+  .wenxinPanel .workGrid:not(.list){grid-template-columns:repeat(2,minmax(0,1fr));gap:17px 11px}
+  .wenxinPanel .wenxinSymbol{font-size:clamp(25px,7vw,38px)}
+  .wenxinPanel .wenxinPlay{width:44px;height:44px;font-size:16px}
+  .wenxinPanel .wenxinPlaceholderIndex{top:9px;left:9px;font-size:9px}
+  .wenxinPanel .wenxinPending{bottom:9px;left:9px;font-size:8px;letter-spacing:.02em}
+  .wenxinPanel .wenxinPlaceholder .workName{font-size:12px}
+  .wenxinPanel .wenxinPlaceholder .workMeta{font-size:10px}
   .wenxinPanel .workGrid.list .wenxinPlaceholder{grid-template-columns:30px minmax(0,1fr) auto}
+  .wenxinPanel .workGrid.list .wenxinPlaceholder .workMeta{font-size:10px}
 }
-@media(min-width:701px){.mobileNavPanel,.mobileNavBackdrop{display:none!important}}
-
-/* Final mobile drawer refinement: dedicated close button and safe-area header. */
-.mobileNavHead{display:flex;justify-content:space-between;align-items:center;padding:0 0 18px;border-bottom:1px solid #383a40;color:#858892;font-size:11px;letter-spacing:.16em}
-.mobileNavClose{border:1px solid #45474e;border-radius:50%;width:38px;height:38px;background:#23252b;color:#fff;font-size:25px;line-height:1;cursor:pointer}
-@media(max-width:700px){
- .mobileNavPanel{padding-top:max(28px,env(safe-area-inset-top))!important}
- .mobileNavOpen .mobileMenuToggle{visibility:hidden}
- .mobileNavHead{margin-bottom:14px}
- .wenxinPanel .workGrid .wenxinPlaceholder{visibility:visible}
-}
+@media(min-width:761px){.mobileNavPanel,.mobileNavBackdrop,.mobileMenuToggle{display:none!important}}
+@media(prefers-reduced-motion:reduce){.mobileNavBackdrop,.mobileNavPanel{transition:none}}

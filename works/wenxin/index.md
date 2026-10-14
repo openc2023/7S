@@ -9,6 +9,21 @@
   "title": "問心",
   "subtitle": "WENXIN / QUESTIONING THE MIND",
   "description": "由根入心，由心生相；见相，破相，无相，而见本心。",
+  "ui": {
+    "all": "全部 / ALL",
+    "search": "Search works / 搜索作品",
+    "sortManual": "Recommended",
+    "sortAZ": "Title A–Z",
+    "sortZA": "Title Z–A",
+    "gridView": "Grid view",
+    "listView": "List view",
+    "empty": "该章节暂无作品 / No works yet.",
+    "imagePending": "IMAGE · COMING SOON",
+    "videoPending": "VIDEO · COMING SOON",
+    "works": "WORKS",
+    "published": "PUBLISHED",
+    "planned": "PLANNED"
+  },
   "chapters": [
     {"id":"six-roots","name":"六根"},
     {"id":"seven-aspects","name":"七相"},
