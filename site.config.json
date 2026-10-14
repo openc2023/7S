@@ -5,6 +5,13 @@
   "email": "hello@your-domain.com",
   "contactNote": "For collaborations and project inquiries, please get in touch by email.",
   "socials": [],
+  "weather": {
+    "enabled": true,
+    "defaultLabel": "SEOUL",
+    "latitude": 37.5665,
+    "longitude": 126.978,
+    "refreshMinutes": 15
+  },
   "hideEmptyCategories": true,
   "categories": [
     { "name": "New Media Art", "enabled": true },

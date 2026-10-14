@@ -1,6 +1,6 @@
 # 07S 静态作品网站
 
-以这个「07s作品」文件夹作为 GitHub 仓库根目录。网站发布后的文件是普通 HTML、CSS、JavaScript 和媒体文件，不需要服务器后台。构建脚本不需要安装 npm 依赖。
+以这个「07s作品」文件夹作为 GitHub 仓库根目录。网站发布后的文件是普通 HTML、CSS、JavaScript 和媒体文件，不需要服务器后台。作品正文用 Markdown 编辑，构建时转换为 HTML；首次使用需要运行 npm ci 安装解析器。
 
 原始 `index.v4-before-en.html` 保留用于对照，不会进入发布目录。原先 Manage 在浏览器 localStorage 中保存的数据不会自动进入新网站；本次迁移使用原文件里的 8 个演示作品，其中 7 个发布、1 个草稿。
 
@@ -14,17 +14,18 @@
 │   ├── css/site.css              全站样式
 │   ├── js/app.js                 列表筛选、详情、灯箱和页面交互
 │   ├── js/hero.js                首页 3D 动效
+│   ├── js/weather.js             天气与当前位置授权
 │   └── favicon.svg              网站图标
 ├── templates/
 │   ├── site.html                共用页面外壳：导航、页脚和资源引用
 │   └── work/                    新作品模板，复制这个文件夹即可
 │       ├── project.json         作品信息
-│       ├── content.html         作品正文区块
+│       ├── content.md           带编辑注释的 Markdown 作品正文
 │       └── media/cover.svg      占位封面
 ├── works/
 │   ├── light-field/
 │   │   ├── project.json
-│   │   ├── content.html
+│   │   ├── content.md
 │   │   └── media/               该作品的图片、视频
 │   └── …                        每个作品一个文件夹
 ├── scripts/                     构建和本地预览工具
@@ -46,7 +47,7 @@
 1. 复制 `templates/work/` 到 `works/你的作品名/`。文件夹名使用小写英文字母、数字和连字符，例如 `my-new-installation`，它就是作品网址的一部分。
 2. 把封面、照片和视频放入该作品的 `media/` 文件夹。
 3. 修改 `project.json`。JSON 不支持注释，最后一个字段后面不要加逗号。
-4. 修改 `content.html`。复制里面的 section/figure 区块，就可以添加文字、图片和视频。它是你自己编写的可信 HTML，会直接作为正文发布。
+4. 修改 `content.md`。用 Markdown 写标题、段落、列表和图片；复制模板里的示例即可。视频或特殊布局也可以嵌入自己编写的 HTML。
 5. 把 `status` 改成 `publish`；未完成时保持 `draft`。草稿信息、页面和媒体不会发布。
 6. 将修改提交并推送到 GitHub `main`，Actions 会重新生成并发布网页，无需手动改首页或列表。
 
@@ -67,6 +68,40 @@
 | added | 添加日期，例如 "2026-10-14"，用于最近添加排序 |
 
 作品正文里的图片、视频路径同样写 `media/文件名`，不要写电脑绝对路径。每个作品可有自己的正文区块，外壳与详情布局共用。删除作品时删除对应源文件夹，下次构建会一并移除生成页面。
+
+## 用 Markdown 编辑作品正文
+
+每个作品只需要维护作品信息 `project.json`、正文 `content.md` 和媒体 `media/`。`project.json` 保存标题、分类、年份等字段；`content.md` 保存详细介绍，支持编辑注释：
+
+```markdown
+<!-- 编辑备注：这里写给自己的提醒，不显示在网页中。 -->
+
+## Project concept
+
+Write your project story here. Use **bold text** for emphasis.
+
+## Process
+
+- Research
+- Production
+- Installation
+
+![Installation view](media/cover.svg)
+
+*Image caption.*
+```
+
+使用 `<!-- ... -->` 写注释或临时停用某个区块。注释会从生成的 HTML 和浏览器作品数据中移除，源 Markdown 也不会复制到 dist；GitHub 源码仓库仍会包含你的原始文件。普通换行不会创建新段落，段落间请空一行。图片名称要对应 media 中的实际文件，否则构建会提醒。
+
+现有作品已转换为 Markdown。兼容旧作品：如果某个文件夹没有 content.md，构建仍读取 content.html；两者同时存在时优先使用 content.md。解析器使用 [markdown-it](https://github.com/markdown-it/markdown-it)，运行在构建阶段，访问网站时无需下载 Markdown 解析库。
+
+## 顶栏天气
+
+SEOUL 时钟左侧显示天气图标和摄氏温度。默认查询首尔，点击天气按钮后由浏览器请求当前位置授权；允许后显示 LOCAL 天气。定位只在点击后请求，坐标约取到小数点后两位并发送给 [Open-Meteo](https://open-meteo.com/en/docs) 查询，不写入配置文件、日志或浏览器存储。
+
+定位需要 HTTPS（localhost 预览也可用）及浏览器许可；如果自定义域名仍使用 HTTP，先使用默认城市天气。拒绝定位会保留已显示的天气。每次页面打开默认使用首尔，授权定位只作用于当前页面；天气服务失败时显示 WEATHER —，不会阻塞作品内容。
+
+`site.config.json` 的 weather 中可修改 enabled 开关、defaultLabel、latitude、longitude 和 refreshMinutes（默认 15 分钟，最短 5 分钟）。免费天气接口的使用范围与额度以 [Open-Meteo 服务条款](https://open-meteo.com/en/terms) 为准。
 
 ## 手动修改首页 SELECTED WORKS
 
@@ -110,6 +145,7 @@
 安装 Node.js 20 或更新的 LTS 版本后，在本文件夹运行：
 
 ```powershell
+npm ci --ignore-scripts
 npm run build
 npm run preview
 ```

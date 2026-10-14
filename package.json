@@ -5,5 +5,10 @@
     "build": "node scripts/run.cjs build",
     "preview": "node scripts/run.cjs preview"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "markdown-it": "14.3.0"
+  }
 }

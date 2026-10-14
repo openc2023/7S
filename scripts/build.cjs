@@ -1,5 +1,6 @@
 const fs=require('node:fs');
 const path=require('node:path');
+const markdown=require('markdown-it')({html:true,linkify:true});
 
 
 const root=path.resolve(__dirname, '..');
@@ -8,6 +9,10 @@ const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const site=JSON.parse(read('site.config.json'));
 const home=JSON.parse(read('home.config.json'));
 const selected=home.selectedWorks;
+if(site.weather){
+  const w=site.weather;
+  if(typeof w.enabled!=='boolean'||(w.enabled&&(!Number.isFinite(w.latitude)||Math.abs(w.latitude)>90||!Number.isFinite(w.longitude)||Math.abs(w.longitude)>180||typeof w.defaultLabel!=='string'||!Number.isFinite(w.refreshMinutes)||w.refreshMinutes<5)))throw Error('site.config.json: weather needs valid coordinates, a defaultLabel and refreshMinutes >= 5');
+}
 if(typeof site.hideEmptyCategories!=='boolean'||!Array.isArray(site.categories))throw Error('site.config.json: categories must be an array and hideEmptyCategories must be true or false');
 const categorySettings=new Map();
 for(const c of site.categories){
@@ -33,10 +38,13 @@ const projects=fs.readdirSync(path.join(root,'works'),{withFileTypes:true}).filt
   if(!Number.isFinite(p.order)||!Array.isArray(p.gallery))throw Error(`${slug}: invalid order or gallery`);
   const created=Date.parse(p.added);
   if(!Number.isFinite(created))throw Error(`${slug}: added must be an ISO date`);
-  if(p.video&&!/^https?:\/\//i.test(p.video))throw Error(`${slug}: video must be an http(s) link; use content.html for local video`);
-  const content=read(`works/${slug}/content.html`);
+  if(p.video&&!/^https?:\/\//i.test(p.video))throw Error(`${slug}: video must be an http(s) link; use content.md for local video`);
+  const markdownFile=`works/${slug}/content.md`;
+  const source=fs.existsSync(path.join(root,markdownFile))?markdown.render(read(markdownFile)):read(`works/${slug}/content.html`);
+  // Editor comments stay out of generated pages and browser data, including disabled examples.
+  const content=source.replace(/<!--[\s\S]*?-->/g,'');
   for(const m of content.replace(/<!--[\s\S]*?-->/g,'').matchAll(/\b(?:src|poster)\s*=\s*["']([^"']+)["']/gi)){
-    if(!/^https?:\/\//i.test(m[1]))asset(slug,m[1]);
+    if(!/^https?:\/\//i.test(m[1]))asset(slug,decodeURIComponent(markdown.utils.unescapeAll(m[1])));
   }
   return {...p,id:slug,cat:p.category,desc:p.description,image:asset(slug,p.cover),gallery:p.gallery.map(x=>asset(slug,x)),content,created};
 }).sort((a,b)=>a.order-b.order||a.id.localeCompare(b.id));
@@ -76,7 +84,7 @@ for(const p of published){
   const workOutput=path.join(output,'works',p.id);
   fs.mkdirSync(workOutput,{recursive:true});
   for(const entry of fs.readdirSync(path.join(root,'works',p.id),{withFileTypes:true})){
-    if(['project.json','content.html','index.html'].includes(entry.name)||entry.name.startsWith('.'))continue;
+    if(['project.json','content.html','content.md','index.html'].includes(entry.name)||entry.name.startsWith('.'))continue;
     fs.cpSync(path.join(root,'works',p.id,entry.name),path.join(workOutput,entry.name),{recursive:true});
   }
   page(`works/${p.id}/index.html`,'project',p.id,`${p.title} — 07S`,p.desc,base=>`<section class="panel"><a href="${base}works/">← WORKS</a><h1 class="pageTitle">${esc(p.title)}</h1><p class="lead">${esc(p.cat)} / ${esc(p.year)} / ${esc(p.location)}</p><div class="feature"><img src="${base}${esc(p.image)}" alt="${esc(p.title)}"></div><p class="editorial">${esc(p.desc)}</p><div class="projectContent">${p.content}</div><div class="gallery">${p.gallery.map(im=>`<div><img src="${base}${esc(im)}" alt="${esc(p.title)}" loading="lazy"></div>`).join('')}</div></section>`);

@@ -14,7 +14,7 @@
   <header class="top" id="top">
     <a href="{{base}}" class="logo"><span class="seven">07S</span><sup>®</sup></a>
     <nav class="nav">
-      <span class="small muted clock" id="clock"></span>
+      <span class="conditions"><button type="button" class="weather" id="weather" title="Show weather for your current location" hidden>WEATHER —</button><span class="small muted clock" id="clock"></span></span>
       <a href="{{base}}" data-nav="home">HOME</a>
       <a href="{{base}}works/" data-nav="works">WORKS</a>
       <a href="{{base}}studio/" data-nav="studio">STUDIO</a>
@@ -22,7 +22,7 @@
     </nav>
   </header>
   <main id="app">{{content}}</main>
-  <footer><span>© 2026 07S STUDIO</span><span>SEVEN IS MORE THAN A NUMBER.</span></footer>
+  <footer><span>© 2026 07S STUDIO <a id="weatherCredit" class="weatherCredit" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" hidden>Weather: Open-Meteo</a></span><span>SEVEN IS MORE THAN A NUMBER.</span></footer>
 </div>
 <div id="loader"><div class="bar"><i id="ldBar"></i></div><div class="num" id="ldNum">000</div></div>
 <div id="toast"></div>
@@ -32,6 +32,7 @@
 <noscript><style>#loader{display:none}.reveal,.work,.sw{opacity:1;transform:none}</style></noscript>
 <script defer src="{{base}}assets/js/data.js"></script>
 <script defer src="{{base}}assets/js/app.js"></script>
+<script defer src="{{base}}assets/js/weather.js"></script>
 {{hero}}
 </body>
 </html>
