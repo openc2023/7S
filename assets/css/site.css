@@ -404,3 +404,13 @@ html.lenis,html.lenis body{height:auto}
   .wenxinPanel .workGrid.list .wenxinPlaceholder{grid-template-columns:30px minmax(0,1fr) auto}
 }
 @media(min-width:701px){.mobileNavPanel,.mobileNavBackdrop{display:none!important}}
+
+/* Final mobile drawer refinement: dedicated close button and safe-area header. */
+.mobileNavHead{display:flex;justify-content:space-between;align-items:center;padding:0 0 18px;border-bottom:1px solid #383a40;color:#858892;font-size:11px;letter-spacing:.16em}
+.mobileNavClose{border:1px solid #45474e;border-radius:50%;width:38px;height:38px;background:#23252b;color:#fff;font-size:25px;line-height:1;cursor:pointer}
+@media(max-width:700px){
+ .mobileNavPanel{padding-top:max(28px,env(safe-area-inset-top))!important}
+ .mobileNavOpen .mobileMenuToggle{visibility:hidden}
+ .mobileNavHead{margin-bottom:14px}
+ .wenxinPanel .workGrid .wenxinPlaceholder{visibility:visible}
+}
