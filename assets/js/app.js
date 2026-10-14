@@ -143,6 +143,7 @@ function renderWorks(){
 function wenxin(){
   const config=window.SITE_DATA.wenxin;
   const chapters=config.chapters||[];
+  const ui=config.ui||{};
   const published=pub().filter(p=>p.series==='wenxin'&&chapters.some(c=>c.id===p.chapter));
   const planned=(config.planned||[]).map((p,i)=>({...p,order:i,planned:true}));
   const items=[...published,...planned.filter(p=>!published.some(real=>real.title===p.title&&real.chapter===p.chapter))];
@@ -154,9 +155,9 @@ function wenxin(){
     <p class="lead">${esc(config.description)}</p>
     <div class="pillrow" id="wenxinTabs" aria-label="Wenxin chapters"></div>
     <div class="tools wenxinTools">
-      <div class="searchBox" id="wenxinSearchBox"><input class="field" id="wenxinSearch" type="search" placeholder="Search works / 搜索作品" autocomplete="off"><kbd>/</kbd></div>
-      <select class="select" id="wenxinSort" aria-label="Sort works"><option value="manual">Recommended</option><option value="az">Title A–Z</option><option value="za">Title Z–A</option></select>
-      <div class="seg" role="group" aria-label="Gallery view"><button data-wenxin-view="grid" class="active" title="Grid">▦</button><button data-wenxin-view="list" title="List">☰</button></div>
+      <div class="searchBox" id="wenxinSearchBox"><input class="field" id="wenxinSearch" type="search" placeholder="${esc(ui.search||'Search works')}" autocomplete="off"><kbd>/</kbd></div>
+      <select class="select" id="wenxinSort" aria-label="Sort works"><option value="manual">${esc(ui.sortManual||'Recommended')}</option><option value="az">${esc(ui.sortAZ||'Title A-Z')}</option><option value="za">${esc(ui.sortZA||'Title Z-A')}</option></select>
+      <div class="seg" role="group" aria-label="Gallery view"><button data-wenxin-view="grid" class="active" title="${esc(ui.gridView||'Grid view')}">▦</button><button data-wenxin-view="list" title="${esc(ui.listView||'List view')}">☰</button></div>
     </div>
     <div class="workGrid" id="wenxinGrid"></div>
     <div class="foot"><span id="wenxinCount"></span><span>WENXIN / 07S</span></div>
@@ -166,21 +167,21 @@ function wenxin(){
     const filtered=items.filter(p=>(filter==='all'||p.chapter===filter)&&(!search||[p.title,p.type,p.chapter].join(' ').toLowerCase().includes(search)));
     if(sort==='az')filtered.sort((a,b)=>a.title.localeCompare(b.title));
     if(sort==='za')filtered.sort((a,b)=>b.title.localeCompare(a.title));
-    tabs.innerHTML=[{id:'all',name:'全部 / ALL'},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
+    tabs.innerHTML=[{id:'all',name:ui.all||'ALL'},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
     $$('[data-wenxin-tab]',tabs).forEach(btn=>btn.onclick=()=>{filter=btn.dataset.wenxinTab;render()});
     $$('[data-wenxin-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.wenxinView===view));
     grid.className='workGrid '+(view==='list'?'list':'');
-    grid.innerHTML=filtered.map((p,i)=>p.planned?`<article class="work wenxinPlaceholder in" aria-label="${esc(p.title)} - media pending">
+    grid.innerHTML=filtered.map((p,i)=>p.planned?`<article class="work wenxinPlaceholder in" aria-label="${esc(p.title)} — ${esc(p.type==='video'?ui.videoPending:ui.imagePending)}">
       <div class="cover wenxinEmpty">
-        <span class="wenxinPlaceholderIndex">${pad(i+1)} / 08</span>
-        <span class="${p.type==='video'?'wenxinPlay':'wenxinSymbol'}">${p.type==='video'?'▶':'問心'}</span>
-        <span class="wenxinPending">${p.type==='video'?'VIDEO · COMING SOON':'IMAGE · COMING SOON'}</span>
+        <span class="wenxinPlaceholderIndex">${pad(i+1)} / ${pad(items.length)}</span>
+        <span class="${p.type==='video'?'wenxinPlay':'wenxinSymbol'}">${p.type==='video'?'▶':esc(config.title)}</span>
+        <span class="wenxinPending">${p.type==='video'?esc(ui.videoPending):esc(ui.imagePending)}</span>
       </div>
       <span class="idx">${pad(i+1)}</span>
       <div class="workName"><span>${esc(p.title)}</span></div>
       <div class="workMeta"><span class="ct">${esc(chapters.find(c=>c.id===p.chapter)?.name||'')}</span><span class="yr">${p.type==='video'?'VIDEO':'IMAGE'}</span></div>
-    </article>`:workCard(p,i)).join('')||'<div class="empty">该章节暂无作品 / No works yet.</div>';
-    $('#wenxinCount').textContent=`${filtered.length} WORKS · ${filtered.filter(p=>!p.planned).length} PUBLISHED · ${filtered.filter(p=>p.planned).length} PLANNED`;
+    </article>`:workCard(p,i)).join('')||'<div class="empty">'+esc(ui.empty||'No works yet.')+'</div>';
+    $('#wenxinCount').textContent=`${filtered.length} ${ui.works||'WORKS'} · ${filtered.filter(p=>!p.planned).length} ${ui.published||'PUBLISHED'} · ${filtered.filter(p=>p.planned).length} ${ui.planned||'PLANNED'}`;
     observe(grid);
   }
   $('#wenxinSearch').oninput=e=>{search=e.target.value.trim().toLowerCase();render()};
