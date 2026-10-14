@@ -360,3 +360,47 @@ html.lenis,html.lenis body{height:auto}
   .mobileNavPanel a{font-size:15px}
   .mobileSubNav a{padding:12px 4px}
 }
+
+/* 2026-10 Wenxin: visible artwork placeholders and polished viewport drawer */
+.wenxinPanel .wenxinTools{margin:18px 0 12px}
+.wenxinPanel .wenxinTools .searchBox{flex:1;min-width:180px}
+.wenxinPanel .wenxinTools .select{min-width:160px}
+.wenxinPanel .wenxinTools .seg{flex:none}
+.wenxinPanel .wenxinPlaceholder{opacity:1;transform:none}
+.wenxinPanel .wenxinEmpty{aspect-ratio:1.32;min-height:0;overflow:hidden;border:1px solid #34363c;background:radial-gradient(ellipse at 75% 20%,#292a31 0%,#17181d 45%,#0b0c0e 100%);transition:border-color .25s,background .25s}
+.wenxinPanel .wenxinPlaceholder:nth-child(2n) .wenxinEmpty{background:radial-gradient(ellipse at 25% 80%,#2d2c31 0%,#16171b 50%,#0b0c0e 100%)}
+.wenxinPanel .wenxinPlaceholder:nth-child(3n) .wenxinEmpty{background:radial-gradient(ellipse at 50% 20%,#24272c 0%,#16171b 50%,#0b0c0e 100%)}
+.wenxinPanel .wenxinPlaceholder:hover .wenxinEmpty{border-color:#777982}
+.wenxinPlaceholderIndex{position:absolute;top:12px;left:14px;font-size:10px;letter-spacing:.16em;color:#777}
+.wenxinPanel .wenxinSymbol{font-family:serif;font-size:clamp(27px,5vw,52px);font-weight:400;letter-spacing:.1em;color:#a0a0a6}
+.wenxinPanel .wenxinPlay{display:grid;place-items:center;width:56px;height:56px;border:1px solid #73757d;border-radius:50%;font-size:19px;color:#dedee2}
+.wenxinPanel .wenxinPending{bottom:12px;font-size:9px}
+.wenxinPanel .workGrid.list .wenxinPlaceholder{display:grid;grid-template-columns:48px minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:14px 0}
+.wenxinPanel .workGrid.list .wenxinPlaceholder .cover{display:none}
+.wenxinPanel .workGrid.list .wenxinPlaceholder .idx{grid-column:1;grid-row:1}
+.wenxinPanel .workGrid.list .wenxinPlaceholder .workName{grid-column:2;grid-row:1}
+.wenxinPanel .workGrid.list .wenxinPlaceholder .workMeta{grid-column:3;grid-row:1}
+.mobileNavBackdrop{display:none}
+@media(max-width:700px){
+  .mobileNavBackdrop{display:block;position:fixed;inset:0;background:rgba(0,0,0,.58);border:0;padding:0;z-index:70;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s,visibility .28s}
+  .mobileNavOpen .mobileNavBackdrop{opacity:1;visibility:visible;pointer-events:auto}
+  .mobileNavPanel{position:fixed!important;inset:0 0 0 auto!important;top:0!important;right:0!important;left:auto!important;bottom:0!important;width:min(320px,85vw)!important;height:100dvh!important;max-height:none!important;padding:88px 26px 36px!important;border-radius:0!important;z-index:71!important;overflow-y:auto;gap:0!important;background:#141519!important;box-shadow:-20px 0 60px #0009}
+  .mobileNavOpen .mobileNavPanel{transform:translateX(0)!important}
+  .mobileMenuToggle{position:relative;z-index:72!important}
+  .mobileNavOpen .mobileMenuToggle{position:fixed;right:22px;top:calc(env(safe-area-inset-top) + 15px)}
+  .mobileNavPanel>a{font-size:16px!important;font-weight:600;letter-spacing:.13em;padding:19px 4px!important}
+  .mobileSubNav{margin:0 0 10px 8px;padding-left:15px;border-left:2px solid #555}
+  .mobileSubNav a{border:0!important;font-size:13px!important;color:#d0d0d5!important;padding:12px 4px!important}
+  .wenxinPanel .wenxinTools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
+  .wenxinPanel .wenxinTools .searchBox{grid-column:1/-1;min-width:0}
+  .wenxinPanel .wenxinTools .select{grid-column:1;min-width:0;width:100%}
+  .wenxinPanel .wenxinTools .seg{grid-column:2;justify-self:end}
+  .wenxinPanel .workGrid:not(.list){grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 10px}
+  .wenxinPanel .workGrid:not(.list) .wenxinPlaceholder .cover{min-height:0}
+  .wenxinPanel .wenxinSymbol{font-size:27px}
+  .wenxinPanel .wenxinPlay{width:42px;height:42px}
+  .wenxinPanel .wenxinPending{font-size:8px;left:8px;bottom:8px}
+  .wenxinPanel .wenxinPlaceholderIndex{left:8px;top:8px}
+  .wenxinPanel .workGrid.list .wenxinPlaceholder{grid-template-columns:30px minmax(0,1fr) auto}
+}
+@media(min-width:701px){.mobileNavPanel,.mobileNavBackdrop{display:none!important}}
