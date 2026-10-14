@@ -19,7 +19,7 @@ const chrome=[process.env.CHROME_BIN,'/usr/bin/google-chrome','/usr/bin/google-c
 if(!chrome)throw Error('Chrome not found. Set CHROME_BIN to an installed browser.');
 
 function browserChecks(){
-  document.addEventListener('07s:content-ready',()=>{
+  window.addEventListener('07s:content-ready',()=>{
     const errors=[];
     const assert=(ok,msg)=>{if(!ok)errors.push(msg)};
     try{
