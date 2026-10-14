@@ -317,3 +317,32 @@ html.lenis,html.lenis body{height:auto}
 .wenxinPlay{font-size:32px;color:#aaa}
 .wenxinPending{position:absolute;bottom:12px;left:14px;font-size:9px;letter-spacing:.13em;color:#777}
 .wenxinPlaceholder .workName,.wenxinPlaceholder .workMeta{opacity:1!important;transform:none!important}
+
+/* Mobile-first header and compact Works filters. Desktop remains unchanged. */
+.mobileMenuToggle,.mobileNavPanel{display:none}
+@media(max-width:700px){
+  .shell{width:calc(100% - 24px)}
+  .top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;padding:14px 0;align-items:center}
+  .top.scrolled{padding:10px 0}
+  .logo{font-size:25px;white-space:nowrap}
+  .nav{justify-content:flex-end;min-width:0;gap:0;flex-wrap:nowrap}
+  .nav>a{display:none}
+  .conditions{gap:6px;min-width:0;max-width:100%;justify-content:flex-end;overflow:hidden}
+  .weather{font-size:10px;overflow:hidden;text-overflow:ellipsis}
+  .nav .clock{font-size:10px;flex:none}
+  .mobileMenuToggle{display:grid;place-items:center;width:39px;height:39px;border:1px solid var(--line2);border-radius:50%;background:#17181c;color:#fff;font-size:20px;line-height:1;z-index:51}
+  .mobileNavPanel{display:flex;position:fixed;right:0;top:0;height:100dvh;width:min(300px,82vw);padding:90px 28px 30px;flex-direction:column;gap:4px;background:#17181c;border-left:1px solid #393a40;box-shadow:-25px 0 70px #0009;transform:translateX(110%);visibility:hidden;transition:transform .3s var(--ease),visibility .3s;z-index:50}
+  .mobileNavOpen .mobileNavPanel{transform:translateX(0);visibility:visible}
+  .mobileNavPanel a{display:block;padding:16px 4px;border-bottom:1px solid #393a40;font-size:15px;letter-spacing:.12em}
+  .panel{padding:20px 15px;border-radius:12px}
+  .pageTitle{margin-top:18px}
+  .pillrow{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;margin:18px 0 14px;padding-bottom:3px}
+  .pillrow::-webkit-scrollbar{display:none}
+  .pillrow .pill{white-space:nowrap;flex:none}
+  .tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+  .searchBox{grid-column:1/-1;min-width:0}
+  .tools .searchBox .field{width:100%}
+  .tools #yearSel,.tools #sortSel{width:100%;min-width:0;max-width:100%}
+  .tools .seg{grid-column:1/-1;justify-self:end}
+  .workGrid{margin-top:18px}
+}
