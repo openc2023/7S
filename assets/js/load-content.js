@@ -1,6 +1,8 @@
 // HTML is a fixed shell. Read the original Markdown on each page visit.
 (async()=>{
-  const root=new URL('../../',document.currentScript.src);
+  const loaderUrl=new URL(document.currentScript.src);
+  const root=new URL('../../',loaderUrl);
+  const assetVersion=loaderUrl.searchParams.get('v')||window.SITE_ASSET_VERSION||'';
   const md=window.markdownit({html:true,linkify:true});
   async function read(file){
     const response=await fetch(new URL(file,root),{cache:'no-store'});
@@ -18,7 +20,10 @@
   const [settings,catalog,...pages]=await Promise.all(['settings.md','works/index.md',...scopes.map(s=>`pages/${s}.md`)].map(read));
   const site=parse(settings,'site','settings.md'),home=parse(settings,'home','settings.md');
   const text=Object.fromEntries(scopes.map((s,i)=>[s,parse(pages[i],'text',`pages/${s}.md`)]));
-  const ids=parse(catalog,'works','works/index.md').projectIds;
+  const worksConfig=parse(catalog,'works','works/index.md');
+  const ids=worksConfig.projectIds;
+  const seriesIds=worksConfig.seriesIds||[];
+  if(!Array.isArray(seriesIds)||new Set(seriesIds).size!==seriesIds.length||seriesIds.some(id=>!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)))throw Error('works/index.md: invalid seriesIds');
   if(!Array.isArray(ids)||new Set(ids).size!==ids.length||ids.some(id=>!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)))throw Error('works/index.md: invalid projectIds');
   const selected=new Set(home.selectedWorks.projectIds);
   const projects=(await Promise.all(ids.map(async id=>{
@@ -31,8 +36,14 @@
   const categories=new Map(site.categories.map(c=>[c.name,c.enabled]));
   const used=new Set(projects.map(p=>p.cat));
   for(const name of used)if(!categories.has(name))categories.set(name,true);
-  const wenxin=page==='wenxin'?parse(await read('works/wenxin/index.md'),'wenxin','works/wenxin/index.md'):null;
-  window.SITE_DATA={site,home,text,projects,wenxin,categories:[...categories].filter(([name,on])=>on&&(!site.hideEmptyCategories||used.has(name))).map(([name])=>name)};
+  const series=await Promise.all(seriesIds.map(async id=>{
+    const file=`works/${id}/index.md`;
+    const info=parse(await read(file),id,file);
+    return {id,title:info.title,subtitle:info.subtitle,info};
+  }));
+  const wenxin=page==='wenxin'?series.find(s=>s.id==='wenxin')?.info:null;
+  if(page==='wenxin'&&!wenxin)throw Error('works/index.md: missing wenxin seriesId');
+  window.SITE_DATA={site,home,text,projects,series:series.map(({id,title,subtitle})=>({id,title,subtitle})),wenxin,categories:[...categories].filter(([name,on])=>on&&(!site.hideEmptyCategories||used.has(name))).map(([name])=>name)};
   // A copied work shell derives its identity from its folder, with no HTML edits.
   const current=projects.find(p=>p.id===document.body.dataset.project);
   if(page==='project'&&!current)throw Error('This project is not published.');
@@ -48,7 +59,9 @@
   document.querySelector('#weather').title=text.shared.weatherUseLocation;
   document.querySelector('#toTop').title=text.shared.backTop;
   const script=(file,type)=>new Promise((resolve,reject)=>{
-    const node=document.createElement('script');node.src=new URL('assets/js/'+file+'?v=20261014-wenxin-4',root);if(type)node.type=type;
+    const node=document.createElement('script');const url=new URL('assets/js/'+file,root);
+    if(assetVersion)url.searchParams.set('v',assetVersion);
+    node.src=url.href;if(type)node.type=type;
     node.onload=resolve;node.onerror=()=>reject(Error('Could not load '+file));document.body.append(node);
   });
   await script('app.js');
