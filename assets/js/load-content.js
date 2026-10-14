@@ -50,7 +50,9 @@
     const node=document.createElement('script');node.src=new URL('assets/js/'+file,root);if(type)node.type=type;
     node.onload=resolve;node.onerror=()=>reject(Error('Could not load '+file));document.body.append(node);
   });
-  await script('app.js');await script('weather.js');
+  await script('app.js');
+  dispatchEvent(new Event('07s:content-ready'));
+  await script('weather.js');
   if(page==='home')await script('hero.js','module');
 })().catch(error=>{
   console.error(error);

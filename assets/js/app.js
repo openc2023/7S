@@ -207,16 +207,6 @@ document.addEventListener('error',e=>{const t=e.target;if(t.tagName==='IMG'&&t.s
 let lenis=null;
 if(window.Lenis){lenis=new Lenis({duration:1.2,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),smoothWheel:true});(function raf(t){lenis.raf(t);requestAnimationFrame(raf)})(performance.now())}
 const toTopNow=()=>lenis?lenis.scrollTo(0,{immediate:true,force:true}):scrollTo(0,0);
-// 加载画面：000→100，然后整块上滑（每个会话一次）
-(function loader(){
-  const L=$('#loader');let seen=false;try{seen=sessionStorage.getItem('07sLoaded')}catch(e){}
-  if(seen){L.remove();return}
-  const t0=performance.now();
-  const end=()=>{if(!L.isConnected)return;L.classList.add('done');setTimeout(()=>L.remove(),1000);try{sessionStorage.setItem('07sLoaded',1)}catch(e){}};
-  L.onclick=end;
-  const step=()=>{const k=Math.min(1,(performance.now()-t0)/1500),v=Math.round((1-Math.pow(1-k,3))*100);$('#ldNum').textContent=String(v).padStart(3,'0');$('#ldBar').style.width=v+'%';k<1?setTimeout(step,30):setTimeout(end,200)};
-  step();
-})();
 document.addEventListener('keydown',e=>{
   if(e.key==='/'&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){const f=$('#find');if(f){e.preventDefault();f.focus()}}
   pageKeys&&pageKeys(e);
