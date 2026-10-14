@@ -26,26 +26,27 @@ function browserChecks(){
       const page=document.body.dataset.page;
       assert(document.querySelectorAll('.worksDropdown a').length>=2,'desktop-series-nav');
       assert(document.querySelectorAll('.mobileSeriesLink').length>=1,'mobile-series-nav');
-      const worksTopLink=document.querySelector('[data-nav="works"]');
-      worksTopLink.focus();
-      assert(getComputedStyle(document.querySelector('.worksDropdown')).visibility==='visible','works-dropdown-keyboard-focus');
-      worksTopLink.blur();
-
-      const toggle=document.querySelector('.mobileMenuToggle');
-      assert(!!toggle,'mobile-toggle');
-      toggle.click();
-      assert(document.body.classList.contains('mobileNavOpen'),'drawer-open');
-      const drawer=document.querySelector('.mobileNavPanel');
-      const drawerStyle=getComputedStyle(drawer);
-      assert(drawerStyle.position==='fixed'&&drawerStyle.right==='0px','drawer-fixed-to-right');
-      assert(drawer.offsetWidth<=innerWidth,'drawer-width');
-      assert(drawer.offsetWidth>=innerWidth*.65,'drawer-not-too-narrow');
-      const veil=document.querySelector('.mobileNavBackdrop');
-      assert(Number(drawerStyle.zIndex)>Number(getComputedStyle(veil).zIndex),'drawer-above-backdrop');
-      assert(drawer.querySelector('.mobileNavItem.is-active')!==null,'drawer-active-section');
-
-      drawer.querySelector('.mobileNavClose').click();
-      assert(!document.body.classList.contains('mobileNavOpen'),'drawer-close');
+      if(innerWidth>760){
+        const worksTopLink=document.querySelector('[data-nav="works"]');
+        worksTopLink.focus();
+        assert(getComputedStyle(document.querySelector('.worksDropdown')).visibility==='visible','works-dropdown-keyboard-focus');
+        worksTopLink.blur();
+      }else{
+        const toggle=document.querySelector('.mobileMenuToggle');
+        assert(!!toggle,'mobile-toggle');
+        toggle.click();
+        assert(document.body.classList.contains('mobileNavOpen'),'drawer-open');
+        const drawer=document.querySelector('.mobileNavPanel');
+        const drawerStyle=getComputedStyle(drawer);
+        assert(drawerStyle.position==='fixed'&&drawerStyle.right==='0px','drawer-fixed-to-right');
+        assert(drawer.offsetWidth<=innerWidth,'drawer-width');
+        assert(drawer.offsetWidth>=innerWidth*.65,'drawer-not-too-narrow');
+        const veil=document.querySelector('.mobileNavBackdrop');
+        assert(Number(drawerStyle.zIndex)>Number(getComputedStyle(veil).zIndex),'drawer-above-backdrop');
+        assert(drawer.querySelector('.mobileNavItem.is-active')!==null,'drawer-active-section');
+        drawer.querySelector('.mobileNavClose').click();
+        assert(!document.body.classList.contains('mobileNavOpen'),'drawer-close');
+      }
       if(page==='wenxin'){
         const count=()=>document.querySelectorAll('#wenxinGrid .wenxinPlaceholder').length;
         assert(count()===8,'eight-MD-placeholder-cards:'+count());
@@ -95,9 +96,9 @@ const server=http.createServer((req,res)=>{
     res.end(output);
   }catch(error){res.writeHead(404);res.end('Not found: '+error.message)}
 });
-async function run(url){
+async function run(url,width=390){
   return new Promise((resolve,reject)=>{
-    const args=['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--disable-background-networking','--no-first-run','--window-size=390,844','--virtual-time-budget=7000','--dump-dom',url];
+    const args=['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--disable-background-networking','--no-first-run','--window-size='+width+',844','--virtual-time-budget=7000','--dump-dom',url];
     const child=spawn(chrome,args,{stdio:['ignore','pipe','pipe']});
     let out='',err='',finished=false;
     const timeout=setTimeout(()=>{child.kill('SIGKILL');reject(Error('Chrome timed out: '+url+'\n'+err.slice(-3000)))},50000);
@@ -121,6 +122,8 @@ server.listen(0,'127.0.0.1',async()=>{
       const outcome=await run(base+page);
       console.log('PASS: '+page+' (MD content, original filters, eight placeholders, right drawer) '+outcome);
     }
+    await run(base+'/works/',1280);
+    console.log('PASS: desktop WORKS hover/focus dropdown and original category filters');
     process.exitCode=0;
   }catch(error){console.error(error.stack||error);process.exitCode=1}
   finally{server.close()}
