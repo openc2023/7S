@@ -6,21 +6,33 @@ const markdown=require('markdown-it')({html:true,linkify:true});
 const root=path.resolve(__dirname, '..');
 const output=path.join(root,'dist');
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
-const site=JSON.parse(read('site.config.json'));
-const home=JSON.parse(read('home.config.json'));
+function settings(file, sections){
+  const result={};
+  for(const token of markdown.parse(read(file),{})){
+    if(token.type!=='fence'||!token.info.trim().startsWith('json '))continue;
+    const key=token.info.trim().slice(5).trim();
+    if(!sections.includes(key))throw Error(`${file}: unknown settings block ${key}`);
+    if(Object.hasOwn(result,key))throw Error(`${file}: duplicate settings block ${key}`);
+    try{result[key]=JSON.parse(token.content);}catch(error){throw Error(`${file} (${key}): ${error.message}`);}
+    if(!result[key]||typeof result[key]!=='object'||Array.isArray(result[key]))throw Error(`${file} (${key}): settings must be an object`);
+  }
+  for(const key of sections)if(!Object.hasOwn(result,key))throw Error(`${file}: missing json ${key} block`);
+  return result;
+}
+const {site,home}=settings('settings.md',['site','home']);
 const selected=home.selectedWorks;
 if(site.weather){
   const w=site.weather;
-  if(typeof w.enabled!=='boolean'||(w.enabled&&(!Number.isFinite(w.latitude)||Math.abs(w.latitude)>90||!Number.isFinite(w.longitude)||Math.abs(w.longitude)>180||typeof w.defaultLabel!=='string'||!Number.isFinite(w.refreshMinutes)||w.refreshMinutes<5)))throw Error('site.config.json: weather needs valid coordinates, a defaultLabel and refreshMinutes >= 5');
+  if(typeof w.enabled!=='boolean'||(w.enabled&&(!Number.isFinite(w.latitude)||Math.abs(w.latitude)>90||!Number.isFinite(w.longitude)||Math.abs(w.longitude)>180||typeof w.defaultLabel!=='string'||!Number.isFinite(w.refreshMinutes)||w.refreshMinutes<5)))throw Error('settings.md (site): weather needs valid coordinates, a defaultLabel and refreshMinutes >= 5');
 }
-if(typeof site.hideEmptyCategories!=='boolean'||!Array.isArray(site.categories))throw Error('site.config.json: categories must be an array and hideEmptyCategories must be true or false');
+if(typeof site.hideEmptyCategories!=='boolean'||!Array.isArray(site.categories))throw Error('settings.md (site): categories must be an array and hideEmptyCategories must be true or false');
 const categorySettings=new Map();
 for(const c of site.categories){
-  if(!c||typeof c.name!=='string'||!c.name.trim()||c.name!==c.name.trim()||c.name==='All'||typeof c.enabled!=='boolean'||categorySettings.has(c.name))throw Error('site.config.json: categories need a unique name (not All) and enabled: true or false');
+  if(!c||typeof c.name!=='string'||!c.name.trim()||c.name!==c.name.trim()||c.name==='All'||typeof c.enabled!=='boolean'||categorySettings.has(c.name))throw Error('settings.md (site): categories need a unique name (not All) and enabled: true or false');
   categorySettings.set(c.name,c.enabled);
 }
-for(const key of ['eyebrow','title','linkLabel'])if(typeof selected?.[key]!=='string')throw Error(`home.config.json: ${key} must be text`);
-if(!Array.isArray(selected.projectIds)||selected.projectIds.some(id=>typeof id!=='string')||new Set(selected.projectIds).size!==selected.projectIds.length)throw Error('home.config.json: projectIds must contain unique work folder names');
+for(const key of ['eyebrow','title','linkLabel'])if(typeof selected?.[key]!=='string')throw Error(`settings.md (home): ${key} must be text`);
+if(!Array.isArray(selected.projectIds)||selected.projectIds.some(id=>typeof id!=='string')||new Set(selected.projectIds).size!==selected.projectIds.length)throw Error('settings.md (home): projectIds must contain unique work folder names');
 const template=read('templates/site.html');
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function asset(slug,file){
@@ -32,7 +44,8 @@ function asset(slug,file){
 const projects=fs.readdirSync(path.join(root,'works'),{withFileTypes:true}).filter(x=>x.isDirectory()&&!x.name.startsWith('.')).map(entry=>{
   const slug=entry.name;
   if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))throw Error(`Use lowercase English letters, numbers and hyphens for work folder names: ${slug}`);
-  const p=JSON.parse(read(`works/${slug}/project.json`));
+  const settingsFile=`works/${slug}/settings.md`;
+  const p=fs.existsSync(path.join(root,settingsFile))?settings(settingsFile,['project']).project:JSON.parse(read(`works/${slug}/project.json`));
   for(const key of ['title','category','year','description','cover'])if(typeof p[key]!=='string'||!p[key].trim())throw Error(`${slug}: missing text field ${key}`);
   if(!['publish','draft'].includes(p.status))throw Error(`${slug}: status must be publish or draft`);
   if(!Number.isFinite(p.order)||!Array.isArray(p.gallery))throw Error(`${slug}: invalid order or gallery`);
@@ -52,7 +65,7 @@ const selectedIds=new Set(selected.projectIds);
 const published=projects.filter(p=>p.status==='publish').map(p=>({...p,featured:selectedIds.has(p.id)}));
 const featured=selected.projectIds.map(id=>{
   const p=published.find(p=>p.id===id);
-  if(!p)throw Error(`home.config.json: selected work "${id}" does not exist or is a draft; update projectIds or publish the work`);
+  if(!p)throw Error(`settings.md (home): selected work "${id}" does not exist or is a draft; update projectIds or publish the work`);
   return p;
 });
 const usedCategories=new Set(published.map(p=>p.cat));
@@ -84,7 +97,7 @@ for(const p of published){
   const workOutput=path.join(output,'works',p.id);
   fs.mkdirSync(workOutput,{recursive:true});
   for(const entry of fs.readdirSync(path.join(root,'works',p.id),{withFileTypes:true})){
-    if(['project.json','content.html','content.md','index.html'].includes(entry.name)||entry.name.startsWith('.'))continue;
+    if(['settings.md','project.json','content.html','content.md','index.html'].includes(entry.name)||entry.name.startsWith('.'))continue;
     fs.cpSync(path.join(root,'works',p.id,entry.name),path.join(workOutput,entry.name),{recursive:true});
   }
   page(`works/${p.id}/index.html`,'project',p.id,`${p.title} — 07S`,p.desc,base=>`<section class="panel"><a href="${base}works/">← WORKS</a><h1 class="pageTitle">${esc(p.title)}</h1><p class="lead">${esc(p.cat)} / ${esc(p.year)} / ${esc(p.location)}</p><div class="feature"><img src="${base}${esc(p.image)}" alt="${esc(p.title)}"></div><p class="editorial">${esc(p.desc)}</p><div class="projectContent">${p.content}</div><div class="gallery">${p.gallery.map(im=>`<div><img src="${base}${esc(im)}" alt="${esc(p.title)}" loading="lazy"></div>`).join('')}</div></section>`);

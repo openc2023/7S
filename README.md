@@ -1,5 +1,7 @@
 # 07S 静态作品网站
 
+**日常设置入口：[settings.md](settings.md)。所有字段均有中文说明，直接修改其中的配置值即可生效。**
+
 以这个「07s作品」文件夹作为 GitHub 仓库根目录。网站发布后的文件是普通 HTML、CSS、JavaScript 和媒体文件，不需要服务器后台。作品正文用 Markdown 编辑，构建时转换为 HTML；首次使用需要运行 npm ci 安装解析器。
 
 原始 `index.v4-before-en.html` 保留用于对照，不会进入发布目录。原先 Manage 在浏览器 localStorage 中保存的数据不会自动进入新网站；本次迁移使用原文件里的 8 个演示作品，其中 7 个发布、1 个草稿。
@@ -8,8 +10,7 @@
 
 ```text
 07s作品/
-├── site.config.json             网站信息、邮箱、分类和社交链接
-├── home.config.json             首页精选区标题、作品选择与排列顺序
+├── settings.md                  带中文说明的全站设置：资料、天气、分类、首页精选
 ├── assets/
 │   ├── css/site.css              全站样式
 │   ├── js/app.js                 列表筛选、详情、灯箱和页面交互
@@ -19,12 +20,12 @@
 ├── templates/
 │   ├── site.html                共用页面外壳：导航、页脚和资源引用
 │   └── work/                    新作品模板，复制这个文件夹即可
-│       ├── project.json         作品信息
+│       ├── settings.md         作品信息
 │       ├── content.md           带编辑注释的 Markdown 作品正文
 │       └── media/cover.svg      占位封面
 ├── works/
 │   ├── light-field/
-│   │   ├── project.json
+│   │   ├── settings.md
 │   │   ├── content.md
 │   │   └── media/               该作品的图片、视频
 │   └── …                        每个作品一个文件夹
@@ -46,17 +47,17 @@
 
 1. 复制 `templates/work/` 到 `works/你的作品名/`。文件夹名使用小写英文字母、数字和连字符，例如 `my-new-installation`，它就是作品网址的一部分。
 2. 把封面、照片和视频放入该作品的 `media/` 文件夹。
-3. 修改 `project.json`。JSON 不支持注释，最后一个字段后面不要加逗号。
+3. 修改 `settings.md`。文件内有中文字段说明，修改 json project 代码块中的值，最后一个字段后面不要加逗号。
 4. 修改 `content.md`。用 Markdown 写标题、段落、列表和图片；复制模板里的示例即可。视频或特殊布局也可以嵌入自己编写的 HTML。
 5. 把 `status` 改成 `publish`；未完成时保持 `draft`。草稿信息、页面和媒体不会发布。
 6. 将修改提交并推送到 GitHub `main`，Actions 会重新生成并发布网页，无需手动改首页或列表。
 
-`project.json` 字段：
+作品 `settings.md` 中的 `json project` 字段：
 
 | 字段 | 用途 |
 | --- | --- |
 | title | 标题 |
-| category | 分类；新分类会自动进入筛选，显示开关和分类顺序在 site.config.json 调整 |
+| category | 分类；新分类会自动进入筛选，显示开关和分类顺序在 settings.md 调整 |
 | year | 年份，使用带引号的字符串，例如 "2026" |
 | location / technology | 地点与技术 |
 | description | 简介，参与搜索，并用于网页描述 |
@@ -71,7 +72,7 @@
 
 ## 用 Markdown 编辑作品正文
 
-每个作品只需要维护作品信息 `project.json`、正文 `content.md` 和媒体 `media/`。`project.json` 保存标题、分类、年份等字段；`content.md` 保存详细介绍，支持编辑注释：
+每个作品只需要维护作品信息 `settings.md`、正文 `content.md` 和媒体 `media/`。`settings.md` 保存标题、分类、年份等字段；`content.md` 保存详细介绍，支持编辑注释：
 
 ```markdown
 <!-- 编辑备注：这里写给自己的提醒，不显示在网页中。 -->
@@ -101,11 +102,11 @@ SEOUL 时钟左侧显示天气图标和摄氏温度。默认查询釜山，点�
 
 定位需要 HTTPS（localhost 预览也可用）及浏览器许可；如果自定义域名仍使用 HTTP，先使用默认城市天气。拒绝定位会保留已显示的天气。每次页面打开默认使用釜山，授权定位只作用于当前页面；天气服务失败时显示 WEATHER —，不会阻塞作品内容。
 
-`site.config.json` 的 weather 中可修改 enabled 开关、defaultLabel、latitude、longitude 和 refreshMinutes（默认 15 分钟，最短 5 分钟）。免费天气接口的使用范围与额度以 [Open-Meteo 服务条款](https://open-meteo.com/en/terms) 为准。
+`settings.md` 的 weather 中可修改 enabled 开关、defaultLabel、latitude、longitude 和 refreshMinutes（默认 15 分钟，最短 5 分钟）。免费天气接口的使用范围与额度以 [Open-Meteo 服务条款](https://open-meteo.com/en/terms) 为准。
 
 ## 手动修改首页 SELECTED WORKS
 
-只需要编辑 `home.config.json`：
+只需要编辑根目录 `settings.md` 中的 `json home` 代码块：
 
 ```json
 {
@@ -120,13 +121,13 @@ SEOUL 时钟左侧显示天气图标和摄氏温度。默认查询釜山，点�
 
 `eyebrow` 是上面的编号和小字，`title` 是大标题，`linkLabel` 是右侧作品列表链接的文字。`projectIds` 填 `works/` 下的作品文件夹名，列出哪些就显示哪些，数组顺序就是首页顺序，没有固定 4 个的限制。空数组表示不展示精选卡片。这里填写的作品必须存在且为 publish；删除或转为草稿时也要从这个数组移除，构建会提醒无效引用。
 
-精选只有这一处设置：`projectIds` 里的作品会同时显示在首页，并在所有作品卡片上显示 ★ FEATURED 标记。作品自己的 project.json 不再需要 featured 字段。
+精选只有这一处设置：`projectIds` 里的作品会同时显示在首页，并在所有作品卡片上显示 ★ FEATURED 标记。作品的 settings.md 无需 featured 字段。
 
 改完运行 `npm run build` 并刷新预览；推送 GitHub 后自动更新。这里的设置同时用于静态 HTML 和浏览器交互页面，不需要修改生成的 dist 或 assets/js/data.js。
 
 ## 分类显示开关与空分类
 
-在 `site.config.json` 中修改：
+在根目录 `settings.md` 的 `json site` 代码块中修改：
 
 ```json
 "hideEmptyCategories": true,
@@ -166,7 +167,7 @@ npm run preview
 
 工作流遵循 [GitHub Pages 官方自定义工作流说明](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。只发布 dist，不发布源模板、配置、原型备份和草稿。`dist/` 已在 .gitignore 中，GitHub 会自行生成它。
 
-联系页使用邮件链接，会打开访客的邮件软件。请在 `site.config.json` 里将演示邮箱换成真实邮箱，并添加实际社交链接。首页与工作室介绍的具体文案目前在 `assets/js/app.js` 中，页面布局在共用模板和脚本中统一修改。
+联系页使用邮件链接，会打开访客的邮件软件。请在 `settings.md` 里将演示邮箱换成真实邮箱，并添加实际社交链接。首页与工作室介绍的具体文案目前在 `assets/js/app.js` 中，页面布局在共用模板和脚本中统一修改。
 
 ## 已绑定的仓库与日常同步
 
