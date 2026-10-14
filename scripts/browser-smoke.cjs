@@ -19,7 +19,7 @@ const chrome=[process.env.CHROME_BIN,'/usr/bin/google-chrome','/usr/bin/google-c
 if(!chrome)throw Error('Chrome not found. Set CHROME_BIN to an installed browser.');
 
 function browserChecks(){
-  document.addEventListener('07s:content-ready',()=>{
+  document.addEventListener('07s:content-ready',async()=>{
     const errors=[];
     const assert=(ok,msg)=>{if(!ok)errors.push(msg)};
     try{
@@ -31,6 +31,7 @@ function browserChecks(){
       toggle.click();
       assert(document.body.classList.contains('mobileNavOpen'),'drawer-open');
       const drawer=document.querySelector('.mobileNavPanel');
+      await new Promise(resolve=>setTimeout(resolve,450));
       const rect=drawer.getBoundingClientRect();
       assert(Math.abs(rect.right-innerWidth)<20,'drawer-right-edge:'+rect.right+'/'+innerWidth);
       assert(rect.left>=0,'drawer-left-edge');
