@@ -96,7 +96,7 @@ function works(){
   const years=[...new Set(pub().map(p=>String(p.year)))].sort((a,b)=>b-a);
   if(!years.includes(ws.year))ws.year='All';
   app.innerHTML=`<section class="panel">${head(txt('works','eyebrow'),txt('works','title'),txt('works','intro'))}
-    <div class="pillrow" id="catPills"></div><div class="seriesEntry"><a class="ulink" href="${siteUrl('works/wenxin/')}">SERIES 001 — 問心 / WENXIN ↗</a></div>
+    <div class="pillrow" id="catPills"></div>
     <div class="tools">
       <div class="searchBox" id="sbox"><input class="field" id="find" placeholder="${txt('works','search')}" value="${esc(ws.search)}" autocomplete="off"><kbd>/</kbd><button class="clear" id="clr" title="${txt('works','clear')}">×</button></div>
       <select class="select" id="yearSel" title="${txt('works','year')}"><option value="All">${txt('works','allYears')}</option>${years.map(y=>`<option ${ws.year===y?'selected':''}>${y}</option>`).join('')}</select>
@@ -235,14 +235,23 @@ function contact(){
 function embedUrl(v){const u=safeUrl(v||'');if(!u)return '';let m=u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([\w-]{11})/);if(m)return 'https://www.youtube-nocookie.com/embed/'+m[1];m=u.match(/vimeo\.com\/(?:video\/)?(\d+)/);if(m)return 'https://player.vimeo.com/video/'+m[1];return ''}
 function safeUrl(s){try{let u=new URL(s);return ['https:','http:'].includes(u.protocol)?u.href:''}catch{return ''}}
 
-/* Mobile navigation: keep weather/clock visible and move links into a drawer. */
+/* Desktop WORKS dropdown + mobile navigation with nested series. */
 const nav=$('.nav');
+const worksLink=$('[data-nav="works"]',nav);
+const worksMenu=document.createElement('div');
+worksMenu.className='worksNavGroup';
+worksLink.parentNode.insertBefore(worksMenu,worksLink);
+worksMenu.append(worksLink);
+const seriesMenu=document.createElement('div');
+seriesMenu.className='worksDropdown';
+seriesMenu.innerHTML='<a href="'+siteUrl('works/')+'">ALL WORKS</a><a href="'+siteUrl('works/wenxin/')+'">問心 / WENXIN</a>';
+worksMenu.append(seriesMenu);
 const menuToggle=document.createElement('button');
 menuToggle.type='button';menuToggle.className='mobileMenuToggle';menuToggle.setAttribute('aria-label','Open navigation');menuToggle.setAttribute('aria-expanded','false');
 menuToggle.setAttribute('aria-controls','mobileNavPanel');menuToggle.textContent='☰';
 const mobileNav=document.createElement('div');mobileNav.id='mobileNavPanel';mobileNav.className='mobileNavPanel';
-const navLinks=$('[data-nav]',nav);
-mobileNav.innerHTML=navLinks.map(a=>'<a href="'+esc(a.href)+'">'+esc(a.textContent)+'</a>').join('');
+const navLinks=$$('[data-nav]',nav);
+mobileNav.innerHTML=navLinks.map(a=>'<a href="'+esc(a.href)+'">'+esc(a.textContent)+'</a>'+(a.dataset.nav==='works'?'<div class="mobileSubNav"><a href="'+siteUrl('works/wenxin/')+'">↳ 問心 / WENXIN</a></div>':'')).join('');
 const closeMobileNav=()=>{document.body.classList.remove('mobileNavOpen');menuToggle.setAttribute('aria-expanded','false');menuToggle.textContent='☰';};
 menuToggle.onclick=()=>{const open=document.body.classList.toggle('mobileNavOpen');menuToggle.setAttribute('aria-expanded',String(open));menuToggle.textContent=open?'×':'☰';};
 mobileNav.querySelectorAll('a').forEach(a=>a.onclick=closeMobileNav);
@@ -297,6 +306,6 @@ tick();setInterval(tick,30000);
 
 /* Physical static pages: every work has its own shareable URL. */
 const name=document.body.dataset.page||'home';
-$$('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===(name==='project'?'works':name)));
+$$('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===(name==='project'||name==='wenxin'?'works':name)));
 ({home,works,wenxin,studio,contact,project:()=>detail(document.body.dataset.project)})[name]?.();
 observe();onScroll();
