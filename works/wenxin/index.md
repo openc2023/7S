@@ -20,6 +20,7 @@
     "empty": "该章节暂无作品 / No works yet.",
     "imagePending": "IMAGE · COMING SOON",
     "videoPending": "VIDEO · COMING SOON",
+    "previewPending": "COMING SOON",
     "works": "WORKS",
     "published": "PUBLISHED",
     "planned": "PLANNED"

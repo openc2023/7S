@@ -163,27 +163,40 @@ function wenxin(){
     <div class="foot"><span id="wenxinCount"></span><span>WENXIN / 07S</span></div>
   </section>`;
   const tabs=$('#wenxinTabs'),grid=$('#wenxinGrid');
-  function render(){
-    const filtered=items.filter(p=>(filter==='all'||p.chapter===filter)&&(!search||[p.title,p.type,p.chapter].join(' ').toLowerCase().includes(search)));
-    if(sort==='az')filtered.sort((a,b)=>a.title.localeCompare(b.title));
-    if(sort==='za')filtered.sort((a,b)=>b.title.localeCompare(a.title));
-    tabs.innerHTML=[{id:'all',name:ui.all||'ALL'},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
-    $$('[data-wenxin-tab]',tabs).forEach(btn=>btn.onclick=()=>{filter=btn.dataset.wenxinTab;render()});
-    $$('[data-wenxin-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.wenxinView===view));
-    grid.className='workGrid '+(view==='list'?'list':'');
-    grid.innerHTML=filtered.map((p,i)=>p.planned?`<article class="work wenxinPlaceholder in" aria-label="${esc(p.title)} — ${esc(p.type==='video'?ui.videoPending:ui.imagePending)}">
-      <div class="cover wenxinEmpty">
-        <span class="wenxinPlaceholderIndex">${pad(i+1)} / ${pad(items.length)}</span>
-        <span class="${p.type==='video'?'wenxinPlay':'wenxinSymbol'}">${p.type==='video'?'▶':esc(config.title)}</span>
-        <span class="wenxinPending">${p.type==='video'?esc(ui.videoPending):esc(ui.imagePending)}</span>
-      </div>
-      <span class="idx">${pad(i+1)}</span>
-      <div class="workName"><span>${esc(p.title)}</span></div>
-      <div class="workMeta"><span class="ct">${esc(chapters.find(c=>c.id===p.chapter)?.name||'')}</span><span class="yr">${p.type==='video'?'VIDEO':'IMAGE'}</span></div>
-    </article>`:workCard(p,i)).join('')||'<div class="empty">'+esc(ui.empty||'No works yet.')+'</div>';
-    $('#wenxinCount').textContent=`${filtered.length} ${ui.works||'WORKS'} · ${filtered.filter(p=>!p.planned).length} ${ui.published||'PUBLISHED'} · ${filtered.filter(p=>p.planned).length} ${ui.planned||'PLANNED'}`;
-    observe(grid);
-  }
+  // Planned media share the WORKS card structure and IntersectionObserver animations.
+// Lists use the same floating WORKS preview; planned media gets an MD-labelled SVG placeholder.
+function placeholderPreviewSVG(p){
+  const symbol=p.type==='video'?'▶':config.title;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 680"><defs><radialGradient id="g" cx="70%" cy="24%" r="90%"><stop stop-color="#31333b"/><stop offset="1" stop-color="#121318"/></radialGradient></defs><rect width="900" height="680" fill="url(#g)"/><text x="450" y="360" text-anchor="middle" font-size="105" font-family="serif" fill="#c5c6ce">'+esc(symbol)+'</text></svg>');
+}
+function placeholderCard(p,i,q){
+  const isVideo=p.type==='video';
+  const pending=isVideo?ui.videoPending:ui.imagePending;
+  const chapter=chapters.find(c=>c.id===p.chapter)?.name||'';
+  return `<article class="work wenxinPlaceholder" style="--i:${i}" data-preview="${esc(placeholderPreviewSVG(p))}" aria-label="${esc(p.title)} — ${esc(pending||'COMING SOON')}">
+    <div class="cover wenxinEmpty">
+      <div class="wenxinPlaceholderArt" aria-hidden="true"><span class="${isVideo?'wenxinPlay':'wenxinSymbol'}">${isVideo?'▶':esc(config.title)}</span></div>
+      <span class="wenxinPlaceholderIndex">${pad(i+1)} / ${pad(items.length)}</span>
+      <span class="wenxinPending">${esc(pending)}</span>
+      <span class="view wenxinPreviewLabel">${esc(ui.previewPending||'COMING SOON')}</span>
+    </div>
+    <span class="idx">${pad(i+1)}</span>
+    <div class="workName"><span>${hl(p.title,q)}</span><span class="arr" aria-hidden="true">↗</span></div>
+    <div class="workMeta"><span class="ct">${esc(chapter)}</span><span class="loc">${esc(ui.planned||'PLANNED')}</span><span class="yr">${isVideo?'VIDEO':'IMAGE'}</span></div>
+  </article>`;
+}
+function render(){
+  const filtered=items.filter(p=>(filter==='all'||p.chapter===filter)&&(!search||[p.title,p.type,p.chapter].join(' ').toLowerCase().includes(search)));
+  if(sort==='az')filtered.sort((a,b)=>a.title.localeCompare(b.title));
+  if(sort==='za')filtered.sort((a,b)=>b.title.localeCompare(a.title));
+  tabs.innerHTML=[{id:'all',name:ui.all||'ALL'},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
+  $$('[data-wenxin-tab]',tabs).forEach(btn=>btn.onclick=()=>{filter=btn.dataset.wenxinTab;render()});
+  $$('[data-wenxin-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.wenxinView===view));
+  grid.className='workGrid '+(view==='list'?'list':'');
+  grid.innerHTML=filtered.map((p,i)=>p.planned?placeholderCard(p,i,search):workCard(p,i,search)).join('')||'<div class="empty">'+esc(ui.empty||'No works yet.')+'</div>';
+  $('#wenxinCount').textContent=`${filtered.length} ${ui.works||'WORKS'} · ${filtered.filter(p=>!p.planned).length} ${ui.published||'PUBLISHED'} · ${filtered.filter(p=>p.planned).length} ${ui.planned||'PLANNED'}`;
+  observe(grid);
+}
   $('#wenxinSearch').oninput=e=>{search=e.target.value.trim().toLowerCase();render()};
   $('#wenxinSort').onchange=e=>{sort=e.target.value;render()};
   $$('[data-wenxin-view]').forEach(btn=>btn.onclick=()=>{view=btn.dataset.wenxinView;render()});
@@ -358,7 +371,7 @@ function countUp(el){const to=+el.dataset.count,t0=performance.now();const step=
 const peek=$('#peek');let mx=0,my=0,cx=0,cy=0;
 addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;
   const w=e.target.closest('.workGrid.list .work');
-  if(w){const img=w.querySelector('.cover img');if(peek.firstChild.src!==img.src)peek.firstChild.src=img.src;peek.classList.add('on')}else peek.classList.remove('on');
+  if(w){const source=w.querySelector('.cover img')?.src||w.dataset.preview;if(source){if(peek.firstChild.src!==source)peek.firstChild.src=source;peek.classList.add('on')}else peek.classList.remove('on')}else peek.classList.remove('on');
 },{passive:true});
 (function loop(){cx+=(mx-cx)*.18;cy+=(my-cy)*.18;peek.style.left=(cx+150)+'px';peek.style.top=cy+'px';requestAnimationFrame(loop)})();
 // 时钟

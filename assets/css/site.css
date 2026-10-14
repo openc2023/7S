@@ -232,9 +232,9 @@ html.lenis,html.lenis body{height:auto}
 /* 作品图：滚动进入时从小窗口展开 + 缩放回位 */
 .work .cover{clip-path:inset(14% 6% 0 6% round 6px);transition:clip-path 1.3s var(--ease)}
 .work.in .cover{clip-path:inset(0 0 0 0 round 6px)}
-.work .cover img{transform:scale(1.22);transition:transform 1.5s var(--ease)}
-.work.in .cover img{transform:scale(1)}
-.work.in:hover .cover img{transform:scale(1.05)}
+.work .cover img,.work .cover .wenxinPlaceholderArt{transform:scale(1.22);transition:transform 1.5s var(--ease)}
+.work.in .cover img,.work.in .cover .wenxinPlaceholderArt{transform:scale(1)}
+.work.in:hover .cover img,.work.in:hover .cover .wenxinPlaceholderArt{transform:scale(1.05)}
 .workGrid:not(.list) .work .workName,.workGrid:not(.list) .work .workMeta{opacity:0;transform:translateY(14px);transition:opacity .9s var(--ease) .2s,transform .9s var(--ease) .2s}
 .work.in .workName,.work.in .workMeta{opacity:1!important;transform:none!important}
 .workGrid.list .work{opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease),background .2s}
@@ -309,15 +309,7 @@ html.lenis,html.lenis body{height:auto}
   .workGrid .cover img,#peek img,.previewCard .cover img{transition:none}
 }
 
-/* WENXIN series gallery: reuses the Works grid and category pills. */
-.seriesEntry{margin:0 0 24px;padding:13px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.08em}
-.wenxinPlaceholder{cursor:default}
-.wenxinEmpty{display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(145deg,#222228,#101014);border:1px solid #34343a;min-height:170px}
-.wenxinSymbol{font-size:clamp(26px,5vw,54px);font-weight:300;letter-spacing:.2em;color:#777}
-.wenxinPlay{font-size:32px;color:#aaa}
-.wenxinPending{position:absolute;bottom:12px;left:14px;font-size:9px;letter-spacing:.13em;color:#777}
-.wenxinPlaceholder .workName,.wenxinPlaceholder .workMeta{opacity:1!important;transform:none!important}
-
+/* WENXIN uses the same WORKS cards, filters and motion rules. */
 
 /* ---------- WORKS / SERIES NAVIGATION ---------- */
 .nav{flex-wrap:nowrap}
@@ -333,30 +325,23 @@ html.lenis,html.lenis body{height:auto}
 .dropdownNumber{font-size:10px;color:#8c8e97;letter-spacing:.08em}
 .mobileMenuToggle,.mobileNavPanel,.mobileNavBackdrop{display:none}
 
-/* ---------- WENXIN / MD-DRIVEN ARTWORK GALLERY ---------- */
+/* WENXIN media placeholders only: shared WORKS handles card geometry and motion. */
 .wenxinPanel .wenxinTools{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;margin:19px 0 8px;align-items:center}
 .wenxinPanel .wenxinTools .searchBox{min-width:0}
 .wenxinPanel .wenxinTools .select{min-width:156px}
 .wenxinPanel .wenxinTools .seg{justify-self:end}
-.wenxinPanel .workGrid{margin-top:21px}
-.wenxinPanel .wenxinPlaceholder{opacity:1;transform:none;min-width:0;cursor:default}
-.wenxinPanel .wenxinPlaceholder .cover{display:flex;align-items:center;justify-content:center;position:relative;aspect-ratio:1.32;min-height:0;overflow:hidden;border:1px solid #36373c;border-radius:9px;background:radial-gradient(ellipse at 75% 20%,#292a31 0%,#17181d 45%,#0b0c0e 100%);transition:border-color .25s,filter .25s}
-.wenxinPanel .wenxinPlaceholder:nth-child(2n) .cover{background:radial-gradient(ellipse at 25% 85%,#2e2d32 0%,#16171b 50%,#0b0c0e 100%)}
-.wenxinPanel .wenxinPlaceholder:nth-child(3n) .cover{background:radial-gradient(ellipse at 50% 20%,#24272d 0%,#16171b 50%,#0b0c0e 100%)}
-.wenxinPanel .wenxinPlaceholder:hover .cover{border-color:#81828c;filter:brightness(1.09)}
-.wenxinPanel .wenxinPlaceholderIndex{position:absolute;top:12px;left:14px;font-size:10px;letter-spacing:.16em;color:#888}
-.wenxinPanel .wenxinSymbol{font-family:serif;font-size:clamp(28px,5vw,55px);font-weight:400;letter-spacing:.08em;color:#adaeb5}
-.wenxinPanel .wenxinPlay{display:grid;place-items:center;width:60px;height:60px;border:1px solid #777985;border-radius:50%;font-size:19px;padding-left:4px;color:#ececf0}
-.wenxinPanel .wenxinPending{position:absolute;bottom:12px;left:14px;font-size:9px;letter-spacing:.12em;color:#92949c}
-.wenxinPanel .wenxinPlaceholder .workName,.wenxinPanel .wenxinPlaceholder .workMeta{display:flex;opacity:1!important;transform:none!important;min-width:0}
-.wenxinPanel .wenxinPlaceholder .workName{font-weight:650}
-.wenxinPanel .workGrid.list .wenxinPlaceholder{display:grid;grid-template-columns:48px minmax(0,1fr) minmax(100px,.7fr);gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:17px 4px}
-.wenxinPanel .workGrid.list .wenxinPlaceholder .cover{display:none}
-.wenxinPanel .workGrid.list .wenxinPlaceholder .idx{display:block;grid-column:1;grid-row:1}
-.wenxinPanel .workGrid.list .wenxinPlaceholder .workName{display:block;grid-column:2;grid-row:1;margin:0}
-.wenxinPanel .workGrid.list .wenxinPlaceholder .workMeta{display:flex;grid-column:3;grid-row:1;margin:0}
-.wenxinPanel .workGrid.list .wenxinPlaceholder .workMeta span{display:inline}
-
+.wenxinPlaceholder{cursor:default}
+.wenxinPlaceholder .cover{background:#1c1d22;border:1px solid #35363c}
+.wenxinPlaceholderArt{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(ellipse at 75% 20%,#2d2e35 0%,#18191e 55%,#0c0d10 100%)}
+.wenxinPlaceholder:nth-child(2n) .wenxinPlaceholderArt{background:radial-gradient(ellipse at 25% 80%,#303037 0%,#19191e 52%,#0c0d10 100%)}
+.wenxinPlaceholder:nth-child(3n) .wenxinPlaceholderArt{background:radial-gradient(ellipse at 50% 12%,#2a2d33 0%,#19191e 50%,#0c0d10 100%)}
+.wenxinPlaceholder .wenxinSymbol{font-family:serif;font-size:clamp(30px,5vw,55px);font-weight:400;letter-spacing:.08em;color:#b0b1b8}
+.wenxinPlaceholder .wenxinPlay{display:grid;place-items:center;width:60px;height:60px;border:1px solid #777985;border-radius:50%;font-size:19px;padding-left:4px;color:#ececf0}
+.wenxinPlaceholderIndex,.wenxinPending{position:absolute;z-index:2;left:14px;font-size:10px;letter-spacing:.12em;color:#a1a2ab}
+.wenxinPlaceholderIndex{top:12px;font-variant-numeric:tabular-nums}
+.wenxinPending{bottom:12px;font-size:9px}
+.wenxinPreviewLabel{white-space:nowrap}
+.wenxinPanel .wenxinPlaceholder .workName,.wenxinPanel .wenxinPlaceholder .workMeta{min-width:0}
 /* ---------- MOBILE HEADER / RIGHT DRAWER ---------- */
 @media(max-width:760px){
   .shell{width:calc(100% - 24px)}
@@ -423,15 +408,13 @@ html.lenis,html.lenis body{height:auto}
   .wenxinPanel .wenxinTools .searchBox{grid-column:1/-1}
   .wenxinPanel .wenxinTools .select{grid-column:1;min-width:0;width:100%}
   .wenxinPanel .wenxinTools .seg{grid-column:2;justify-self:end}
-  .wenxinPanel .workGrid:not(.list){grid-template-columns:minmax(0,1fr);gap:28px}
-  .wenxinPanel .wenxinSymbol{font-size:clamp(25px,7vw,38px)}
-  .wenxinPanel .wenxinPlay{width:44px;height:44px;font-size:16px}
+  .wenxinPanel .workGrid:not(.list){grid-template-columns:minmax(0,1fr);gap:30px 20px}
+  .wenxinPanel .wenxinSymbol{font-size:clamp(30px,8vw,48px)}
+  .wenxinPanel .wenxinPlay{width:54px;height:54px;font-size:17px}
   .wenxinPanel .wenxinPlaceholderIndex{top:9px;left:9px;font-size:9px}
   .wenxinPanel .wenxinPending{bottom:9px;left:9px;font-size:8px;letter-spacing:.02em}
-  .wenxinPanel .wenxinPlaceholder .workName{font-size:14px}
+  .wenxinPanel .wenxinPlaceholder .workName{font-size:13px}
   .wenxinPanel .wenxinPlaceholder .workMeta{font-size:12px}
-  .wenxinPanel .workGrid.list .wenxinPlaceholder{grid-template-columns:30px minmax(0,1fr) auto}
-  .wenxinPanel .workGrid.list .wenxinPlaceholder .workMeta{font-size:10px}
 }
 @media(min-width:761px){.mobileNavPanel,.mobileNavBackdrop,.mobileMenuToggle{display:none!important}}
 @media(prefers-reduced-motion:reduce){.mobileNavBackdrop,.mobileNavPanel{transition:none}}
