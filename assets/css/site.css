@@ -308,3 +308,12 @@ html.lenis,html.lenis body{height:auto}
 @media (prefers-reduced-motion:reduce){
   .workGrid .cover img,#peek img,.previewCard .cover img{transition:none}
 }
+
+/* WENXIN series gallery: reuses the Works grid and category pills. */
+.seriesEntry{margin:0 0 24px;padding:13px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:12px;letter-spacing:.08em}
+.wenxinPlaceholder{cursor:default}
+.wenxinEmpty{display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(145deg,#222228,#101014);border:1px solid #34343a;min-height:170px}
+.wenxinSymbol{font-size:clamp(26px,5vw,54px);font-weight:300;letter-spacing:.2em;color:#777}
+.wenxinPlay{font-size:32px;color:#aaa}
+.wenxinPending{position:absolute;bottom:12px;left:14px;font-size:9px;letter-spacing:.13em;color:#777}
+.wenxinPlaceholder .workName,.wenxinPlaceholder .workMeta{opacity:1!important;transform:none!important}
