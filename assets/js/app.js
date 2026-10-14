@@ -164,18 +164,16 @@ function wenxin(){
   </section>`;
   const tabs=$('#wenxinTabs'),grid=$('#wenxinGrid');
   // Planned media share the WORKS card structure and IntersectionObserver animations.
-// Lists use the same floating WORKS preview; planned media gets an MD-labelled SVG placeholder.
-function placeholderPreviewSVG(p){
-  const symbol=p.type==='video'?'▶':config.title;
-  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 680"><defs><radialGradient id="g" cx="70%" cy="24%" r="90%"><stop stop-color="#31333b"/><stop offset="1" stop-color="#121318"/></radialGradient></defs><rect width="900" height="680" fill="url(#g)"/><text x="450" y="360" text-anchor="middle" font-size="105" font-family="serif" fill="#c5c6ce">'+esc(symbol)+'</text></svg>');
-}
+// Planned covers use the original WORKS SVG media assets, copied into works/wenxin/media and listed in Markdown.
 function placeholderCard(p,i,q){
   const isVideo=p.type==='video';
   const pending=isVideo?ui.videoPending:ui.imagePending;
   const chapter=chapters.find(c=>c.id===p.chapter)?.name||'';
-  return `<article class="work wenxinPlaceholder" style="--i:${i}" data-preview="${esc(placeholderPreviewSVG(p))}" aria-label="${esc(p.title)} — ${esc(pending||'COMING SOON')}">
-    <div class="cover wenxinEmpty">
-      <div class="wenxinPlaceholderArt" aria-hidden="true"><span class="${isVideo?'wenxinPlay':'wenxinSymbol'}">${isVideo?'▶':esc(config.title)}</span></div>
+  const cover=siteUrl('works/wenxin/'+p.cover);
+  return `<article class="work wenxinPlaceholder" style="--i:${i}" aria-label="${esc(p.title)} — ${esc(pending||'COMING SOON')}">
+    <div class="cover">
+      <img src="${esc(cover)}" alt="${esc(p.title)} / 07S placeholder" loading="lazy">
+      ${isVideo?'<span class="wenxinVideoOverlay" aria-hidden="true">▶</span>':''}
       <span class="wenxinPlaceholderIndex">${pad(i+1)} / ${pad(items.length)}</span>
       <span class="wenxinPending">${esc(pending)}</span>
       <span class="view wenxinPreviewLabel">${esc(ui.previewPending||'COMING SOON')}</span>
