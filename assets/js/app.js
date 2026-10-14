@@ -266,10 +266,11 @@ menuToggle.type='button';menuToggle.className='mobileMenuToggle';menuToggle.setA
 menuToggle.setAttribute('aria-controls','mobileNavPanel');menuToggle.textContent='☰';
 const mobileNav=document.createElement('div');mobileNav.id='mobileNavPanel';mobileNav.className='mobileNavPanel';
 const navLinks=$$('[data-nav]',nav);
-mobileNav.innerHTML=navLinks.map(a=>'<a href="'+esc(a.href)+'">'+esc(a.textContent)+'</a>'+(a.dataset.nav==='works'?'<div class="mobileSubNav"><a href="'+siteUrl('works/wenxin/')+'">↳ 問心 / WENXIN</a></div>':'')).join('');
+mobileNav.innerHTML='<div class="mobileNavHead"><span>07S / MENU</span><button type="button" class="mobileNavClose" aria-label="Close navigation">×</button></div>'+navLinks.map(a=>'<a href="'+esc(a.href)+'">'+esc(a.textContent)+'</a>'+(a.dataset.nav==='works'?'<div class="mobileSubNav"><a href="'+siteUrl('works/wenxin/')+'">↳ 問心 / WENXIN</a></div>':'')).join('');
 const closeMobileNav=()=>{document.body.classList.remove('mobileNavOpen');menuToggle.setAttribute('aria-expanded','false');menuToggle.textContent='☰';document.body.style.overflow='';};
 menuToggle.onclick=()=>{const open=document.body.classList.toggle('mobileNavOpen');menuToggle.setAttribute('aria-expanded',String(open));menuToggle.textContent=open?'×':'☰';document.body.style.overflow=open?'hidden':'';};
 mobileNav.querySelectorAll('a').forEach(a=>a.onclick=closeMobileNav);
+mobileNav.querySelector('.mobileNavClose').onclick=closeMobileNav;
 document.querySelector('.top').append(menuToggle);
 document.body.append(mobileNav);
 const mobileBackdrop=document.createElement('button');mobileBackdrop.type='button';mobileBackdrop.className='mobileNavBackdrop';mobileBackdrop.setAttribute('aria-label','Close navigation');document.body.append(mobileBackdrop);mobileBackdrop.onclick=closeMobileNav;
