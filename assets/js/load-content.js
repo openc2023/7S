@@ -48,7 +48,7 @@
   document.querySelector('#weather').title=text.shared.weatherUseLocation;
   document.querySelector('#toTop').title=text.shared.backTop;
   const script=(file,type)=>new Promise((resolve,reject)=>{
-    const node=document.createElement('script');node.src=new URL('assets/js/'+file,root);if(type)node.type=type;
+    const node=document.createElement('script');node.src=new URL('assets/js/'+file+'?v=20261014-wenxin-4',root);if(type)node.type=type;
     node.onload=resolve;node.onerror=()=>reject(Error('Could not load '+file));document.body.append(node);
   });
   await script('app.js');
@@ -58,7 +58,7 @@
 })().catch(error=>{
   console.error(error);
   document.querySelector('#loader')?.remove();
-  const app=document.querySelector('#app');app.replaceChildren();
+  const app=document.querySelector('#app');if(app.querySelector('#wenxinStaticFallback')){console.warn('Showing Wenxin static fallback after content error:',error);return;}app.replaceChildren();
   const message=document.createElement('p');message.setAttribute('role','alert');
   message.textContent='Unable to load page content. '+error.message;app.append(message);
 });
