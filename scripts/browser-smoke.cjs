@@ -51,6 +51,18 @@ function browserChecks(){
       if(page==='wenxin'){
         const count=()=>document.querySelectorAll('#wenxinGrid .wenxinPlaceholder').length;
         assert(count()===8,'eight-MD-placeholder-cards:'+count());
+        // Match WORKS card markup and animations, not just the number of cards.
+        const placeholders=[...document.querySelectorAll('#wenxinGrid .wenxinPlaceholder')];
+        assert(placeholders.every(card=>card.matches('.work')&&card.querySelector('.cover .wenxinPlaceholderArt')&&card.querySelector('.workName .arr')&&card.querySelector('.cover .view')&&card.querySelector('.workMeta .ct')),'works-card-markup');
+        const first=placeholders[0];
+        assert(getComputedStyle(first.querySelector('.cover')).transitionProperty.includes('clip-path'),'works-cover-reveal');
+        assert(getComputedStyle(first.querySelector('.wenxinPlaceholderArt')).transitionProperty.includes('transform'),'works-artwork-zoom');
+        if(innerWidth<=760){
+          const cardWidth=first.getBoundingClientRect().width;
+          const gridWidth=document.querySelector('#wenxinGrid').getBoundingClientRect().width;
+          assert(Math.abs(cardWidth-gridWidth)<5,'mobile-single-column:'+cardWidth+'/'+gridWidth);
+        }
+
         assert(document.querySelectorAll('[data-wenxin-tab]').length===5,'five-chapter-tabs');
         document.querySelector('[data-wenxin-tab="seven-aspects"]').click();
         assert(count()===8,'seven-aspects-filter');
@@ -64,6 +76,11 @@ function browserChecks(){
         assert(count()===8,'search-reset');
         document.querySelector('[data-wenxin-view="list"]').click();
         assert(document.querySelector('#wenxinGrid').classList.contains('list'),'list-view');
+        const listCard=document.querySelector('#wenxinGrid .wenxinPlaceholder');
+        listCard.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:200,clientY:200}));
+        assert(document.querySelector('#peek').classList.contains('on'),'works-list-hover-preview-visible');
+        assert(document.querySelector('#peek img').src.startsWith('data:image/svg+xml'),'works-list-hover-preview-source');
+
         document.querySelector('[data-wenxin-view="grid"]').click();
         assert(!document.querySelector('#wenxinGrid').classList.contains('list'),'grid-view');
       }
