@@ -63,7 +63,7 @@ function Check-Environment {
     Write-Host "项目：$script:Root"
     Write-Host '环境检查完成。第一次检查会自动安装依赖；GitHub 登录只在登录/推送时进行。'
 }
-function Build-Site {
+function Test-Site {
     Require-Tool 'node'; Require-Tool 'npm.cmd'
     Push-Location $script:Root
     try {
@@ -198,7 +198,7 @@ function Push-GitHub {
     if ($LASTEXITCODE -ne 0 -or $branch -ne 'main') { throw '请先切换到 main 分支再推送；工具不会重置或覆盖其他分支。' }
     $remote = & git -C $script:Root remote get-url origin
     if ($LASTEXITCODE -ne 0 -or $remote.Trim() -notin @('https://github.com/openc2023/7S.git','https://github.com/openc2023/7S','git@github.com:openc2023/7S.git')) { throw 'origin 不是预期的 openc2023/7S 仓库，已停止，请检查远程地址。' }
-    Build-Site
+    Test-Site
     Write-Host '将获取远程状态；首次可能弹出浏览器要求登录 GitHub。'
     Run-Git @('fetch','origin','main')
     $counts = (& git -C $script:Root rev-list --left-right --count 'HEAD...origin/main') -split '\s+'
@@ -231,7 +231,7 @@ function Push-GitHub {
     Write-Host 'https://github.com/openc2023/7S/actions'
 }
 function Preview-Site {
-    Build-Site
+    Test-Site
     $running = $false
     try { $response = Invoke-WebRequest 'http://127.0.0.1:5177/07s-preview/' -UseBasicParsing -TimeoutSec 2; $running = $response.StatusCode -eq 200 } catch { }
     if (-not $running) {
@@ -247,7 +247,7 @@ function Preview-Site {
 function Invoke-Action([string]$Choice) {
     switch ($Choice) {
         'Check' { Check-Environment }
-        'Build' { Build-Site }
+        'Build' { Test-Site }
         'Backup' { $null = New-Backup }
         'List' { Show-Backups }
         'Restore' { Restore-Backup }
