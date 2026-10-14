@@ -31,12 +31,13 @@
   const categories=new Map(site.categories.map(c=>[c.name,c.enabled]));
   const used=new Set(projects.map(p=>p.cat));
   for(const name of used)if(!categories.has(name))categories.set(name,true);
-  window.SITE_DATA={site,home,text,projects,categories:[...categories].filter(([name,on])=>on&&(!site.hideEmptyCategories||used.has(name))).map(([name])=>name)};
+  const wenxin=page==='wenxin'?parse(await read('works/wenxin/index.md'),'wenxin','works/wenxin/index.md'):null;
+  window.SITE_DATA={site,home,text,projects,wenxin,categories:[...categories].filter(([name,on])=>on&&(!site.hideEmptyCategories||used.has(name))).map(([name])=>name)};
   // A copied work shell derives its identity from its folder, with no HTML edits.
   const current=projects.find(p=>p.id===document.body.dataset.project);
   if(page==='project'&&!current)throw Error('This project is not published.');
-  document.title=page==='home'?site.title:page==='project'?current.title+text.project.titleSuffix:text[page].browserTitle;
-  document.querySelector('meta[name="description"]').content=page==='project'?current.desc:page==='contact'?text.contact.metaDescription:site.description;
+  document.title=page==='home'?site.title:page==='project'?current.title+text.project.titleSuffix:page==='wenxin'?wenxin.title+' — 07S':text[page].browserTitle;
+  document.querySelector('meta[name="description"]').content=page==='project'?current.desc:page==='wenxin'?wenxin.description:page==='contact'?text.contact.metaDescription:site.description;
   const set=(selector,value)=>{document.querySelector(selector).textContent=value;};
   set('.logo .seven',text.shared.brand);set('.logo sup',text.shared.brandSuffix);
   for(const name of ['home','works','studio','contact'])set(`[data-nav="${name}"]`,text.shared['nav'+name[0].toUpperCase()+name.slice(1)]);
