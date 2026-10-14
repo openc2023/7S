@@ -18,7 +18,7 @@ const pub=()=>projects.filter(p=>p.status==='publish');
 let toastTimer;
 function toast(msg,undo){
   const t=$('#toast');clearTimeout(toastTimer);
-  t.innerHTML=esc(msg)+(undo?'<button>撤销</button>':'');
+  t.innerHTML=esc(msg)+(undo?'<button>Undo</button>':'');
   if(undo)t.querySelector('button').onclick=()=>{undo();t.classList.remove('on')};
   t.classList.add('on');toastTimer=setTimeout(()=>t.classList.remove('on'),undo?5000:2600);
 }
@@ -50,7 +50,7 @@ function home(){
     <div class="foot"><span>INFINITE IDEAS. NEW PERSPECTIVES.</span><a href="${siteUrl('works/')}" class="ulink">EXPLORE WORKS ↗</a></div>
     <div class="marquee"><div>${[...words,...words].map(w=>`<span>${w}</span>`).join('')}</div></div>
     <div class="sectiontop reveal"><div><div class="small muted">${esc(selected.eyebrow)}</div><h2>${esc(selected.title)}</h2></div><a href="${siteUrl('works/')}" class="small ulink">${esc(selected.linkLabel)} (${pub().length}) ↗</a></div>
-    <div class="workGrid">${featured.map((p,i)=>workCard(p,i)).join('')||'<p class="muted">暂无精选作品</p>'}</div>
+    <div class="workGrid">${featured.map((p,i)=>workCard(p,i)).join('')||'<p class="muted">No selected works yet.</p>'}</div>
     <div class="line"></div>
     <div class="reveal"><div class="small muted">02 / ABOUT & EXPERTISE</div><p class="editorial">We create visual experiences where art, design and technology meet.</p></div>
     <div class="pillrow reveal">${cats.map(c=>`<a class="pill" href="${siteUrl('works/')}" data-gocat="${esc(c)}">${esc(c)} <span class="n">${pub().filter(p=>p.cat===c).length}</span></a>`).join('')}</div>
@@ -70,34 +70,34 @@ function mountHero(el){
   return()=>{dead=true;stop&&stop()};
 }
 
-/* ================= 作品列表：分类 / 年份 / 排序 / 搜索 ================= */
+/* ================= Works: categories, year, sorting and search ================= */
 const SORTS={
-  manual:['推荐排序',(a,b)=>a.order-b.order],
-  new:['年份 · 新→旧',(a,b)=>b.year-a.year||a.order-b.order],
-  old:['年份 · 旧→新',(a,b)=>a.year-b.year||a.order-b.order],
-  az:['标题 · A→Z',(a,b)=>a.title.localeCompare(b.title)],
-  za:['标题 · Z→A',(a,b)=>b.title.localeCompare(a.title)],
-  recent:['最近添加',(a,b)=>b.created-a.created]
+  manual:['Recommended',(a,b)=>a.order-b.order],
+  new:['Year · Newest first',(a,b)=>b.year-a.year||a.order-b.order],
+  old:['Year · Oldest first',(a,b)=>a.year-b.year||a.order-b.order],
+  az:['Title · A–Z',(a,b)=>a.title.localeCompare(b.title)],
+  za:['Title · Z–A',(a,b)=>b.title.localeCompare(a.title)],
+  recent:['Recently added',(a,b)=>b.created-a.created]
 };
-let ws={filter:'全部',year:'全部',sort:'manual',view:'grid',search:'',...(()=>{try{return JSON.parse(sessionStorage.getItem('07sWorks'))||{}}catch(e){return{}}})()};
-const saveWs=()=>{try{sessionStorage.setItem('07sWorks',JSON.stringify(ws))}catch(e){}};
+let ws={filter:'All',year:'All',sort:'manual',view:'grid',search:'',...(()=>{try{return JSON.parse(sessionStorage.getItem('07sWorks-en'))||{}}catch(e){return{}}})()};
+const saveWs=()=>{try{sessionStorage.setItem('07sWorks-en',JSON.stringify(ws))}catch(e){}};
 
 function queryWorks(){
   const q=ws.search.trim().toLowerCase();
-  return pub().filter(p=>(ws.filter==='全部'||p.cat===ws.filter)&&(ws.year==='全部'||String(p.year)===ws.year)&&(!q||`${p.title} ${p.cat} ${p.desc} ${p.technology} ${p.location}`.toLowerCase().includes(q)))
+  return pub().filter(p=>(ws.filter==='All'||p.cat===ws.filter)&&(ws.year==='All'||String(p.year)===ws.year)&&(!q||`${p.title} ${p.cat} ${p.desc} ${p.technology} ${p.location}`.toLowerCase().includes(q)))
     .sort((SORTS[ws.sort]||SORTS.manual)[1]);
 }
 function works(){
-  if(ws.filter!=='全部'&&!cats.includes(ws.filter))ws.filter='全部';
+  if(ws.filter!=='All'&&!cats.includes(ws.filter))ws.filter='All';
   const years=[...new Set(pub().map(p=>String(p.year)))].sort((a,b)=>b-a);
-  if(!years.includes(ws.year))ws.year='全部';
+  if(!years.includes(ws.year))ws.year='All';
   app.innerHTML=`<section class="panel">${head('SELECTED WORKS','WORKS','Exploring the boundaries of art, technology and storytelling.')}
     <div class="pillrow" id="catPills"></div>
     <div class="tools">
-      <div class="searchBox" id="sbox"><input class="field" id="find" placeholder="搜索标题、技术、地点…" value="${esc(ws.search)}" autocomplete="off"><kbd>/</kbd><button class="clear" id="clr" title="清除">×</button></div>
-      <select class="select" id="yearSel" title="年份"><option value="全部">全部年份</option>${years.map(y=>`<option ${ws.year===y?'selected':''}>${y}</option>`).join('')}</select>
-      <select class="select" id="sortSel" title="排序">${Object.entries(SORTS).map(([k,[n]])=>`<option value="${k}" ${ws.sort===k?'selected':''}>${n}</option>`).join('')}</select>
-      <div class="seg" role="group" aria-label="视图"><button data-view="grid" title="两列">▦</button><button class="c3" data-view="cols3" title="三列">▩</button><button data-view="list" title="列表">☰</button></div>
+      <div class="searchBox" id="sbox"><input class="field" id="find" placeholder="Search titles, technologies, locations…" value="${esc(ws.search)}" autocomplete="off"><kbd>/</kbd><button class="clear" id="clr" title="Clear">×</button></div>
+      <select class="select" id="yearSel" title="Year"><option value="All">All years</option>${years.map(y=>`<option ${ws.year===y?'selected':''}>${y}</option>`).join('')}</select>
+      <select class="select" id="sortSel" title="Sort">${Object.entries(SORTS).map(([k,[n]])=>`<option value="${k}" ${ws.sort===k?'selected':''}>${n}</option>`).join('')}</select>
+      <div class="seg" role="group" aria-label="View"><button data-view="grid" title="Two columns">▦</button><button class="c3" data-view="cols3" title="Three columns">▩</button><button data-view="list" title="List">☰</button></div>
     </div>
     <div class="activeFilters" id="chips"></div>
     <div class="workGrid" id="grid"></div>
@@ -117,19 +117,19 @@ function renderWorks(){
   saveWs();
   const q=ws.search.trim();
   const base=pub().filter(p=>!q||`${p.title} ${p.cat} ${p.desc} ${p.technology} ${p.location}`.toLowerCase().includes(q.toLowerCase()));
-  $('#catPills').innerHTML=['全部',...cats].map(c=>`<button class="pill ${ws.filter===c?'active':''}" data-cat="${esc(c)}">${esc(c)} <span class="n">${c==='全部'?base.length:base.filter(p=>p.cat===c).length}</span></button>`).join('');
+  $('#catPills').innerHTML=['All',...cats].map(c=>`<button class="pill ${ws.filter===c?'active':''}" data-cat="${esc(c)}">${esc(c)} <span class="n">${c==='All'?base.length:base.filter(p=>p.cat===c).length}</span></button>`).join('');
   $$('[data-cat]').forEach(b=>b.onclick=()=>{ws.filter=b.dataset.cat;renderWorks()});
   $$('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===ws.view));
   const list=queryWorks(),grid=$('#grid');
   grid.className='workGrid '+(ws.view==='grid'?'':ws.view);
-  grid.innerHTML=list.length?list.map((p,i)=>workCard(p,i,q)).join(''):`<div class="empty" style="grid-column:1/-1"><b>NO RESULTS</b>没有匹配的作品<br><br><button class="pill" id="resetF">清除全部筛选</button></div>`;
+  grid.innerHTML=list.length?list.map((p,i)=>workCard(p,i,q)).join(''):`<div class="empty" style="grid-column:1/-1"><b>NO RESULTS</b>No matching projects.<br><br><button class="pill" id="resetF">Reset filters</button></div>`;
   const chips=[];
-  if(ws.filter!=='全部')chips.push(['filter',ws.filter]);
-  if(ws.year!=='全部')chips.push(['year',ws.year]);
+  if(ws.filter!=='All')chips.push(['filter',ws.filter]);
+  if(ws.year!=='All')chips.push(['year',ws.year]);
   if(q)chips.push(['search','“'+q+'”']);
-  $('#chips').innerHTML=chips.length?'筛选：'+chips.map(([k,v])=>`<button class="chip" data-chip="${k}">${esc(v)} <b>×</b></button>`).join('')+(chips.length>1?`<button class="chip" data-chip="all">全部清除</button>`:''):'';
-  $$('[data-chip]').forEach(b=>b.onclick=()=>{const k=b.dataset.chip;if(k==='filter'||k==='all')ws.filter='全部';if(k==='year'||k==='all'){ws.year='全部';$('#yearSel').value='全部'}if(k==='search'||k==='all'){ws.search='';$('#find').value='';$('#sbox').classList.remove('has')}renderWorks()});
-  const r=$('#resetF');if(r)r.onclick=()=>{ws={...ws,filter:'全部',year:'全部',search:''};works()};
+  $('#chips').innerHTML=chips.length?'Filters: '+chips.map(([k,v])=>`<button class="chip" data-chip="${k}">${esc(v)} <b>×</b></button>`).join('')+(chips.length>1?`<button class="chip" data-chip="all">Clear all</button>`:''):'';
+  $$('[data-chip]').forEach(b=>b.onclick=()=>{const k=b.dataset.chip;if(k==='filter'||k==='all')ws.filter='All';if(k==='year'||k==='all'){ws.year='All';$('#yearSel').value='All'}if(k==='search'||k==='all'){ws.search='';$('#find').value='';$('#sbox').classList.remove('has')}renderWorks()});
+  const r=$('#resetF');if(r)r.onclick=()=>{ws={...ws,filter:'All',year:'All',search:''};works()};
   $('#count').textContent=`SHOWING ${list.length} / ${pub().length} PROJECTS · ${SORTS[ws.sort][0]}`;
   bindCards(grid);observe(grid);
 }
@@ -145,7 +145,7 @@ function detail(id){
     <h1 class="pageTitle">${esc(p.title)}</h1><p class="lead">${esc(p.cat)} / ${esc(p.technology||'Creative Studio')}</p>
     <div class="feature" style="margin:35px 0" data-lb="0"><img src="${esc(p.image)}" alt="${esc(p.title)}"></div>
     <div class="cols"><div class="reveal"><div class="small muted">PROJECT OVERVIEW</div><p class="editorial" style="font-size:24px">${esc(p.desc)}</p>
-      <div class="actions"><button class="pill" id="share">复制链接 ⧉</button>${p.video?`<a class="pill" href="${esc(safeUrl(p.video))}" target="_blank" rel="noopener noreferrer">WATCH VIDEO ↗</a>`:''}</div></div>
+      <div class="actions"><button class="pill" id="share">Copy link ⧉</button>${p.video?`<a class="pill" href="${esc(safeUrl(p.video))}" target="_blank" rel="noopener noreferrer">WATCH VIDEO ↗</a>`:''}</div></div>
       <div class="reveal"><div class="small muted">PROJECT DETAILS</div>${[['YEAR',p.year],['CATEGORY',p.cat],['LOCATION',p.location||'—'],['TECHNOLOGY',p.technology||'—']].map(([a,b])=>`<div class="projectMeta"><span class="muted">${a}</span><span>${esc(b)}</span></div>`).join('')}</div></div>
     <div class="projectContent">${p.content||''}</div>
     ${embedUrl(p.video)?`<div class="line"></div><div class="small muted">FILM</div><div class="video"><iframe src="${esc(embedUrl(p.video))}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="${esc(p.title)} video"></iframe></div>`:''}
@@ -153,11 +153,11 @@ function detail(id){
     <div class="gallery" style="margin-top:17px">${imgs.map((im,k)=>`<div data-lb="${k}"><img src="${esc(im)}" alt="Gallery image ${k+1}" loading="lazy"></div>`).join('')}</div>
     ${related.length?`<div class="line"></div><div class="sectiontop"><div><div class="small muted">MORE IN ${esc(p.cat)}</div><h2>RELATED</h2></div></div><div class="workGrid">${related.map((r,k)=>workCard(r,k)).join('')}</div>`:''}
     <div class="line"></div>
-    <div class="foot"><a href="${projectUrl(prev.id)}" class="ulink">← ${esc(prev.title)}</a><span class="muted">← → 键切换</span><a href="${projectUrl(next.id)}" class="ulink">${esc(next.title)} →</a></div>
+    <div class="foot"><a href="${projectUrl(prev.id)}" class="ulink">← ${esc(prev.title)}</a><span class="muted">← → Use arrow keys to navigate</span><a href="${projectUrl(next.id)}" class="ulink">${esc(next.title)} →</a></div>
   </section>`;
   bindCards();
   $$('[data-lb]').forEach(el=>el.onclick=()=>lightbox(imgs,+el.dataset.lb));
-  $('#share').onclick=()=>copyText(location.href,'链接已复制');
+  $('#share').onclick=()=>copyText(location.href,'Link copied');
   pageKeys=e=>{if(document.querySelector('.lightbox,.modal')||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if(e.key==='ArrowRight')location.href=projectUrl(next.id);if(e.key==='ArrowLeft')location.href=projectUrl(prev.id)};
 }
 function lightbox(imgs,i){
@@ -183,12 +183,12 @@ function studio(){
     <div class="line"></div><a class="action primary" href="${siteUrl('contact/')}">START A CONVERSATION <span class="arr">↗</span></a></section>`;
 }
 async function copyText(value,message){
-  try{await navigator.clipboard.writeText(value);toast(message)}catch{toast('请从地址栏或页面手动复制')}
+  try{await navigator.clipboard.writeText(value);toast(message)}catch{toast('Copy unavailable. Please copy from the page or address bar.')}
 }
 function contact(){
   const s=window.SITE_DATA.site;
-  app.innerHTML=`<section class="panel">${head('GET IN TOUCH','CONTACT',"Have a project in mind? Let's make it happen.")}<div class="line"></div><div class="cols"><div><h2 class="pageTitle">LET'S<br>TALK.</h2><div class="small muted">GENERAL INQUIRIES</div><p><a class="action primary" href="mailto:${esc(s.email)}">${esc(s.email)} ↗</a></p><button class="pill" id="copyMail">复制邮箱 ⧉</button></div><div><div class="small muted">SOCIAL</div><p>${s.socials.filter(x=>safeUrl(x.url)).map(x=>`<a class="ulink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name)} ↗</a>`).join('<br>')||'社交链接待添加'}</p><p class="lead">${esc(s.contactNote)}</p></div></div></section>`;
-  $('#copyMail').onclick=()=>copyText(s.email,'邮箱已复制');
+  app.innerHTML=`<section class="panel">${head('GET IN TOUCH','CONTACT',"Have a project in mind? Let's make it happen.")}<div class="line"></div><div class="cols"><div><h2 class="pageTitle">LET'S<br>TALK.</h2><div class="small muted">GENERAL INQUIRIES</div><p><a class="action primary" href="mailto:${esc(s.email)}">${esc(s.email)} ↗</a></p><button class="pill" id="copyMail">Copy email ⧉</button></div><div><div class="small muted">SOCIAL</div><p>${s.socials.filter(x=>safeUrl(x.url)).map(x=>`<a class="ulink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name)} ↗</a>`).join('<br>')||'Social links coming soon.'}</p><p class="lead">${esc(s.contactNote)}</p></div></div></section>`;
+  $('#copyMail').onclick=()=>copyText(s.email,'Email copied');
 }
 
 // YouTube / Vimeo 链接转为可嵌入播放器地址
@@ -235,7 +235,7 @@ const observe=(root=app)=>{
   $$('.reveal,.sw,.work',root).forEach(el=>io.observe(el));
 };
 function countUp(el){const to=+el.dataset.count,t0=performance.now();const step=t=>{const k=Math.min(1,(t-t0)/900);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
-// 列表模式预览图
+// List模式预览图
 const peek=$('#peek');let mx=0,my=0,cx=0,cy=0;
 addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;
   const w=e.target.closest('.workGrid.list .work');

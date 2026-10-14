@@ -1,10 +1,10 @@
 {
   "title": "YOUR PROJECT TITLE",
-  "category": "新媒体艺术",
+  "category": "New Media Art",
   "year": "2026",
   "location": "Seoul, Korea",
   "technology": "TouchDesigner, Projection",
-  "description": "在这里填写作品简介，用于作品列表搜索和作品详情。",
+  "description": "Write a short project description for search and the project overview.",
   "cover": "media/cover.svg",
   "gallery": [],
   "video": "",
