@@ -7,9 +7,9 @@
   "socials": [],
   "weather": {
     "enabled": true,
-    "defaultLabel": "SEOUL",
-    "latitude": 37.5665,
-    "longitude": 126.978,
+    "defaultLabel": "BUSAN",
+    "latitude": 35.1796,
+    "longitude": 129.0756,
     "refreshMinutes": 15
   },
   "hideEmptyCategories": true,

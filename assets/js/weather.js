@@ -7,7 +7,7 @@
   button.hidden=false;
   credit.hidden=false;
   const interval=Math.max(5,Number(config.refreshMinutes)||15)*60000;
-  let point={latitude:config.latitude,longitude:config.longitude,label:config.defaultLabel||'SEOUL'};
+  let point={latitude:config.latitude,longitude:config.longitude,label:config.defaultLabel||'BUSAN'};
   let timer,busy=false,request=0;
   const describe=(code,day)=>{
     if(code===0)return [day?'☀':'☾','Clear'];

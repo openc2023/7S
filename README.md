@@ -97,9 +97,9 @@ Write your project story here. Use **bold text** for emphasis.
 
 ## 顶栏天气
 
-SEOUL 时钟左侧显示天气图标和摄氏温度。默认查询首尔，点击天气按钮后由浏览器请求当前位置授权；允许后显示 LOCAL 天气。定位只在点击后请求，坐标约取到小数点后两位并发送给 [Open-Meteo](https://open-meteo.com/en/docs) 查询，不写入配置文件、日志或浏览器存储。
+SEOUL 时钟左侧显示天气图标和摄氏温度。默认查询釜山，点击天气按钮后由浏览器请求当前位置授权；允许后显示 LOCAL 天气。定位只在点击后请求，坐标约取到小数点后两位并发送给 [Open-Meteo](https://open-meteo.com/en/docs) 查询，不写入配置文件、日志或浏览器存储。
 
-定位需要 HTTPS（localhost 预览也可用）及浏览器许可；如果自定义域名仍使用 HTTP，先使用默认城市天气。拒绝定位会保留已显示的天气。每次页面打开默认使用首尔，授权定位只作用于当前页面；天气服务失败时显示 WEATHER —，不会阻塞作品内容。
+定位需要 HTTPS（localhost 预览也可用）及浏览器许可；如果自定义域名仍使用 HTTP，先使用默认城市天气。拒绝定位会保留已显示的天气。每次页面打开默认使用釜山，授权定位只作用于当前页面；天气服务失败时显示 WEATHER —，不会阻塞作品内容。
 
 `site.config.json` 的 weather 中可修改 enabled 开关、defaultLabel、latitude、longitude 和 refreshMinutes（默认 15 分钟，最短 5 分钟）。免费天气接口的使用范围与额度以 [Open-Meteo 服务条款](https://open-meteo.com/en/terms) 为准。
 
