@@ -164,11 +164,16 @@ function wenxin(){
   </section>`;
   const tabs=$('#wenxinTabs'),grid=$('#wenxinGrid');
   // Planned media share the WORKS card structure and IntersectionObserver animations.
+// Lists use the same floating WORKS preview; planned media gets an MD-labelled SVG placeholder.
+function placeholderPreviewSVG(p){
+  const symbol=p.type==='video'?'▶':config.title;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 680"><defs><radialGradient id="g" cx="70%" cy="24%" r="90%"><stop stop-color="#31333b"/><stop offset="1" stop-color="#121318"/></radialGradient></defs><rect width="900" height="680" fill="url(#g)"/><text x="450" y="360" text-anchor="middle" font-size="105" font-family="serif" fill="#c5c6ce">'+esc(symbol)+'</text></svg>');
+}
 function placeholderCard(p,i,q){
   const isVideo=p.type==='video';
   const pending=isVideo?ui.videoPending:ui.imagePending;
   const chapter=chapters.find(c=>c.id===p.chapter)?.name||'';
-  return `<article class="work wenxinPlaceholder" style="--i:${i}" aria-label="${esc(p.title)} — ${esc(pending||'COMING SOON')}">
+  return `<article class="work wenxinPlaceholder" style="--i:${i}" data-preview="${esc(placeholderPreviewSVG(p))}" aria-label="${esc(p.title)} — ${esc(pending||'COMING SOON')}">
     <div class="cover wenxinEmpty">
       <div class="wenxinPlaceholderArt" aria-hidden="true"><span class="${isVideo?'wenxinPlay':'wenxinSymbol'}">${isVideo?'▶':esc(config.title)}</span></div>
       <span class="wenxinPlaceholderIndex">${pad(i+1)} / ${pad(items.length)}</span>
@@ -366,7 +371,7 @@ function countUp(el){const to=+el.dataset.count,t0=performance.now();const step=
 const peek=$('#peek');let mx=0,my=0,cx=0,cy=0;
 addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;
   const w=e.target.closest('.workGrid.list .work');
-  if(w){const img=w.querySelector('.cover img');if(peek.firstChild.src!==img.src)peek.firstChild.src=img.src;peek.classList.add('on')}else peek.classList.remove('on');
+  if(w){const source=w.querySelector('.cover img')?.src||w.dataset.preview;if(source){if(peek.firstChild.src!==source)peek.firstChild.src=source;peek.classList.add('on')}else peek.classList.remove('on')}else peek.classList.remove('on');
 },{passive:true});
 (function loop(){cx+=(mx-cx)*.18;cy+=(my-cy)*.18;peek.style.left=(cx+150)+'px';peek.style.top=cy+'px';requestAnimationFrame(loop)})();
 // 时钟
