@@ -55,6 +55,27 @@ for(const id of seriesIds){
   const index='works/'+id+'/index.md';
   const info=settings(index,[id])[id];
   if(typeof info.title!=='string'||!info.title.trim())throw Error(index+': missing title');
+
+  // Series planned-card image covers are real media assets, not CSS-generated art.
+  // Validate all Markdown references before copying a release.
+  if(info.planned!==undefined){
+    if(!Array.isArray(info.planned))throw Error(index+': planned must be an array');
+    const knownChapters=new Set((info.chapters||[]).map(c=>c.id));
+    const titles=new Set(),covers=new Set();
+    for(const [n,planned] of info.planned.entries()){
+      if(!planned||typeof planned.title!=='string'||!planned.title.trim()||titles.has(planned.title))
+        throw Error(index+': invalid or duplicate planned card title #'+(n+1));
+      titles.add(planned.title);
+      if(!knownChapters.has(planned.chapter)||!['image','video'].includes(planned.type))
+        throw Error(index+': invalid chapter/type on planned card '+planned.title);
+      const cover=planned.cover;
+      if(typeof cover!=='string'||!/^media\/[a-z0-9_./-]+\.(?:svg|png|jpe?g|webp)$/i.test(cover)||cover.split('/').includes('..')||covers.has(cover))
+        throw Error(index+': use a unique local media cover for '+planned.title);
+      covers.add(cover);
+      if(!fs.existsSync(path.join(root,'works',id,cover))||!fs.statSync(path.join(root,'works',id,cover)).isFile())
+        throw Error(index+': missing placeholder image '+cover+' for '+planned.title);
+    }
+  }
   if(!fs.existsSync(path.join(root,'works',id,'index.html')))throw Error('Missing series HTML shell: works/'+id+'/index.html');
 }
 if(!Array.isArray(catalog)||new Set(catalog).size!==catalog.length)throw Error('works/index.md: projectIds must be a unique array');
