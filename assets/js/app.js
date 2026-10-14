@@ -142,35 +142,50 @@ function renderWorks(){
 /* ================= WORKS / WENXIN series ================= */
 function wenxin(){
   const config=window.SITE_DATA.wenxin;
-  const chapters=config.chapters;
+  const chapters=config.chapters||[];
   const published=pub().filter(p=>p.series==='wenxin'&&chapters.some(c=>c.id===p.chapter));
-  const draftSlots=config.planned||[];
-  let filter='all';
-  app.innerHTML=`<section class="panel">
+  const planned=(config.planned||[]).map((p,i)=>({...p,order:i,planned:true}));
+  const items=[...published,...planned.filter(p=>!published.some(real=>real.title===p.title&&real.chapter===p.chapter))];
+  let filter='all',search='',sort='manual',view='grid';
+  app.innerHTML=`<section class="panel wenxinPanel">
     <div class="eyebrow"><span><a class="ulink" href="${siteUrl('works/')}">WORKS</a> / SERIES 001</span><span>07S</span></div>
     <h1 class="pageTitle">${esc(config.title)}</h1>
     <p class="small muted">${esc(config.subtitle)}</p>
     <p class="lead">${esc(config.description)}</p>
-    <div class="pillrow" id="wenxinTabs"></div>
+    <div class="pillrow" id="wenxinTabs" aria-label="Wenxin chapters"></div>
+    <div class="tools wenxinTools">
+      <div class="searchBox" id="wenxinSearchBox"><input class="field" id="wenxinSearch" type="search" placeholder="Search works / 搜索作品" autocomplete="off"><kbd>/</kbd></div>
+      <select class="select" id="wenxinSort" aria-label="Sort works"><option value="manual">Recommended</option><option value="az">Title A–Z</option><option value="za">Title Z–A</option></select>
+      <div class="seg" role="group" aria-label="Gallery view"><button data-wenxin-view="grid" class="active" title="Grid">▦</button><button data-wenxin-view="list" title="List">☰</button></div>
+    </div>
     <div class="workGrid" id="wenxinGrid"></div>
     <div class="foot"><span id="wenxinCount"></span><span>WENXIN / 07S</span></div>
   </section>`;
+  const tabs=$('#wenxinTabs'),grid=$('#wenxinGrid');
   function render(){
-    const tabs=[{id:'all',name:'全部 / ALL'},...chapters];
-    $('#wenxinTabs').innerHTML=tabs.map(t=>`<button class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}">${esc(t.name)} <span class="n">${t.id==='all'?published.length:published.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
-    $('[data-wenxin-tab]').forEach(b=>b.onclick=()=>{filter=b.dataset.wenxinTab;render()});
-    const real=published.filter(p=>filter==='all'||p.chapter===filter);
-    // Planning placeholders are shown only while this series has no published work.
-    const placeholders=published.length?[]:draftSlots.filter(p=>filter==='all'||p.chapter===filter);
-    $('#wenxinGrid').innerHTML=real.map((p,i)=>workCard(p,i)).join('')+placeholders.map((p,i)=>`<div class="work wenxinPlaceholder in">
-      <div class="cover wenxinEmpty">${p.type==='video'?'<span class="wenxinPlay">▶</span>':'<span class="wenxinSymbol">問心</span>'}<span class="wenxinPending">MEDIA PENDING</span></div>
+    const filtered=items.filter(p=>(filter==='all'||p.chapter===filter)&&(!search||[p.title,p.type,p.chapter].join(' ').toLowerCase().includes(search)));
+    if(sort==='az')filtered.sort((a,b)=>a.title.localeCompare(b.title));
+    if(sort==='za')filtered.sort((a,b)=>b.title.localeCompare(a.title));
+    tabs.innerHTML=[{id:'all',name:'全部 / ALL'},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
+    $$('[data-wenxin-tab]',tabs).forEach(btn=>btn.onclick=()=>{filter=btn.dataset.wenxinTab;render()});
+    $$('[data-wenxin-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.wenxinView===view));
+    grid.className='workGrid '+(view==='list'?'list':'');
+    grid.innerHTML=filtered.map((p,i)=>p.planned?`<article class="work wenxinPlaceholder in" aria-label="${esc(p.title)} - media pending">
+      <div class="cover wenxinEmpty">
+        <span class="wenxinPlaceholderIndex">${pad(i+1)} / 08</span>
+        <span class="${p.type==='video'?'wenxinPlay':'wenxinSymbol'}">${p.type==='video'?'▶':'問心'}</span>
+        <span class="wenxinPending">${p.type==='video'?'VIDEO · COMING SOON':'IMAGE · COMING SOON'}</span>
+      </div>
       <span class="idx">${pad(i+1)}</span>
       <div class="workName"><span>${esc(p.title)}</span></div>
       <div class="workMeta"><span class="ct">${esc(chapters.find(c=>c.id===p.chapter)?.name||'')}</span><span class="yr">${p.type==='video'?'VIDEO':'IMAGE'}</span></div>
-    </div>`).join('')||'<p class="muted">该章节尚无已发布作品。</p>';
-    $('#wenxinCount').textContent=`${real.length} PUBLISHED${placeholders.length?' · '+placeholders.length+' PLANNED':''}`;
-    observe($('#wenxinGrid'));
+    </article>`:workCard(p,i)).join('')||'<div class="empty">该章节暂无作品 / No works yet.</div>';
+    $('#wenxinCount').textContent=`${filtered.length} WORKS · ${filtered.filter(p=>!p.planned).length} PUBLISHED · ${filtered.filter(p=>p.planned).length} PLANNED`;
+    observe(grid);
   }
+  $('#wenxinSearch').oninput=e=>{search=e.target.value.trim().toLowerCase();render()};
+  $('#wenxinSort').onchange=e=>{sort=e.target.value;render()};
+  $$('[data-wenxin-view]').forEach(btn=>btn.onclick=()=>{view=btn.dataset.wenxinView;render()});
   render();
 }
 
@@ -252,10 +267,12 @@ menuToggle.setAttribute('aria-controls','mobileNavPanel');menuToggle.textContent
 const mobileNav=document.createElement('div');mobileNav.id='mobileNavPanel';mobileNav.className='mobileNavPanel';
 const navLinks=$$('[data-nav]',nav);
 mobileNav.innerHTML=navLinks.map(a=>'<a href="'+esc(a.href)+'">'+esc(a.textContent)+'</a>'+(a.dataset.nav==='works'?'<div class="mobileSubNav"><a href="'+siteUrl('works/wenxin/')+'">↳ 問心 / WENXIN</a></div>':'')).join('');
-const closeMobileNav=()=>{document.body.classList.remove('mobileNavOpen');menuToggle.setAttribute('aria-expanded','false');menuToggle.textContent='☰';};
-menuToggle.onclick=()=>{const open=document.body.classList.toggle('mobileNavOpen');menuToggle.setAttribute('aria-expanded',String(open));menuToggle.textContent=open?'×':'☰';};
+const closeMobileNav=()=>{document.body.classList.remove('mobileNavOpen');menuToggle.setAttribute('aria-expanded','false');menuToggle.textContent='☰';document.body.style.overflow='';};
+menuToggle.onclick=()=>{const open=document.body.classList.toggle('mobileNavOpen');menuToggle.setAttribute('aria-expanded',String(open));menuToggle.textContent=open?'×':'☰';document.body.style.overflow=open?'hidden':'';};
 mobileNav.querySelectorAll('a').forEach(a=>a.onclick=closeMobileNav);
-document.querySelector('.top').append(menuToggle,mobileNav);
+document.querySelector('.top').append(menuToggle);
+document.body.append(mobileNav);
+const mobileBackdrop=document.createElement('button');mobileBackdrop.type='button';mobileBackdrop.className='mobileNavBackdrop';mobileBackdrop.setAttribute('aria-label','Close navigation');document.body.append(mobileBackdrop);mobileBackdrop.onclick=closeMobileNav;
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileNav()});
 document.addEventListener('click',e=>{if(document.body.classList.contains('mobileNavOpen')&&!e.target.closest('.top'))closeMobileNav()});
 
