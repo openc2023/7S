@@ -1,0 +1,9 @@
+{
+  "name": "07s-portfolio",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/run.cjs build",
+    "preview": "node scripts/run.cjs preview"
+  },
+  "engines": { "node": ">=20" }
+}

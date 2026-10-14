@@ -1,0 +1,15 @@
+{
+  "title": "ECHO CHAMBER",
+  "category": "交互体验",
+  "year": "2024",
+  "location": "Tokyo, Japan",
+  "technology": "Spatial Audio, Kinect",
+  "description": "Sound follows the body through a dark room of reflective surfaces.",
+  "cover": "media/cover.svg",
+  "gallery": [],
+  "video": "",
+  "featured": true,
+  "status": "publish",
+  "order": 4,
+  "added": "2026-01-05"
+}

@@ -1,0 +1,15 @@
+{
+  "title": "RESPONSIVE FIELD",
+  "category": "交互体验",
+  "year": "2025",
+  "location": "Korea",
+  "technology": "Sensors, Interactive Media",
+  "description": "A responsive installation shaped by the presence and motion of visitors.",
+  "cover": "media/cover.svg",
+  "gallery": [],
+  "video": "",
+  "featured": false,
+  "status": "publish",
+  "order": 3,
+  "added": "2026-01-04"
+}

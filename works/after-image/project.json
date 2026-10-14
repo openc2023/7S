@@ -1,0 +1,15 @@
+{
+  "title": "AFTER IMAGE",
+  "category": "新媒体艺术",
+  "year": "2023",
+  "location": "Berlin, Germany",
+  "technology": "Generative Art, Projection",
+  "description": "A generative projection piece where every frame remembers the one before it.",
+  "cover": "media/cover.svg",
+  "gallery": [],
+  "video": "",
+  "featured": false,
+  "status": "publish",
+  "order": 6,
+  "added": "2026-01-07"
+}

@@ -1,0 +1,15 @@
+{
+  "title": "LIGHT FIELD",
+  "category": "新媒体艺术",
+  "year": "2026",
+  "location": "Seoul, Korea",
+  "technology": "LED, TouchDesigner",
+  "description": "Light and motion transform architecture into a living media surface.",
+  "cover": "media/cover.svg",
+  "gallery": [],
+  "video": "",
+  "featured": true,
+  "status": "publish",
+  "order": 1,
+  "added": "2026-01-02"
+}

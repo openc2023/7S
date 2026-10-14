@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<link rel="icon" type="image/svg+xml" href="{{base}}assets/favicon.svg">
+<link rel="stylesheet" href="{{base}}assets/css/site.css">
+</head>
+<body data-page="{{page}}" data-project="{{project}}">
+<div id="progress"></div>
+<div class="shell">
+  <header class="top" id="top">
+    <a href="{{base}}" class="logo"><span class="seven">07S</span><sup>®</sup></a>
+    <nav class="nav">
+      <span class="small muted clock" id="clock"></span>
+      <a href="{{base}}" data-nav="home">HOME</a>
+      <a href="{{base}}works/" data-nav="works">WORKS</a>
+      <a href="{{base}}studio/" data-nav="studio">STUDIO</a>
+      <a href="{{base}}contact/" data-nav="contact">CONTACT</a>
+    </nav>
+  </header>
+  <main id="app">{{content}}</main>
+  <footer><span>© 2026 07S STUDIO</span><span>SEVEN IS MORE THAN A NUMBER.</span></footer>
+</div>
+<div id="loader"><div class="bar"><i id="ldBar"></i></div><div class="num" id="ldNum">000</div></div>
+<div id="toast"></div>
+<div id="peek"><img alt=""></div>
+<button id="toTop" title="回到顶部">↑</button>
+
+<noscript><style>#loader{display:none}.reveal,.work,.sw{opacity:1;transform:none}</style></noscript>
+<script defer src="{{base}}assets/js/data.js"></script>
+<script defer src="{{base}}assets/js/app.js"></script>
+{{hero}}
+</body>
+</html>
