@@ -247,7 +247,12 @@ addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;
 },{passive:true});
 (function loop(){cx+=(mx-cx)*.18;cy+=(my-cy)*.18;peek.style.left=(cx+150)+'px';peek.style.top=cy+'px';requestAnimationFrame(loop)})();
 // 时钟
-const tick=()=>$('#clock').textContent=raw('shared','clockLabel')+' '+new Date().toLocaleTimeString('en-GB',{timeZone:raw('shared','clockTimezone'),hour:'2-digit',minute:'2-digit'});tick();setInterval(tick,30000);
+let clockTimezone=raw('shared','clockTimezone');
+const tick=()=>$('#clock').textContent=new Date().toLocaleTimeString('en-GB',{timeZone:clockTimezone,hour:'2-digit',minute:'2-digit'});
+addEventListener('07s:timezone',event=>{
+  try{new Intl.DateTimeFormat('en-GB',{timeZone:event.detail});clockTimezone=event.detail;tick();}catch{}
+});
+tick();setInterval(tick,30000);
 
 /* Physical static pages: every work has its own shareable URL. */
 const name=document.body.dataset.page||'home';

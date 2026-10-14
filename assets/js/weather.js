@@ -11,6 +11,27 @@
   const interval=Math.max(5,Number(config.refreshMinutes)||15)*60000;
   let point={latitude:config.latitude,longitude:config.longitude,label:config.defaultLabel||'BUSAN'};
   let timer,busy=false,request=0;
+  const locationLabel=()=>point.label==='LOCAL'?label('weatherLocal'):point.label;
+  const showPlaceholder=()=>{button.textContent=`${locationLabel()} ${label('weatherPlaceholder')}`;};
+  showPlaceholder();
+  const setTimezone=timezone=>{
+    if(typeof timezone!=='string'||!timezone)return;
+    try{new Intl.DateTimeFormat('en-GB',{timeZone:timezone});window.dispatchEvent(new CustomEvent('07s:timezone',{detail:timezone}));}catch{}
+  };
+  // Only resolve a live location after the visitor clicks and grants permission.
+  async function resolveCity(target){
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),6000);
+    try{
+      const url=new URL('https://api.bigdatacloud.net/data/reverse-geocode-client');
+      url.search=new URLSearchParams({latitude:Number(target.latitude).toFixed(2),longitude:Number(target.longitude).toFixed(2),localityLanguage:'en'}).toString();
+      const response=await fetch(url,{signal:controller.signal,referrerPolicy:'no-referrer'});
+      if(!response.ok)return;
+      const data=await response.json();
+      const city=data.city||data.locality||data.principalSubdivision;
+      if(typeof city==='string'&&city.trim())target.label=city.trim().toUpperCase();
+    }catch{}finally{clearTimeout(timeout);}
+  }
   const describe=(code,day)=>{
     if(code===0)return [day?'☀':'☾',label('clear')];
     if(code<=3)return ['☁',code===3?label('overcast'):label('cloudy')];
@@ -38,13 +59,14 @@
       const weather=data.current;
       if(!weather||typeof weather.temperature_2m!=='number'||!Number.isFinite(weather.temperature_2m)||typeof weather.weather_code!=='number')throw Error('Invalid weather response');
       if(current!==request)return;
+      setTimezone(data.timezone);
       const [icon,condition]=describe(weather.weather_code,weather.is_day);
-      button.textContent=`${point.label==='LOCAL'?label('weatherLocal')+' ':''}${icon} ${Math.round(weather.temperature_2m)}°C`;
-      button.title=label('weatherTitle',{location:point.label==='LOCAL'?label('weatherLocal'):point.label,condition});
-      button.setAttribute('aria-label',label('weatherAria',{location:point.label==='LOCAL'?label('weatherLocal'):point.label,condition,temperature:Math.round(weather.temperature_2m)}));
+      button.textContent=`${locationLabel()} ${icon} ${Math.round(weather.temperature_2m)}°C`;
+      button.title=label('weatherTitle',{location:locationLabel(),condition});
+      button.setAttribute('aria-label',label('weatherAria',{location:locationLabel(),condition,temperature:Math.round(weather.temperature_2m)}));
     }catch{
       if(current!==request)return;
-      button.textContent=label('weatherPlaceholder');
+      showPlaceholder();
       button.title=label('weatherFailedTitle');
       button.setAttribute('aria-label',label('weatherFailedAria'));
     }finally{
@@ -61,14 +83,18 @@
     busy=true;
     button.disabled=true;
     button.setAttribute('aria-busy','true');
-    navigator.geolocation.getCurrentPosition(position=>{
-      busy=false;button.disabled=false;
+    navigator.geolocation.getCurrentPosition(async position=>{
       point={latitude:position.coords.latitude,longitude:position.coords.longitude,label:'LOCAL'};
+      // Stop an older default-city request from replacing the selected location.
+      request++;clearTimeout(timer);showPlaceholder();
+      setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+      await resolveCity(point);
+      busy=false;button.disabled=false;showPlaceholder();
       update();
     },error=>{
       busy=false;button.disabled=false;button.removeAttribute('aria-busy');
       button.title=error.code===1?label('weatherDenied'):label('weatherUnavailable');
-    },{enableHighAccuracy:false,timeout:10000,maximumAge:300000});
+    },{enableHighAccuracy:false,timeout:10000,maximumAge:0});
   });
   window.addEventListener('pagehide',()=>{clearTimeout(timer);request++;});
   window.addEventListener('pageshow',event=>{if(event.persisted)update();});

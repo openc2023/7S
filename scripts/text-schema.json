@@ -36,10 +36,6 @@
       "type": "string",
       "placeholders": []
     },
-    "clockLabel": {
-      "type": "string",
-      "placeholders": []
-    },
     "clockTimezone": {
       "type": "string",
       "placeholders": []

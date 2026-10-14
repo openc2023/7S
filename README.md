@@ -103,7 +103,7 @@ Write your project story here. Use **bold text** for emphasis.
 
 ## 顶栏天气
 
-SEOUL 时钟左侧显示天气图标和摄氏温度。默认查询釜山，点击天气按钮后由浏览器请求当前位置授权；允许后显示 LOCAL 天气。定位只在点击后请求，坐标约取到小数点后两位并发送给 [Open-Meteo](https://open-meteo.com/en/docs) 查询，不写入配置文件、日志或浏览器存储。
+顶栏显示城市名、天气图标、摄氏温度和该城市当前时间，时间不带城市前缀。默认查询釜山，点击天气按钮后由浏览器请求当前位置授权；允许后显示当前位置的英文城市名和天气，时间跟随天气接口返回的当地时区。城市查询失败时显示 LOCAL。定位只在点击后请求，坐标约取到小数点后两位并发送给 [Open-Meteo](https://open-meteo.com/en/docs) 查询天气；仅点击并授权定位后，也会向 [BigDataCloud](https://www.bigdatacloud.com/docs/article/why-is-reverse-geocoding-api-free) 查询英文城市名，不写入配置文件、日志或浏览器存储。
 
 定位需要 HTTPS（localhost 预览也可用）及浏览器许可；如果自定义域名仍使用 HTTP，先使用默认城市天气。拒绝定位会保留已显示的天气。每次页面打开默认使用釜山，授权定位只作用于当前页面；天气服务失败时显示 WEATHER —，不会阻塞作品内容。
 

@@ -17,8 +17,7 @@
 | navContact | 联系导航 |
 | footerCopyright | 页脚版权和年份 |
 | footerSlogan | 页脚标语 |
-| clockLabel | 时钟城市文字，天气城市另在 settings.md 设置 |
-| clockTimezone | 时区名称 |
+| clockTimezone | 天气未加载时的备用时区；天气成功后跟随该城市时区。时间不再显示城市前缀 |
 | backTop | 回顶按钮提示 |
 | featured | 精选角标 |
 | viewProject | 作品卡片提示 |
@@ -59,7 +58,6 @@
   "navContact": "CONTACT",
   "footerCopyright": "© 2026 07S STUDIO",
   "footerSlogan": "SEVEN IS MORE THAN A NUMBER.",
-  "clockLabel": "SEOUL",
   "clockTimezone": "Asia/Seoul",
   "backTop": "Back to top",
   "featured": "★ FEATURED",
@@ -68,10 +66,10 @@
   "undo": "Undo",
   "copyFailed": "Copy unavailable. Please copy from the page or address bar.",
   "weatherPlaceholder": "WEATHER —",
-  "weatherUseLocation": "Show weather for your current location",
+  "weatherUseLocation": "Show your city weather and local time (uses Open-Meteo and BigDataCloud)",
   "weatherCredit": "Weather: Open-Meteo",
   "weatherLocal": "LOCAL",
-  "weatherTitle": "{location}: {condition}. Use current location (approximate coordinates sent to Open-Meteo).",
+  "weatherTitle": "{location}: {condition}. Use current location (approximate coordinates sent to Open-Meteo and BigDataCloud).",
   "weatherAria": "{location} weather: {condition}, {temperature} degrees Celsius. Use current location.",
   "weatherFailedTitle": "Weather unavailable. Click to try your current location.",
   "weatherFailedAria": "Weather unavailable. Try current location.",

@@ -16,7 +16,7 @@
 | contactNote | 联系页说明文字，填写英文 |
 | socials | 社交链接，例如 [{"name": "Instagram", "url": "https://www.instagram.com/your-name/"}]；留空 [] 显示英文占位提示 |
 | weather.enabled | true 显示天气，false 隐藏天气 |
-| weather.defaultLabel | 默认天气城市的英文名，目前 BUSAN（釜山）；不改变时钟文字 |
+| weather.defaultLabel | 默认天气城市的英文名，目前 BUSAN（釜山）；直接显示在温度前面，时间跟随天气城市时区 |
 | weather.latitude / longitude | 天气城市的纬度 / 经度，目前为釜山坐标；换城市时要一起改 |
 | weather.refreshMinutes | 天气自动刷新分钟数，至少 5，默认 15 |
 | hideEmptyCategories | true 自动隐藏没有已发布作品的分类；false 保留空分类 |
