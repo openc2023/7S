@@ -250,32 +250,63 @@ function contact(){
 function embedUrl(v){const u=safeUrl(v||'');if(!u)return '';let m=u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([\w-]{11})/);if(m)return 'https://www.youtube-nocookie.com/embed/'+m[1];m=u.match(/vimeo\.com\/(?:video\/)?(\d+)/);if(m)return 'https://player.vimeo.com/video/'+m[1];return ''}
 function safeUrl(s){try{let u=new URL(s);return ['https:','http:'].includes(u.protocol)?u.href:''}catch{return ''}}
 
-/* Desktop WORKS dropdown + mobile navigation with nested series. */
+/* WORKS series navigation: sourced from works/index.md and each series index.md. */
+const series=window.SITE_DATA.series||[];
 const nav=$('.nav');
 const worksLink=$('[data-nav="works"]',nav);
 const worksMenu=document.createElement('div');
 worksMenu.className='worksNavGroup';
 worksLink.parentNode.insertBefore(worksMenu,worksLink);
 worksMenu.append(worksLink);
+worksLink.setAttribute('aria-haspopup','true');
 const seriesMenu=document.createElement('div');
 seriesMenu.className='worksDropdown';
-seriesMenu.innerHTML='<a href="'+siteUrl('works/')+'">ALL WORKS</a><a href="'+siteUrl('works/wenxin/')+'">問心 / WENXIN</a>';
+seriesMenu.innerHTML='<span class="dropdownEyebrow">WORKS / SERIES</span>'+
+  '<a class="dropdownAll" href="'+siteUrl('works/')+'">ALL WORKS <span>↗</span></a>'+
+  series.map((item,i)=>'<a href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="dropdownNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+' <small>'+esc(item.subtitle||'')+'</small></span><span>↗</span></a>').join('');
 worksMenu.append(seriesMenu);
+
 const menuToggle=document.createElement('button');
-menuToggle.type='button';menuToggle.className='mobileMenuToggle';menuToggle.setAttribute('aria-label','Open navigation');menuToggle.setAttribute('aria-expanded','false');
-menuToggle.setAttribute('aria-controls','mobileNavPanel');menuToggle.textContent='☰';
-const mobileNav=document.createElement('div');mobileNav.id='mobileNavPanel';mobileNav.className='mobileNavPanel';
+menuToggle.type='button';
+menuToggle.className='mobileMenuToggle';
+menuToggle.setAttribute('aria-label','Open menu');
+menuToggle.setAttribute('aria-expanded','false');
+menuToggle.setAttribute('aria-controls','mobileNavPanel');
+menuToggle.innerHTML='<span></span><span></span>';
+const mobileNav=document.createElement('aside');
+mobileNav.id='mobileNavPanel';
+mobileNav.className='mobileNavPanel';
+mobileNav.setAttribute('aria-label','Site navigation');
+mobileNav.setAttribute('aria-hidden','true');
+mobileNav.inert=true;
 const navLinks=$$('[data-nav]',nav);
-mobileNav.innerHTML='<div class="mobileNavHead"><span>07S / MENU</span><button type="button" class="mobileNavClose" aria-label="Close navigation">×</button></div>'+navLinks.map(a=>'<a href="'+esc(a.href)+'">'+esc(a.textContent)+'</a>'+(a.dataset.nav==='works'?'<div class="mobileSubNav"><a href="'+siteUrl('works/wenxin/')+'">↳ 問心 / WENXIN</a></div>':'')).join('');
-const closeMobileNav=()=>{document.body.classList.remove('mobileNavOpen');menuToggle.setAttribute('aria-expanded','false');menuToggle.textContent='☰';document.body.style.overflow='';};
-menuToggle.onclick=()=>{const open=document.body.classList.toggle('mobileNavOpen');menuToggle.setAttribute('aria-expanded',String(open));menuToggle.textContent=open?'×':'☰';document.body.style.overflow=open?'hidden':'';};
-mobileNav.querySelectorAll('a').forEach(a=>a.onclick=closeMobileNav);
-mobileNav.querySelector('.mobileNavClose').onclick=closeMobileNav;
+const seriesItems=series.map((item,i)=>'<a class="mobileSeriesLink" href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="mobileSeriesNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+'<small>'+esc(item.subtitle||'')+'</small></span><span class="mobileSeriesArrow">↗</span></a>').join('');
+mobileNav.innerHTML='<div class="mobileNavHeader"><div class="mobileNavBrand">'+esc(copy.shared.brand)+'<span>MENU / 07S</span></div><button type="button" class="mobileNavClose" aria-label="Close menu">×</button></div>'+
+  '<div class="mobileNavBody">'+
+  navLinks.map((a,i)=>'<div class="mobileNavItem"><a class="mobileNavPrimary" href="'+esc(a.href)+'"><span class="mobileNavIndex">'+pad(i+1)+'</span>'+esc(a.textContent)+'<span class="mobileNavArrow">↗</span></a>'+
+    (a.dataset.nav==='works'&&series.length?'<div class="mobileNavSeries"><div class="mobileNavSeriesCaption">PROJECT SERIES</div>'+seriesItems+'</div>':'')+
+    '</div>').join('')+
+  '</div><div class="mobileNavFooter">'+esc(raw('shared','footerSlogan'))+'</div>';
+const mobileBackdrop=document.createElement('button');
+mobileBackdrop.type='button';
+mobileBackdrop.className='mobileNavBackdrop';
+mobileBackdrop.setAttribute('aria-label','Close menu');
+const setMobileNav=open=>{
+  document.body.classList.toggle('mobileNavOpen',open);
+  menuToggle.setAttribute('aria-expanded',String(open));
+  menuToggle.setAttribute('aria-label',open?'Close menu':'Open menu');
+  mobileNav.setAttribute('aria-hidden',String(!open));
+  mobileNav.inert=!open;
+  if(open)mobileNav.querySelector('.mobileNavClose').focus({preventScroll:true});
+  else if(mobileNav.contains(document.activeElement))menuToggle.focus({preventScroll:true});
+};
+menuToggle.onclick=()=>setMobileNav(!document.body.classList.contains('mobileNavOpen'));
+mobileNav.querySelector('.mobileNavClose').onclick=()=>setMobileNav(false);
+mobileNav.querySelectorAll('a').forEach(a=>a.onclick=()=>setMobileNav(false));
+mobileBackdrop.onclick=()=>setMobileNav(false);
 document.querySelector('.top').append(menuToggle);
-document.body.append(mobileNav);
-const mobileBackdrop=document.createElement('button');mobileBackdrop.type='button';mobileBackdrop.className='mobileNavBackdrop';mobileBackdrop.setAttribute('aria-label','Close navigation');document.body.append(mobileBackdrop);mobileBackdrop.onclick=closeMobileNav;
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileNav()});
-document.addEventListener('click',e=>{if(document.body.classList.contains('mobileNavOpen')&&!e.target.closest('.top'))closeMobileNav()});
+document.body.append(mobileBackdrop,mobileNav);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setMobileNav(false)});
 
 /* ================= 全局交互 ================= */
 let pageKeys=null,cleanups=[];
