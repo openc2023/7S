@@ -4,7 +4,7 @@
 新段落之间空一行。添加图片可写：![English image description](media/your-image.jpg)
 图片放在本作品的 media/ 文件夹，并把上面的文件名替换成真实文件名。
 更多图片、列表和视频示例可参考 templates/work/content.md。
-保存并同步 GitHub 后会自动生成作品页。
+保存后本地刷新即可；同步 GitHub 后，浏览器会解析此 MD 显示作品正文。
 -->
 
 ## About the project

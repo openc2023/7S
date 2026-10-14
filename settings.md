@@ -1,6 +1,6 @@
 # 网站设置：改这里就能生效
 
-这是全站设置的实际来源，不只是说明文档。修改后保存、构建并同步 GitHub 即可。
+这是全站设置的实际来源，不只是说明文档。修改后保存，本地刷新即可；线上需同步 GitHub 并等待部署。
 中文说明不会进入网页；引号中的网站文字请填写英文。
 只改下面代码块中的值，不要改代码块标记 `json site` / `json home` 或字段名。
 文字用英文双引号包住，true / false 和数字不加引号；相邻项目之间加逗号，最后一项后不加逗号。
@@ -99,7 +99,7 @@
 
 各页面文字请改 pages/ 下对应 MD（含中文字段说明）：home.md 首页、works.md 列表、studio.md 工作室、contact.md 联系、project.md 详情共用文字、shared.md 导航页脚和时钟。
 
-布局与样式仍在 templates/site.html、assets/css/site.css；首页 3D 图形程序在 assets/js/hero.js。
+布局与样式在固定 index.html 外壳、assets/css/site.css；首页 3D 图形程序在 assets/js/hero.js。
 
 双击 07S-Manager.bat 可预览、创建/恢复备份、登录和推送 GitHub。完整编辑入口见 _说明_从这里开始.md。
-不要修改 dist/ 或 assets/js/data.js，它们会在构建时自动生成。
+不要修改 dist/；它只是发布时复制的文件。浏览器直接读取 settings.md、pages/*.md 和作品 MD，不再使用 data.js。

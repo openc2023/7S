@@ -19,7 +19,7 @@
 | order | 推荐排序，数字越小越靠前；首页精选顺序另在全站 settings.md 设置 |
 | added | 添加日期，使用 YYYY-MM-DD 格式，用于最近添加排序 |
 
-复制模板新增作品时，记得把 status 从 draft 改为 publish 才会显示。
+复制模板新增作品时，记得把 status 从 draft 改为 publish，并将作品文件夹名加入 works/index.md 才会显示。
 要设为首页精选，请在全站 settings.md 的 projectIds 中添加本作品的文件夹名。
 删除作品或改为草稿时，也要移除全站精选列表里的对应文件夹名。
 

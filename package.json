@@ -3,7 +3,9 @@
   "private": true,
   "scripts": {
     "build": "node scripts/run.cjs build",
-    "preview": "node scripts/run.cjs preview"
+    "preview": "node scripts/run.cjs preview",
+    "check": "node scripts/run.cjs check",
+    "package": "node scripts/run.cjs package"
   },
   "engines": {
     "node": ">=20"

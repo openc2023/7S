@@ -5,7 +5,7 @@ const path=require('node:path');
 const os=require('node:os');
 const {spawnSync}=require('node:child_process');
 const command=process.argv[2];
-if(!['build','preview'].includes(command))throw Error('Use build or preview');
+if(!['build','preview','check','package'].includes(command))throw Error('Use check, package or preview');
 const bundled=path.join(os.homedir(),'.cache','codex-runtimes','codex-primary-runtime','dependencies','node','bin','node.exe');
 const runtime=process.platform==='win32'&&Number(process.versions.node.split('.')[0])>=25&&fs.existsSync(bundled)?bundled:process.execPath;
 const result=spawnSync(runtime,[path.join(__dirname,command+'.cjs')],{stdio:'inherit'});

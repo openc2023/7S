@@ -61,7 +61,7 @@ function Check-Environment {
     Require-Tool 'node'; Require-Tool 'npm.cmd'; Require-Tool 'git'
     & node --version; & npm.cmd --version; & git --version
     Write-Host "项目：$script:Root"
-    Write-Host '环境检查完成。第一次构建会自动安装依赖；GitHub 登录只在登录/推送时进行。'
+    Write-Host '环境检查完成。第一次检查会自动安装依赖；GitHub 登录只在登录/推送时进行。'
 }
 function Build-Site {
     Require-Tool 'node'; Require-Tool 'npm.cmd'
@@ -72,12 +72,12 @@ function Build-Site {
         $installed = Test-Path -LiteralPath 'node_modules/markdown-it/package.json'
         if (-not $installed -or -not (Test-Path -LiteralPath $stamp) -or (Get-Content -LiteralPath $stamp -Raw).Trim() -ne $hash) {
             & npm.cmd ci --ignore-scripts --no-fund --no-audit --cache .npm-cache
-            if ($LASTEXITCODE -ne 0) { throw '依赖安装失败，未继续构建。请检查网络后重试。' }
+            if ($LASTEXITCODE -ne 0) { throw '依赖安装失败，未继续检查。请检查网络后重试。' }
             Set-Content -LiteralPath $stamp -Value $hash -Encoding ASCII
         }
-        & node 'scripts/run.cjs' build
-        if ($LASTEXITCODE -ne 0) { throw '构建失败，请根据上方文件名和字段提示修改 MD 后重试。未推送 GitHub。' }
-        Write-Host '构建成功。' -ForegroundColor Green
+        & node 'scripts/run.cjs' check
+        if ($LASTEXITCODE -ne 0) { throw '检查失败，请根据上方文件名和字段提示修改 MD 后重试。未推送 GitHub。' }
+        Write-Host '检查成功。' -ForegroundColor Green
     } finally { Pop-Location }
 }
 function New-Backup([string]$Reason = 'manual') {
@@ -177,7 +177,7 @@ function Restore-Backup {
                 $check = Split-Path $check -Parent
             }
         }
-        Write-Host '恢复完成。请先选择构建/预览检查，再选择推送 GitHub。' -ForegroundColor Green
+        Write-Host '恢复完成。请先选择检查/预览检查，再选择推送 GitHub。' -ForegroundColor Green
     } finally { $zip.Dispose() }
 }
 function Login-GitHub {
@@ -242,7 +242,7 @@ function Preview-Site {
         Start-Process -FilePath $node -ArgumentList ('"' + (Join-Path $script:Root 'scripts/preview.cjs') + '"') -WorkingDirectory $script:Root -WindowStyle Hidden -RedirectStandardOutput (Join-Path $script:Root 'output/preview.log') -RedirectStandardError (Join-Path $script:Root 'output/preview-error.log')
     }
     Start-Process 'http://127.0.0.1:5177/07s-preview/'
-    Write-Host '已打开预览。修改 MD 后再次选择预览，会重新构建。'
+    Write-Host '已打开预览。修改 MD 后直接刷新浏览器，无需转换 HTML。'
 }
 function Invoke-Action([string]$Choice) {
     switch ($Choice) {
@@ -259,7 +259,7 @@ function Invoke-Action([string]$Choice) {
 if ($Action -ne 'Menu') { Invoke-Action $Action; exit }
 while ($true) {
     Write-Host "`n07S 网站管理 —— $script:Root" -ForegroundColor Cyan
-    Write-Host '1 环境检查    2 构建并预览    3 创建备份    4 选择备份恢复'
+    Write-Host '1 环境检查    2 检查并预览    3 创建备份    4 选择备份恢复'
     Write-Host '5 推送 GitHub  6 登录 GitHub  7 查看备份    8 打开编辑指南    0 退出'
     $choice = Read-Host '请选择'
     if ($choice -eq '0') { break }
