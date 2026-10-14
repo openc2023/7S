@@ -54,7 +54,7 @@ function asset(slug,file){
   return 'works/'+slug+'/'+file;
 }
 // Validate source files before the publisher copies anything to dist/.
-const projects=fs.readdirSync(path.join(root,'works'),{withFileTypes:true}).filter(x=>x.isDirectory()&&!x.name.startsWith('.')).map(entry=>{
+const projects=fs.readdirSync(path.join(root,'works'),{withFileTypes:true}).filter(x=>x.isDirectory()&&!x.name.startsWith('.')&&x.name!=='wenxin').map(entry=>{
   const slug=entry.name;
   if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))throw Error(`Use lowercase English letters, numbers and hyphens for work folder names: ${slug}`);
   const settingsFile=`works/${slug}/settings.md`;
@@ -83,6 +83,7 @@ for(const id of selected.projectIds){
   if(!p)throw Error(`settings.md (home): selected work "${id}" does not exist or is a draft; update projectIds or publish the work`);
 }
 
-for(const file of ['index.html','works/index.html','studio/index.html','contact/index.html',...published.map(p=>`works/${p.id}/index.html`)])if(!fs.existsSync(path.join(root,file)))throw Error(`Missing fixed shell: ${file}; copy templates/work/index.html for new works`);
+settings('works/wenxin/index.md',['wenxin']);
+for(const file of ['works/wenxin/index.html','index.html','works/index.html','studio/index.html','contact/index.html',...published.map(p=>`works/${p.id}/index.html`)])if(!fs.existsSync(path.join(root,file)))throw Error(`Missing fixed shell: ${file}; copy templates/work/index.html for new works`);
 module.exports={root,published};
 console.log(`Checked MD settings, media and fixed HTML shells (${published.length} published works). No HTML generated.`);
