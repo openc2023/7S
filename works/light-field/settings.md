@@ -36,6 +36,7 @@
   "video": "",
   "status": "publish",
   "order": 1,
-  "added": "2026-01-02"
+  "added": "2026-01-02",
+  "series": ["seoul-light-2026"]
 }
 ```

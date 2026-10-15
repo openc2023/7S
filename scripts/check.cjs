@@ -46,15 +46,30 @@ for(const c of site.categories){
 }
 for(const key of ['eyebrow','title','linkLabel'])if(typeof selected?.[key]!=='string')throw Error(`settings.md (home): ${key} must be text`);
 if(!Array.isArray(selected.projectIds)||selected.projectIds.some(id=>typeof id!=='string')||new Set(selected.projectIds).size!==selected.projectIds.length)throw Error('settings.md (home): projectIds must contain unique work folder names');
+function asset(slug,file){
+  if(typeof file!=='string'||!file||file.includes('\\')||file.startsWith('/')||file.split('/').includes('..')||/^[a-z]+:/i.test(file)) throw Error(`${slug}: use a relative local media path: ${file}`);
+  if(!fs.existsSync(path.join(root,'works',slug,file))||!fs.statSync(path.join(root,'works',slug,file)).isFile())throw Error(`${slug}: missing media ${file}`);
+  return 'works/'+slug+'/'+file;
+}
 const worksConfig=settings('works/index.md',['works']).works;
 const catalog=worksConfig.projectIds;
 const seriesIds=worksConfig.seriesIds||[];
 if(!Array.isArray(seriesIds)||new Set(seriesIds).size!==seriesIds.length||seriesIds.some(id=>typeof id!=='string'||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)))throw Error('works/index.md: invalid seriesIds');
 if(seriesIds.some(id=>catalog.includes(id)))throw Error('works/index.md: series IDs cannot also be project IDs');
+const seriesTypeNames=new Set();
+for(const t of site.seriesTypes||[]){
+  if(!t||typeof t.name!=='string'||!t.name.trim()||t.name==='All'||typeof t.enabled!=='boolean'||seriesTypeNames.has(t.name))throw Error('settings.md (site): seriesTypes need a unique name (not All) and enabled: true or false');
+  seriesTypeNames.add(t.name);
+}
+const seriesInfo={};
 for(const id of seriesIds){
   const index='works/'+id+'/index.md';
-  const info=settings(index,[id])[id];
-  if(typeof info.title!=='string'||!info.title.trim())throw Error(index+': missing title');
+  const info=settings(index,['series']).series;
+  seriesInfo[id]=info;
+  for(const key of ['title','type'])if(typeof info[key]!=='string'||!info[key].trim())throw Error(index+': missing '+key);
+  for(const key of ['subtitle','dates','venue','cover','description'])if(info[key]!==undefined&&typeof info[key]!=='string')throw Error(index+': '+key+' must be text');
+  if(info.cover)asset(id,info.cover);
+  if(info.chapters!==undefined&&(!Array.isArray(info.chapters)||info.chapters.some(c=>!c||typeof c.id!=='string'||typeof c.name!=='string')))throw Error(index+': chapters must be [{"id":"...","name":"..."}]');
 
   // Series planned-card image covers are real media assets, not CSS-generated art.
   // Validate all Markdown references before copying a release.
@@ -79,11 +94,6 @@ for(const id of seriesIds){
   if(!fs.existsSync(path.join(root,'works',id,'index.html')))throw Error('Missing series HTML shell: works/'+id+'/index.html');
 }
 if(!Array.isArray(catalog)||new Set(catalog).size!==catalog.length)throw Error('works/index.md: projectIds must be a unique array');
-function asset(slug,file){
-  if(typeof file!=='string'||!file||file.includes('\\')||file.startsWith('/')||file.split('/').includes('..')||/^[a-z]+:/i.test(file)) throw Error(`${slug}: use a relative local media path: ${file}`);
-  if(!fs.statSync(path.join(root,'works',slug,file)).isFile())throw Error(`${slug}: missing media ${file}`);
-  return 'works/'+slug+'/'+file;
-}
 // Validate source files before the publisher copies anything to dist/.
 const projects=fs.readdirSync(path.join(root,'works'),{withFileTypes:true}).filter(x=>x.isDirectory()&&!x.name.startsWith('.')&&!seriesIds.includes(x.name)).map(entry=>{
   const slug=entry.name;
@@ -96,6 +106,10 @@ const projects=fs.readdirSync(path.join(root,'works'),{withFileTypes:true}).filt
   const created=Date.parse(p.added);
   if(!Number.isFinite(created))throw Error(`${slug}: added must be an ISO date`);
   if(p.video&&!/^https?:\/\//i.test(p.video))throw Error(`${slug}: video must be an http(s) link; use content.md for local video`);
+  if(p.series!==undefined){
+    if(!Array.isArray(p.series)||p.series.some(id=>!seriesIds.includes(id)))throw Error(`${slug}: series must list folder names from works/index.md seriesIds`);
+    if(p.chapter!==undefined&&!p.series.some(id=>(seriesInfo[id].chapters||[]).some(c=>c.id===p.chapter)))throw Error(`${slug}: chapter ${p.chapter} is not defined in its series`);
+  }
   const markdownFile=`works/${slug}/content.md`;
   // Match the browser parser: ignore editor comments and validate visible media.
   const content=markdown.render(read(markdownFile).replace(/<!--[\s\S]*?-->/g,''));

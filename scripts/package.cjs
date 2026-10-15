@@ -4,7 +4,7 @@ const output=path.join(root,'dist');
 if(path.dirname(output)!==root||path.basename(output)!=='dist')throw Error('Invalid output');
 fs.rmSync(output,{recursive:true,force:true});fs.mkdirSync(output);
 const copy=(file)=>fs.cpSync(path.join(root,file),path.join(output,file),{recursive:true,filter:source=>!path.basename(source).startsWith('_')&&!path.basename(source).startsWith('.')});
-for(const file of ['index.html','settings.md','pages','assets','works/index.html','works/index.md','works/wenxin','studio/index.html','contact/index.html',...seriesIds.map(id=>'works/'+id),...published.map(p=>'works/'+p.id)])copy(file);
+for(const file of ['index.html','settings.md','pages','assets','works/index.html','works/index.md','studio/index.html','contact/index.html',...seriesIds.map(id=>'works/'+id),...published.map(p=>'works/'+p.id)])copy(file);
 
 /* Version deployed static resources from their contents. Source HTML stays a fixed shell. */
 const crypto=require('node:crypto');

@@ -1,30 +1,32 @@
-# 問心 / WENXIN — 系列画廊设置
+# 問心 / WENXIN — 系列设置
 
-此页面属于 WORKS 的子页面。将来可在作品 settings.md 添加 `"series": "wenxin"` 和 `"chapter": "seven-aspects"`，系列画廊会自动读取该作品。
+这是一个「系列 / 展览」，网址是 works/wenxin/。所有系列共用同一套版式（作品页下半部分的系列卡片 + 系列详情页），这里只填资料，不需要改 HTML、JS 或 CSS。
 
-以下为**尚未上传真实作品素材的展示位置**，不代表作品已正式发布。当前 `media/01.svg`—`media/08.svg` 直接复用了 WORKS 已定稿的 07S SVG 封面占位风格，视频占位沿用同系列 SVG，并在页面叠加播放标记。之后上传真实图片时，替换本列表中对应的 `cover`（如 `media/01.webp`），无需修改 HTML、JS 或 CSS；真实作品以 works/index.md 的已发布项目为准。
+| 字段 | 修改说明 |
+| --- | --- |
+| title | 系列名称 |
+| subtitle | 副标题，显示在名称下方；不需要就留空 "" |
+| type | 系列类型，必须是根目录 settings.md 中 seriesTypes 的名称之一：Series / Solo exhibition / Group exhibition |
+| dates | 展期或年份，自由填写，例如 "Mar 12 – May 24, 2026"；留空 "" 不显示 |
+| venue | 展出地点；留空 "" 不显示 |
+| cover | 系列封面，放在本文件夹 media/ 中；留空 "" 不显示大图 |
+| description | 系列简介，显示在 ABOUT THE SERIES |
+| chapters | 可选：系列内的章节，显示为系列页的筛选按钮；不需要就写 [] |
+| planned | 可选：尚未上传真实素材的展示位置；不需要就写 [] |
 
-```json wenxin
+作品加入系列：在作品的 settings.md 中添加 `"series": ["wenxin"]`；有章节时再加 `"chapter": "seven-aspects"`。
+
+planned 中的卡片**不代表作品已正式发布**。当前 `media/01.svg`—`media/08.svg` 复用 WORKS 的 07S SVG 封面占位风格，视频占位会叠加播放标记。之后上传真实图片时，替换对应的 `cover`（如 `media/01.webp`）即可。真实作品发布后，与 planned 中标题和章节相同的占位卡会自动隐藏。
+
+```json series
 {
   "title": "問心",
   "subtitle": "WENXIN / QUESTIONING THE MIND",
+  "type": "Series",
+  "dates": "",
+  "venue": "",
+  "cover": "media/01.svg",
   "description": "由根入心，由心生相；见相，破相，无相，而见本心。",
-  "ui": {
-    "all": "全部 / ALL",
-    "search": "Search works / 搜索作品",
-    "sortManual": "Recommended",
-    "sortAZ": "Title A–Z",
-    "sortZA": "Title Z–A",
-    "gridView": "Grid view",
-    "listView": "List view",
-    "empty": "该章节暂无作品 / No works yet.",
-    "imagePending": "IMAGE · COMING SOON",
-    "videoPending": "VIDEO · COMING SOON",
-    "previewPending": "COMING SOON",
-    "works": "WORKS",
-    "published": "PUBLISHED",
-    "planned": "PLANNED"
-  },
   "chapters": [
     {"id":"six-roots","name":"六根"},
     {"id":"seven-aspects","name":"七相"},

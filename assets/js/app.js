@@ -6,11 +6,13 @@ const siteRoot=new URL('../../',document.currentScript.src);
 const siteUrl=path=>new URL(path,siteRoot).href;
 const projectUrl=id=>siteUrl('works/'+encodeURIComponent(id)+'/');
 const copy=window.SITE_DATA.text;
-const raw=(scope,key,values={})=>String(copy[scope][key]).replace(/\{(\w+)\}/g,(match,name)=>Object.hasOwn(values,name)?values[name]:match);
+const raw=(scope,key,values={})=>String(copy[scope][key]).replace(/\{(\w+)\}/g,(match,name)=>Object.prototype.hasOwnProperty.call(values,name)?values[name]:match);
 const txt=(scope,key,values)=>esc(raw(scope,key,values));
 const titleLines=(scope,key)=>copy[scope][key].map(line=>`<span class="ln"><span>${esc(line)}</span></span>`).join('');
 const cats=window.SITE_DATA.categories;
 const projects=window.SITE_DATA.projects.map(p=>({...p,image:siteUrl(p.image),gallery:p.gallery.map(siteUrl)}));
+const seriesTypes=window.SITE_DATA.seriesTypes||[];
+const seriesList=(window.SITE_DATA.series||[]).map(s=>({...s,cover:s.cover?siteUrl(s.cover):'',planned:s.planned.map(p=>({...p,cover:siteUrl(p.cover)}))}));
 /* ================= 工具 ================= */
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -83,7 +85,7 @@ const SORTS={
   za:[raw('works','sortZA'),(a,b)=>b.title.localeCompare(a.title)],
   recent:[raw('works','sortRecent'),(a,b)=>b.created-a.created]
 };
-let ws={filter:'All',year:'All',sort:'manual',view:'grid',search:'',...(()=>{try{return JSON.parse(sessionStorage.getItem('07sWorks-en'))||{}}catch(e){return{}}})()};
+let ws={filter:'All',year:'All',sort:'manual',view:'grid',search:'',seriesType:'All',...(()=>{try{return JSON.parse(sessionStorage.getItem('07sWorks-en'))||{}}catch(e){return{}}})()};
 const saveWs=()=>{try{sessionStorage.setItem('07sWorks-en',JSON.stringify(ws))}catch(e){}};
 
 function queryWorks(){
@@ -106,6 +108,10 @@ function works(){
     <div class="activeFilters" id="chips"></div>
     <div class="workGrid" id="grid"></div>
     <div class="foot"><span id="count"></span><span>${txt('works','signature')}</span></div>
+    ${seriesList.length?`<div class="line"></div>
+    <div class="sectiontop reveal"><div><div class="small muted">${txt('works','seriesEyebrow')}</div><h2>${txt('works','seriesTitle')}</h2></div></div>
+    <div class="pillrow" id="seriesPills"></div>
+    <div class="workGrid" id="seriesGrid"></div>`:''}
   </section>`;
   const find=$('#find');
   let t;find.oninput=()=>{clearTimeout(t);t=setTimeout(()=>{ws.search=find.value;renderWorks()},120);$('#sbox').classList.toggle('has',!!find.value)};
@@ -116,6 +122,25 @@ function works(){
   $('#sortSel').onchange=e=>{ws.sort=e.target.value;renderWorks()};
   $$('[data-view]').forEach(b=>b.onclick=()=>{ws.view=b.dataset.view;renderWorks()});
   renderWorks();
+  if(seriesList.length)renderSeriesSection();
+}
+// Series / exhibitions share the WORKS card markup, so motion and hover stay identical.
+function seriesCard(s,i){
+  const n=seriesItems(s).length;
+  return `<a href="${projectUrl(s.id)}" class="work seriesCard" style="--i:${i}" data-series-card="${esc(s.id)}">
+    <div class="cover"><img src="${esc(s.cover||svg('#111','#2a2a2a','#555'))}" alt="${esc(s.title)}" loading="lazy"><span class="view">${txt('works','viewSeries')}</span></div>
+    <span class="idx">${pad(i+1)}</span>
+    <div class="workName"><span>${esc(s.title)}</span><span class="arr">↗</span></div>
+    <div class="workMeta"><span class="ct">${esc(s.type)}</span><span class="loc">${esc([s.dates,s.venue].filter(Boolean).join(' · '))}</span><span class="yr">${txt('works','seriesWorks',{count:n})}</span></div>
+  </a>`;
+}
+function renderSeriesSection(){
+  if(ws.seriesType!=='All'&&!seriesTypes.includes(ws.seriesType))ws.seriesType='All';
+  $('#seriesPills').innerHTML=['All',...seriesTypes].map(t=>`<button class="pill ${ws.seriesType===t?'active':''}" data-series-type="${esc(t)}">${t==='All'?txt('works','seriesAll'):esc(t)} <span class="n">${t==='All'?seriesList.length:seriesList.filter(s=>s.type===t).length}</span></button>`).join('');
+  $$('[data-series-type]').forEach(b=>b.onclick=()=>{ws.seriesType=b.dataset.seriesType;saveWs();renderSeriesSection()});
+  const grid=$('#seriesGrid');
+  grid.innerHTML=seriesList.filter(s=>ws.seriesType==='All'||s.type===ws.seriesType).map(seriesCard).join('');
+  observe(grid);
 }
 function renderWorks(){
   saveWs();
@@ -139,65 +164,74 @@ function renderWorks(){
 }
 
 
-/* ================= WORKS / WENXIN series ================= */
-function wenxin(){
-  const config=window.SITE_DATA.wenxin;
-  const chapters=config.chapters||[];
-  const ui=config.ui||{};
-  const published=pub().filter(p=>p.series==='wenxin'&&chapters.some(c=>c.id===p.chapter));
-  const planned=(config.planned||[]).map((p,i)=>({...p,order:i,planned:true}));
-  const items=[...published,...planned.filter(p=>!published.some(real=>real.title===p.title&&real.chapter===p.chapter))];
-  let filter='all',search='',sort='manual',view='grid';
-  app.innerHTML=`<section class="panel wenxinPanel">
-    <div class="eyebrow"><span><a class="ulink" href="${siteUrl('works/')}">WORKS</a> / SERIES 001</span><span>07S</span></div>
-    <h1 class="pageTitle">${esc(config.title)}</h1>
-    <p class="small muted">${esc(config.subtitle)}</p>
-    <p class="lead">${esc(config.description)}</p>
-    <div class="pillrow" id="wenxinTabs" aria-label="Wenxin chapters"></div>
-    <div class="tools wenxinTools">
-      <div class="searchBox" id="wenxinSearchBox"><input class="field" id="wenxinSearch" type="search" placeholder="${esc(ui.search||'Search works')}" autocomplete="off"><kbd>/</kbd></div>
-      <select class="select" id="wenxinSort" aria-label="Sort works"><option value="manual">${esc(ui.sortManual||'Recommended')}</option><option value="az">${esc(ui.sortAZ||'Title A-Z')}</option><option value="za">${esc(ui.sortZA||'Title Z-A')}</option></select>
-      <div class="seg" role="group" aria-label="Gallery view"><button data-wenxin-view="grid" class="active" title="${esc(ui.gridView||'Grid view')}">▦</button><button data-wenxin-view="list" title="${esc(ui.listView||'List view')}">☰</button></div>
-    </div>
-    <div class="workGrid" id="wenxinGrid"></div>
-    <div class="foot"><span id="wenxinCount"></span><span>WENXIN / 07S</span></div>
-  </section>`;
-  const tabs=$('#wenxinTabs'),grid=$('#wenxinGrid');
-  // Planned media share the WORKS card structure and IntersectionObserver animations.
-// Planned covers use the original WORKS SVG media assets, copied into works/wenxin/media and listed in Markdown.
-function placeholderCard(p,i,q){
+/* ================= Series / exhibition page ================= */
+// Published works that list this series, plus planned placeholders not yet replaced by a real work.
+function seriesItems(s){
+  const published=pub().filter(p=>p.series.includes(s.id)).sort(SORTS.manual[1]);
+  return [...published,...s.planned.filter(p=>!published.some(real=>real.title===p.title&&real.chapter===p.chapter)).map(p=>({...p,planned:true}))];
+}
+function plannedCard(p,i,q,total,chapters){
   const isVideo=p.type==='video';
-  const pending=isVideo?ui.videoPending:ui.imagePending;
+  const pending=raw('works',isVideo?'videoPending':'imagePending');
   const chapter=chapters.find(c=>c.id===p.chapter)?.name||'';
-  const cover=siteUrl('works/wenxin/'+p.cover);
-  return `<article class="work wenxinPlaceholder" style="--i:${i}" aria-label="${esc(p.title)} — ${esc(pending||'COMING SOON')}">
+  return `<article class="work plannedWork" style="--i:${i}" aria-label="${esc(p.title)} — ${esc(pending)}">
     <div class="cover">
-      <img src="${esc(cover)}" alt="${esc(p.title)} / 07S placeholder" loading="lazy">
-      ${isVideo?'<span class="wenxinVideoOverlay" aria-hidden="true">▶</span>':''}
-      <span class="wenxinPlaceholderIndex">${pad(i+1)} / ${pad(items.length)}</span>
-      <span class="wenxinPending">${esc(pending)}</span>
-      <span class="view wenxinPreviewLabel">${esc(ui.previewPending||'COMING SOON')}</span>
+      <img src="${esc(p.cover)}" alt="${esc(p.title)}" loading="lazy">
+      ${isVideo?'<span class="plannedVideo" aria-hidden="true">▶</span>':''}
+      <span class="plannedIndex">${pad(i+1)} / ${pad(total)}</span>
+      <span class="plannedPending">${esc(pending)}</span>
+      <span class="view">${txt('works','previewPending')}</span>
     </div>
     <span class="idx">${pad(i+1)}</span>
     <div class="workName"><span>${hl(p.title,q)}</span><span class="arr" aria-hidden="true">↗</span></div>
-    <div class="workMeta"><span class="ct">${esc(chapter)}</span><span class="loc">${esc(ui.planned||'PLANNED')}</span><span class="yr">${isVideo?'VIDEO':'IMAGE'}</span></div>
+    <div class="workMeta"><span class="ct">${esc(chapter)}</span><span class="loc">${txt('works','planned')}</span><span class="yr">${isVideo?'VIDEO':'IMAGE'}</span></div>
   </article>`;
 }
-function render(){
-  const filtered=items.filter(p=>(filter==='all'||p.chapter===filter)&&(!search||[p.title,p.type,p.chapter].join(' ').toLowerCase().includes(search)));
-  if(sort==='az')filtered.sort((a,b)=>a.title.localeCompare(b.title));
-  if(sort==='za')filtered.sort((a,b)=>b.title.localeCompare(a.title));
-  tabs.innerHTML=[{id:'all',name:ui.all||'ALL'},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-wenxin-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
-  $$('[data-wenxin-tab]',tabs).forEach(btn=>btn.onclick=()=>{filter=btn.dataset.wenxinTab;render()});
-  $$('[data-wenxin-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.wenxinView===view));
-  grid.className='workGrid '+(view==='list'?'list':'');
-  grid.innerHTML=filtered.map((p,i)=>p.planned?placeholderCard(p,i,search):workCard(p,i,search)).join('')||'<div class="empty">'+esc(ui.empty||'No works yet.')+'</div>';
-  $('#wenxinCount').textContent=`${filtered.length} ${ui.works||'WORKS'} · ${filtered.filter(p=>!p.planned).length} ${ui.published||'PUBLISHED'} · ${filtered.filter(p=>p.planned).length} ${ui.planned||'PLANNED'}`;
-  observe(grid);
-}
-  $('#wenxinSearch').oninput=e=>{search=e.target.value.trim().toLowerCase();render()};
-  $('#wenxinSort').onchange=e=>{sort=e.target.value;render()};
-  $$('[data-wenxin-view]').forEach(btn=>btn.onclick=()=>{view=btn.dataset.wenxinView;render()});
+function seriesPage(id){
+  const k=seriesList.findIndex(x=>x.id===id),s=seriesList[k];
+  const prev=seriesList[(k-1+seriesList.length)%seriesList.length],next=seriesList[(k+1)%seriesList.length];
+  const items=seriesItems(s),chapters=s.chapters;
+  const meta=[s.type,s.dates,s.venue,raw('works','seriesWorks',{count:items.length})].filter(Boolean);
+  let filter='all',search='',sort='manual',view='grid';
+  app.innerHTML=`<section class="panel seriesPanel">
+    <div class="eyebrow"><span><a class="ulink" href="${siteUrl('works/')}">${txt('project','backWorks')}</a> / ${txt('works','seriesLabel')}</span><span>${pad(k+1)} / ${pad(seriesList.length)}</span></div>
+    <h1 class="pageTitle">${esc(s.title)}</h1>
+    ${s.subtitle?`<p class="lead">${esc(s.subtitle)}</p>`:''}
+    <div class="seriesMeta">${meta.map(m=>`<span>${esc(m)}</span>`).join('')}</div>
+    ${s.cover?`<div class="feature" style="margin:35px 0" data-lb="0"><img src="${esc(s.cover)}" alt="${esc(s.title)}"></div>`:''}
+    ${s.description?`<div class="cols reveal"><div class="small muted">${txt('works','aboutSeries')}</div><p class="editorial seriesAbout">${esc(s.description)}</p></div>`:''}
+    <div class="line"></div>
+    <div class="sectiontop"><div><div class="small muted">${txt('works','inThisSeries')}</div><h2>${txt('works','seriesWorksTitle')}</h2></div></div>
+    ${chapters.length?'<div class="pillrow" id="seriesTabs"></div>':''}
+    <div class="tools seriesTools">
+      <div class="searchBox" id="seriesSearchBox"><input class="field" id="seriesSearch" type="search" placeholder="${txt('works','seriesSearch')}" autocomplete="off"><kbd>/</kbd></div>
+      <select class="select" id="seriesSort" title="${txt('works','sort')}"><option value="manual">${txt('works','sortManual')}</option><option value="az">${txt('works','sortAZ')}</option><option value="za">${txt('works','sortZA')}</option></select>
+      <div class="seg" role="group" aria-label="${txt('works','view')}"><button data-series-view="grid" class="active" title="${txt('works','twoColumns')}">▦</button><button data-series-view="list" title="${txt('works','list')}">☰</button></div>
+    </div>
+    <div class="workGrid" id="seriesGrid"></div>
+    <div class="foot"><span id="seriesCount"></span><span>${txt('works','signature')}</span></div>
+    ${seriesList.length>1?`<div class="line"></div>
+    <div class="foot"><a href="${projectUrl(prev.id)}" class="ulink">← ${esc(prev.title)}</a><a href="${siteUrl('works/')}" class="ulink muted">${txt('works','allWorks')}</a><a href="${projectUrl(next.id)}" class="ulink">${esc(next.title)} →</a></div>`:''}
+  </section>`;
+  const tabs=$('#seriesTabs'),grid=$('#seriesGrid');
+  function render(){
+    const filtered=items.filter(p=>(filter==='all'||p.chapter===filter)&&(!search||[p.title,p.cat,p.type,p.chapter].join(' ').toLowerCase().includes(search)));
+    if(sort==='az')filtered.sort((a,b)=>a.title.localeCompare(b.title));
+    if(sort==='za')filtered.sort((a,b)=>b.title.localeCompare(a.title));
+    if(tabs){
+      tabs.innerHTML=[{id:'all',name:raw('works','seriesAll')},...chapters].map(t=>`<button type="button" class="pill ${filter===t.id?'active':''}" data-series-tab="${esc(t.id)}" aria-pressed="${filter===t.id}">${esc(t.name)} <span class="n">${t.id==='all'?items.length:items.filter(p=>p.chapter===t.id).length}</span></button>`).join('');
+      $$('[data-series-tab]',tabs).forEach(btn=>btn.onclick=()=>{filter=btn.dataset.seriesTab;render()});
+    }
+    $$('[data-series-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.seriesView===view));
+    grid.className='workGrid '+(view==='list'?'list':'');
+    grid.innerHTML=filtered.map((p,i)=>p.planned?plannedCard(p,i,search,filtered.length,chapters):workCard(p,i,search)).join('')||`<div class="empty" style="grid-column:1/-1">${txt('works','seriesEmpty')}</div>`;
+    $('#seriesCount').textContent=raw('works','seriesSummary',{shown:filtered.length,published:filtered.filter(p=>!p.planned).length,planned:filtered.filter(p=>p.planned).length});
+    observe(grid);
+  }
+  $('#seriesSearch').oninput=e=>{search=e.target.value.trim().toLowerCase();render()};
+  $('#seriesSort').onchange=e=>{sort=e.target.value;render()};
+  $$('[data-series-view]').forEach(btn=>btn.onclick=()=>{view=btn.dataset.seriesView;render()});
+  $$('[data-lb]').forEach(el=>el.onclick=()=>lightbox([s.cover],0));
   render();
 }
 
@@ -213,7 +247,7 @@ function detail(id){
     <div class="feature" style="margin:35px 0" data-lb="0"><img src="${esc(p.image)}" alt="${esc(p.title)}"></div>
     <div class="cols"><div class="reveal"><div class="small muted">${txt('project','overview')}</div><p class="editorial" style="font-size:24px">${esc(p.desc)}</p>
       <div class="actions"><button class="pill" id="share">${txt('project','copyLink')}</button>${p.video?`<a class="pill" href="${esc(safeUrl(p.video))}" target="_blank" rel="noopener noreferrer">${txt('project','watchVideo')}</a>`:''}</div></div>
-      <div class="reveal"><div class="small muted">${txt('project','details')}</div>${[[raw('project','year'),p.year],[raw('project','category'),p.cat],[raw('project','location'),p.location||'—'],[raw('project','technology'),p.technology||'—']].map(([a,b])=>`<div class="projectMeta"><span class="muted">${esc(a)}</span><span>${esc(b)}</span></div>`).join('')}</div></div>
+      <div class="reveal"><div class="small muted">${txt('project','details')}</div>${[[raw('project','year'),p.year],[raw('project','category'),p.cat],[raw('project','location'),p.location||'—'],[raw('project','technology'),p.technology||'—']].map(([a,b])=>`<div class="projectMeta"><span class="muted">${esc(a)}</span><span>${esc(b)}</span></div>`).join('')}${p.series.length?`<div class="projectMeta"><span class="muted">${txt('project','series')}</span><span>${seriesList.filter(x=>p.series.includes(x.id)).map(x=>`<a class="ulink" href="${projectUrl(x.id)}">${esc(x.title)} ↗</a>`).join(', ')}</span></div>`:''}</div></div>
     <div class="projectContent">${p.content||''}</div>
     ${embedUrl(p.video)?`<div class="line"></div><div class="small muted">${txt('project','film')}</div><div class="video"><iframe src="${esc(embedUrl(p.video))}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="${txt('project','videoTitle',{title:p.title})}"></iframe></div>`:''}
     <div class="line"></div><div class="small muted">${txt('project','gallery',{count:imgs.length})}</div>
@@ -263,7 +297,7 @@ function embedUrl(v){const u=safeUrl(v||'');if(!u)return '';let m=u.match(/(?:yo
 function safeUrl(s){try{let u=new URL(s);return ['https:','http:'].includes(u.protocol)?u.href:''}catch{return ''}}
 
 /* WORKS series navigation: sourced from works/index.md and each series index.md. */
-const series=window.SITE_DATA.series||[];
+const series=seriesList;
 const nav=$('.nav');
 const worksLink=$('[data-nav="works"]',nav);
 const worksMenu=document.createElement('div');
@@ -275,7 +309,7 @@ const seriesMenu=document.createElement('div');
 seriesMenu.className='worksDropdown';
 seriesMenu.innerHTML='<span class="dropdownEyebrow">'+esc(raw('shared','menuSeries'))+'</span>'+
   '<a class="dropdownAll" href="'+siteUrl('works/')+'">' + esc(raw('shared','menuWorksAll')) + ' <span>↗</span></a>'+
-  series.map((item,i)=>'<a href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="dropdownNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+' <small>'+esc(item.subtitle||'')+'</small></span><span>↗</span></a>').join('');
+  series.map((item,i)=>'<a href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="dropdownNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+' <small>'+esc(item.subtitle||item.type||'')+'</small></span><span>↗</span></a>').join('');
 worksMenu.append(seriesMenu);
 
 const menuToggle=document.createElement('button');
@@ -292,11 +326,11 @@ mobileNav.setAttribute('aria-label',raw('shared','menuIndex'))
 mobileNav.setAttribute('aria-hidden','true');
 mobileNav.inert=true;
 const navLinks=$$('[data-nav]',nav);
-const seriesItems=series.map((item,i)=>'<a class="mobileSeriesLink" href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="mobileSeriesNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+'<small>'+esc(item.subtitle||'')+'</small></span><span class="mobileSeriesArrow">↗</span></a>').join('');
+const seriesNavItems=series.map((item,i)=>'<a class="mobileSeriesLink" href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="mobileSeriesNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+'<small>'+esc(item.subtitle||item.type||'')+'</small></span><span class="mobileSeriesArrow">↗</span></a>').join('');
 mobileNav.innerHTML='<div class="mobileNavHeader"><div class="mobileNavBrand">'+esc(copy.shared.brand)+'<sup>'+esc(copy.shared.brandSuffix)+'</sup><span>'+esc(raw('shared','menuIndex'))+' / '+esc(copy.shared.brand)+'</span></div><button type="button" class="mobileNavClose" aria-label="'+esc(raw('shared','menuClose'))+'">×</button></div>'+
   '<div class="mobileNavBody">'+
   navLinks.map((a,i)=>'<div class="mobileNavItem"><a class="mobileNavPrimary" href="'+esc(a.href)+'"><span class="mobileNavIndex">'+pad(i+1)+'</span>'+esc(a.textContent)+'<span class="mobileNavArrow">↗</span></a>'+
-    (a.dataset.nav==='works'&&series.length?'<div class="mobileNavSeries"><div class="mobileNavSeriesCaption">'+esc(raw('shared','menuSeries'))+' <span>'+pad(series.length)+'</span></div>'+seriesItems+'</div>':'')+
+    (a.dataset.nav==='works'&&series.length?'<div class="mobileNavSeries"><div class="mobileNavSeriesCaption">'+esc(raw('shared','menuSeries'))+' <span>'+pad(series.length)+'</span></div>'+seriesNavItems+'</div>':'')+
     '</div>').join('')+
   '</div><div class="mobileNavFooter">'+esc(raw('shared','footerSlogan'))+'</div>';
 const mobileBackdrop=document.createElement('button');
@@ -315,11 +349,11 @@ const setMobileNav=open=>{
 menuToggle.onclick=()=>setMobileNav(!document.body.classList.contains('mobileNavOpen'));
 // The active section and nested project series stay visible and distinct.
 const activeRoute=document.body.dataset.page;
-const activeNavSection=activeRoute==='wenxin'||activeRoute==='project'?'works':activeRoute;
+const activeNavSection=activeRoute==='series'||activeRoute==='project'?'works':activeRoute;
 navLinks.forEach((link,i)=>{
   if(link.dataset.nav===activeNavSection){
     const item=mobileNav.querySelectorAll('.mobileNavItem')[i];
-    if(item){item.classList.add('is-active');if(activeRoute!=='wenxin')item.querySelector('.mobileNavPrimary').setAttribute('aria-current','page');}
+    if(item){item.classList.add('is-active');if(activeRoute!=='series')item.querySelector('.mobileNavPrimary').setAttribute('aria-current','page');}
   }
 });
 series.forEach((item,i)=>{
@@ -382,6 +416,6 @@ tick();setInterval(tick,30000);
 
 /* Physical static pages: every work has its own shareable URL. */
 const name=document.body.dataset.page||'home';
-$$('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===(name==='project'||name==='wenxin'?'works':name)));
-({home,works,wenxin,studio,contact,project:()=>detail(document.body.dataset.project)})[name]?.();
+$$('[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===(name==='project'||name==='series'?'works':name)));
+({home,works,studio,contact,series:()=>seriesPage(document.body.dataset.series),project:()=>detail(document.body.dataset.project)})[name]?.();
 observe();onScroll();

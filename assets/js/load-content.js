@@ -15,7 +15,9 @@
     try{return JSON.parse(tokens[0].content);}catch{throw Error(`${file}: invalid JSON in ${section}`);}
   }
   const page=document.body.dataset.page;
-  if(page==='project')document.body.dataset.project=decodeURIComponent(location.pathname.replace(/\/index\.html$/,'/').replace(/\/$/,'').split('/').pop());
+  const folder=decodeURIComponent(location.pathname.replace(/\/index\.html$/,'/').replace(/\/$/,'').split('/').pop());
+  if(page==='project')document.body.dataset.project=folder;
+  if(page==='series')document.body.dataset.series=folder;
   const scopes=['shared','home','works','studio','contact','project'];
   const [settings,catalog,...pages]=await Promise.all(['settings.md','works/index.md',...scopes.map(s=>`pages/${s}.md`)].map(read));
   const site=parse(settings,'site','settings.md'),home=parse(settings,'home','settings.md');
@@ -31,24 +33,31 @@
     const info=parse(await read(base+'settings.md'),'project',base+'settings.md');
     if(info.status!=='publish')throw Error(`${base}settings.md: listed work must have status publish`);
     const content=page==='project'&&document.body.dataset.project===id?md.render((await read(base+'content.md')).replace(/<!--[\s\S]*?-->/g,'')):'';
-    return {...info,id,cat:info.category,desc:info.description,image:base+info.cover,gallery:info.gallery.map(p=>base+p),content,created:Date.parse(info.added),featured:selected.has(id)};
+    return {...info,id,cat:info.category,desc:info.description,image:base+info.cover,gallery:info.gallery.map(p=>base+p),content,series:info.series||[],created:Date.parse(info.added),featured:selected.has(id)};
   }))).sort((a,b)=>a.order-b.order||a.id.localeCompare(b.id));
   const categories=new Map(site.categories.map(c=>[c.name,c.enabled]));
   const used=new Set(projects.map(p=>p.cat));
   for(const name of used)if(!categories.has(name))categories.set(name,true);
+  // Every series uses the same json series block; media paths are relative to its folder.
   const series=await Promise.all(seriesIds.map(async id=>{
-    const file=`works/${id}/index.md`;
-    const info=parse(await read(file),id,file);
-    return {id,title:info.title,subtitle:info.subtitle,info};
+    const base=`works/${id}/`;
+    const info=parse(await read(base+'index.md'),'series',base+'index.md');
+    return {...info,id,subtitle:info.subtitle||'',dates:info.dates||'',venue:info.venue||'',cover:info.cover?base+info.cover:'',chapters:info.chapters||[],
+      planned:(info.planned||[]).map(p=>({...p,cover:base+p.cover}))};
   }));
-  const wenxin=page==='wenxin'?series.find(s=>s.id==='wenxin')?.info:null;
-  if(page==='wenxin'&&!wenxin)throw Error('works/index.md: missing wenxin seriesId');
-  window.SITE_DATA={site,home,text,projects,series:series.map(({id,title,subtitle})=>({id,title,subtitle})),wenxin,categories:[...categories].filter(([name,on])=>on&&(!site.hideEmptyCategories||used.has(name))).map(([name])=>name)};
+  const seriesTypes=new Map((site.seriesTypes||[]).map(t=>[t.name,t.enabled]));
+  const usedTypes=new Set(series.map(s=>s.type));
+  for(const name of usedTypes)if(!seriesTypes.has(name))seriesTypes.set(name,true);
+  const currentSeries=series.find(s=>s.id===document.body.dataset.series);
+  if(page==='series'&&!currentSeries)throw Error('works/index.md: add this series folder to seriesIds');
+  window.SITE_DATA={site,home,text,projects,series,
+    seriesTypes:[...seriesTypes].filter(([name,on])=>on&&(!site.hideEmptyCategories||usedTypes.has(name))).map(([name])=>name),
+    categories:[...categories].filter(([name,on])=>on&&(!site.hideEmptyCategories||used.has(name))).map(([name])=>name)};
   // A copied work shell derives its identity from its folder, with no HTML edits.
   const current=projects.find(p=>p.id===document.body.dataset.project);
   if(page==='project'&&!current)throw Error('This project is not published.');
-  document.title=page==='home'?site.title:page==='project'?current.title+text.project.titleSuffix:page==='wenxin'?wenxin.title+' — 07S':text[page].browserTitle;
-  document.querySelector('meta[name="description"]').content=page==='project'?current.desc:page==='wenxin'?wenxin.description:page==='contact'?text.contact.metaDescription:site.description;
+  document.title=page==='home'?site.title:page==='project'?current.title+text.project.titleSuffix:page==='series'?currentSeries.title+text.project.titleSuffix:text[page].browserTitle;
+  document.querySelector('meta[name="description"]').content=page==='project'?current.desc:page==='series'?currentSeries.description:page==='contact'?text.contact.metaDescription:site.description;
   const set=(selector,value)=>{document.querySelector(selector).textContent=value;};
   set('.logo .seven',text.shared.brand);set('.logo sup',text.shared.brandSuffix);
   for(const name of ['home','works','studio','contact'])set(`[data-nav="${name}"]`,text.shared['nav'+name[0].toUpperCase()+name.slice(1)]);
@@ -71,7 +80,7 @@
 })().catch(error=>{
   console.error(error);
   document.querySelector('#loader')?.remove();
-  const app=document.querySelector('#app');if(app.querySelector('#wenxinStaticFallback')){console.warn('Showing Wenxin static fallback after content error:',error);return;}app.replaceChildren();
+  const app=document.querySelector('#app');app.textContent='';
   const message=document.createElement('p');message.setAttribute('role','alert');
   message.textContent='Unable to load page content. '+error.message;app.append(message);
 });

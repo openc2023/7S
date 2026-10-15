@@ -4,6 +4,7 @@
 新增：复制 templates/work 到 works/英文文件夹名，改 settings.md 的 status 为 publish，
 把文件夹名加入下方 projectIds。首页精选还要在根目录 settings.md 设置。
 下架：从清单和首页精选移除，作品 status 改 draft。草稿不进入发布目录。
+seriesIds 是系列 / 展览文件夹名（复制 templates/series），顺序就是作品页 SERIES 区和导航的顺序。
 只填写文件夹名，不填写作品标题；注意英文双引号和逗号。 -->
 
 ```json works
@@ -17,6 +18,6 @@
     "paper-signals",
     "after-image"
   ],
-  "seriesIds": ["wenxin"]
+  "seriesIds": ["wenxin", "seoul-light-2026", "busan-media-week-2025"]
 }
 ```

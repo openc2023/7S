@@ -350,6 +350,80 @@
     "signature": {
       "type": "string",
       "placeholders": []
+    },
+    "seriesEyebrow": {
+      "type": "string",
+      "placeholders": []
+    },
+    "seriesTitle": {
+      "type": "string",
+      "placeholders": []
+    },
+    "seriesAll": {
+      "type": "string",
+      "placeholders": []
+    },
+    "seriesWorks": {
+      "type": "string",
+      "placeholders": [
+        "count"
+      ]
+    },
+    "viewSeries": {
+      "type": "string",
+      "placeholders": []
+    },
+    "seriesLabel": {
+      "type": "string",
+      "placeholders": []
+    },
+    "aboutSeries": {
+      "type": "string",
+      "placeholders": []
+    },
+    "inThisSeries": {
+      "type": "string",
+      "placeholders": []
+    },
+    "seriesWorksTitle": {
+      "type": "string",
+      "placeholders": []
+    },
+    "seriesSearch": {
+      "type": "string",
+      "placeholders": []
+    },
+    "seriesEmpty": {
+      "type": "string",
+      "placeholders": []
+    },
+    "seriesSummary": {
+      "type": "string",
+      "placeholders": [
+        "shown",
+        "published",
+        "planned"
+      ]
+    },
+    "planned": {
+      "type": "string",
+      "placeholders": []
+    },
+    "imagePending": {
+      "type": "string",
+      "placeholders": []
+    },
+    "videoPending": {
+      "type": "string",
+      "placeholders": []
+    },
+    "previewPending": {
+      "type": "string",
+      "placeholders": []
+    },
+    "allWorks": {
+      "type": "string",
+      "placeholders": []
     }
   },
   "studio": {
@@ -498,6 +572,10 @@
       "placeholders": []
     },
     "technology": {
+      "type": "string",
+      "placeholders": []
+    },
+    "series": {
       "type": "string",
       "placeholders": []
     },

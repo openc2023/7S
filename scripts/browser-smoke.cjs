@@ -48,45 +48,45 @@ function browserChecks(){
         drawer.querySelector('.mobileNavClose').click();
         assert(!document.body.classList.contains('mobileNavOpen'),'drawer-close');
       }
-      if(page==='wenxin'){
-        const count=()=>document.querySelectorAll('#wenxinGrid .wenxinPlaceholder').length;
+      if(page==='series'&&document.body.dataset.series==='wenxin'){
+        const count=()=>document.querySelectorAll('#seriesGrid .plannedWork').length;
         assert(count()===8,'eight-MD-placeholder-cards:'+count());
         // Match WORKS card markup and animations, not just the number of cards.
-        const placeholders=[...document.querySelectorAll('#wenxinGrid .wenxinPlaceholder')];
+        const placeholders=[...document.querySelectorAll('#seriesGrid .plannedWork')];
         assert(placeholders.every(card=>card.matches('.work')&&card.querySelector('.cover img')&&card.querySelector('.workName .arr')&&card.querySelector('.cover .view')&&card.querySelector('.workMeta .ct')),'works-card-markup');
         assert(new Set(placeholders.map(card=>card.querySelector('.cover img').src)).size===8,'eight-unique-cover-images');
         assert(placeholders.every((card,i)=>card.querySelector('.cover img').src.endsWith('/works/wenxin/media/'+String(i+1).padStart(2,'0')+'.svg')),'covers-loaded-from-markdown');
-        assert(placeholders.filter(card=>card.querySelector('.wenxinVideoOverlay')).length===1,'video-play-overlay');
+        assert(placeholders.filter(card=>card.querySelector('.plannedVideo')).length===1,'video-play-overlay');
         const first=placeholders[0];
         assert(getComputedStyle(first.querySelector('.cover')).transitionProperty.includes('clip-path'),'works-cover-reveal');
         assert(getComputedStyle(first.querySelector('.cover img')).transitionProperty.includes('transform'),'works-artwork-zoom');
         assert(!first.querySelector('.wenxinPlaceholderArt'),'no-custom-gradient-placeholder');
         if(innerWidth<=760){
           const cardWidth=first.getBoundingClientRect().width;
-          const gridWidth=document.querySelector('#wenxinGrid').getBoundingClientRect().width;
+          const gridWidth=document.querySelector('#seriesGrid').getBoundingClientRect().width;
           assert(Math.abs(cardWidth-gridWidth)<5,'mobile-single-column:'+cardWidth+'/'+gridWidth);
         }
 
-        assert(document.querySelectorAll('[data-wenxin-tab]').length===5,'five-chapter-tabs');
-        document.querySelector('[data-wenxin-tab="seven-aspects"]').click();
+        assert(document.querySelectorAll('[data-series-tab]').length===5,'five-chapter-tabs');
+        document.querySelector('[data-series-tab="seven-aspects"]').click();
         assert(count()===8,'seven-aspects-filter');
-        document.querySelector('[data-wenxin-tab="six-roots"]').click();
+        document.querySelector('[data-series-tab="six-roots"]').click();
         assert(count()===0,'six-roots-empty-filter');
-        document.querySelector('[data-wenxin-tab="all"]').click();
-        const field=document.querySelector('#wenxinSearch');
+        document.querySelector('[data-series-tab="all"]').click();
+        const field=document.querySelector('#seriesSearch');
         field.value='我相';field.dispatchEvent(new Event('input',{bubbles:true}));
         assert(count()===1,'search-filter');
         field.value='';field.dispatchEvent(new Event('input',{bubbles:true}));
         assert(count()===8,'search-reset');
-        document.querySelector('[data-wenxin-view="list"]').click();
-        assert(document.querySelector('#wenxinGrid').classList.contains('list'),'list-view');
-        const listCard=document.querySelector('#wenxinGrid .wenxinPlaceholder');
+        document.querySelector('[data-series-view="list"]').click();
+        assert(document.querySelector('#seriesGrid').classList.contains('list'),'list-view');
+        const listCard=document.querySelector('#seriesGrid .plannedWork');
         listCard.dispatchEvent(new MouseEvent('mousemove',{bubbles:true,clientX:200,clientY:200}));
         assert(document.querySelector('#peek').classList.contains('on'),'works-list-hover-preview-visible');
         assert(document.querySelector('#peek img').src.endsWith('/works/wenxin/media/01.svg'),'works-list-hover-preview-source');
 
-        document.querySelector('[data-wenxin-view="grid"]').click();
-        assert(!document.querySelector('#wenxinGrid').classList.contains('list'),'grid-view');
+        document.querySelector('[data-series-view="grid"]').click();
+        assert(!document.querySelector('#seriesGrid').classList.contains('list'),'grid-view');
       }
       if(page==='works'){
         assert(document.querySelectorAll('#catPills [data-cat]').length>=2,'works-original-categories');
@@ -96,6 +96,12 @@ function browserChecks(){
         if(category){category.click();assert(document.querySelectorAll('#grid .work').length===2,'works-category-filter');
           document.querySelector('#catPills [data-cat="All"]').click();
           assert(document.querySelectorAll('#grid .work').length>=7,'works-category-reset');}
+        const seriesCards=()=>document.querySelectorAll('#seriesGrid .seriesCard').length;
+        assert(seriesCards()===3,'works-series-section:'+seriesCards());
+        assert(document.querySelectorAll('#seriesPills [data-series-type]').length===4,'series-type-pills');
+        document.querySelector('#seriesPills [data-series-type="Solo exhibition"]').click();
+        assert(seriesCards()===1,'series-type-filter');
+        document.querySelector('#seriesPills [data-series-type="All"]').click();
 
       }
     }catch(e){errors.push(String(e))}
@@ -130,7 +136,7 @@ async function run(url,width=390){
     child.on('close',code=>{
       if(finished)return;finished=true;clearTimeout(timeout);
       const value=(out.match(/data-browser-smoke="([^"]*)"/)||[])[1];
-      const diagnostics='main='+out.slice(out.indexOf('<main'),out.indexOf('</main>')+7).slice(0,1800)+'; app='+out.includes('id="wenxinGrid"')+'; script='+out.includes('assets/js/app.js');
+      const diagnostics='main='+out.slice(out.indexOf('<main'),out.indexOf('</main>')+7).slice(0,1800)+'; app='+out.includes('id="seriesGrid"')+'; script='+out.includes('assets/js/app.js');
       if(code!==0||value!=='ok')
         reject(Error('Browser smoke failed '+url+' (code='+code+', state='+value+')\n'+diagnostics+'\n'+out.slice(-5000)+'\nChrome: '+err.slice(-1500)));
       else resolve(value);

@@ -34,6 +34,23 @@
 | clearAll | 清空筛选按钮 |
 | count | 数量提示，保留占位符 |
 | signature | 列表底部署名 |
+| seriesEyebrow | 作品页下方系列区小字 |
+| seriesTitle | 作品页下方系列区大标题 |
+| seriesAll | 系列区「全部」按钮 |
+| seriesWorks | 系列卡片上的作品数，保留占位符 |
+| viewSeries | 系列卡片悬停提示 |
+| seriesLabel | 系列页顶部小字 |
+| aboutSeries | 系列页简介标题 |
+| inThisSeries | 系列页作品区小字 |
+| seriesWorksTitle | 系列页作品区大标题 |
+| seriesSearch | 系列页搜索框提示 |
+| seriesEmpty | 系列页没有作品时 |
+| seriesSummary | 系列页底部数量，保留占位符 |
+| planned | 占位卡状态 |
+| imagePending | 图片占位卡标记 |
+| videoPending | 视频占位卡标记 |
+| previewPending | 占位卡悬停提示 |
+| allWorks | 系列页底部返回全部作品 |
 
 ```json text
 {
@@ -63,6 +80,23 @@
   "filters": "Filters: ",
   "clearAll": "Clear all",
   "count": "SHOWING {shown} / {total} PROJECTS · {sort}",
-  "signature": "07S STUDIO"
+  "signature": "07S STUDIO",
+  "seriesEyebrow": "02 / SERIES · EXHIBITIONS",
+  "seriesTitle": "SERIES",
+  "seriesAll": "All",
+  "seriesWorks": "{count} WORKS",
+  "viewSeries": "VIEW SERIES ↗",
+  "seriesLabel": "SERIES",
+  "aboutSeries": "ABOUT THE SERIES",
+  "inThisSeries": "IN THIS SERIES",
+  "seriesWorksTitle": "WORKS",
+  "seriesSearch": "Search this series…",
+  "seriesEmpty": "No works in this series yet.",
+  "seriesSummary": "{shown} WORKS · {published} PUBLISHED · {planned} PLANNED",
+  "planned": "PLANNED",
+  "imagePending": "IMAGE · COMING SOON",
+  "videoPending": "VIDEO · COMING SOON",
+  "previewPending": "COMING SOON",
+  "allWorks": "ALL WORKS"
 }
 ```

@@ -22,6 +22,8 @@
 | hideEmptyCategories | true 自动隐藏没有已发布作品的分类；false 保留空分类 |
 | categories 中的 name | 分类英文名，必须与作品设置中的 category 完全相同 |
 | categories 中的 enabled | true 显示分类入口，false 隐藏；无需注释整行 |
+| seriesTypes 中的 name | 系列 / 展览的类型名，作品页下方 SERIES 区的筛选按钮；系列 index.md 的 type 必须与之一致 |
+| seriesTypes 中的 enabled | true 显示该类型按钮，false 隐藏（系列仍显示在 All 中） |
 
 分类顺序就是下面数组的顺序。隐藏分类入口后，作品仍会显示在 All 中。
 新增分类可复制一行修改名称；作品用了未列出的新分类时会自动显示，想关闭就加到此处并设 false。
@@ -57,6 +59,20 @@
     },
     {
       "name": "Visual & Moving Image",
+      "enabled": true
+    }
+  ],
+  "seriesTypes": [
+    {
+      "name": "Series",
+      "enabled": true
+    },
+    {
+      "name": "Solo exhibition",
+      "enabled": true
+    },
+    {
+      "name": "Group exhibition",
       "enabled": true
     }
   ]

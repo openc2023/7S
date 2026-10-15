@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const text=window.SITE_DATA.text.shared;
-  const label=(key,values={})=>String(text[key]).replace(/\{(\w+)\}/g,(match,name)=>Object.hasOwn(values,name)?values[name]:match);
+  const label=(key,values={})=>String(text[key]).replace(/\{(\w+)\}/g,(match,name)=>Object.prototype.hasOwnProperty.call(values,name)?values[name]:match);
   const config=window.SITE_DATA?.site.weather;
   const button=document.getElementById('weather');
   const credit=document.getElementById('weatherCredit');

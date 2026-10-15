@@ -36,6 +36,7 @@
   "video": "",
   "status": "publish",
   "order": 2,
-  "added": "2026-01-03"
+  "added": "2026-01-03",
+  "series": ["busan-media-week-2025"]
 }
 ```

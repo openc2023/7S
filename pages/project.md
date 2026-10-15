@@ -18,6 +18,7 @@
 | category | 分类字段标题 |
 | location | 地点字段标题 |
 | technology | 技术字段标题 |
+| series | 所属系列字段标题 |
 | film | 影片区标题 |
 | videoTitle | 播放器描述，保留占位符 |
 | gallery | 图库标题，保留占位符 |
@@ -41,6 +42,7 @@
   "category": "CATEGORY",
   "location": "LOCATION",
   "technology": "TECHNOLOGY",
+  "series": "SERIES",
   "film": "FILM",
   "videoTitle": "{title} video",
   "gallery": "PROJECT GALLERY · {count}",

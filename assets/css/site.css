@@ -309,7 +309,7 @@ html.lenis,html.lenis body{height:auto}
   .workGrid .cover img,#peek img,.previewCard .cover img{transition:none}
 }
 
-/* WENXIN uses the same WORKS cards, filters and motion rules. */
+/* Series pages use the same WORKS cards, filters and motion rules. */
 
 /* ---------- WORKS / SERIES NAVIGATION ---------- */
 .nav{flex-wrap:nowrap}
@@ -325,19 +325,22 @@ html.lenis,html.lenis body{height:auto}
 .dropdownNumber{font-size:10px;color:#8c8e97;letter-spacing:.08em}
 .mobileMenuToggle,.mobileNavPanel,.mobileNavBackdrop{display:none}
 
-/* WENXIN uses the original WORKS card and cover image rules.
+/* Planned series cards use the original WORKS card and cover image rules.
    Only the not-yet-published image/video labels and video play overlay differ. */
-.wenxinPanel .wenxinTools{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;margin:19px 0 8px;align-items:center}
-.wenxinPanel .wenxinTools .searchBox{min-width:0}
-.wenxinPanel .wenxinTools .select{min-width:156px}
-.wenxinPanel .wenxinTools .seg{justify-self:end}
-.wenxinPlaceholder{cursor:default}
-.wenxinPlaceholderIndex,.wenxinPending{position:absolute;z-index:2;left:14px;font-size:10px;letter-spacing:.12em;color:#f0f0f0;background:#0009;border-radius:20px;padding:4px 9px;backdrop-filter:blur(6px)}
-.wenxinPlaceholderIndex{top:12px;font-variant-numeric:tabular-nums}
-.wenxinPending{bottom:12px;font-size:9px}
-.wenxinVideoOverlay{position:absolute;z-index:2;left:50%;top:50%;display:grid;place-items:center;width:64px;height:64px;border:1px solid #ffffff90;border-radius:50%;background:#0008;color:#fff;font-size:22px;padding-left:4px;transform:translate(-50%,-50%);pointer-events:none;transition:transform .5s var(--ease),background .3s}
-.wenxinPlaceholder:hover .wenxinVideoOverlay{transform:translate(-50%,-50%) scale(1.08);background:#000b}
-.wenxinPreviewLabel{white-space:nowrap;pointer-events:none}
+.seriesPanel .seriesTools{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;margin:19px 0 8px;align-items:center}
+.seriesPanel .seriesTools .searchBox{min-width:0}
+.seriesPanel .seriesTools .select{min-width:156px}
+.seriesPanel .seriesTools .seg{justify-self:end}
+.plannedWork{cursor:default}
+.seriesMeta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.seriesMeta span{border:1px solid var(--line2);border-radius:30px;padding:5px 12px;font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.seriesMeta span:first-child{color:var(--white);border-color:#55565e}
+.seriesAbout{white-space:pre-line}
+.plannedIndex,.plannedPending{position:absolute;z-index:2;left:14px;font-size:10px;letter-spacing:.12em;color:#f0f0f0;background:#0009;border-radius:20px;padding:4px 9px;backdrop-filter:blur(6px)}
+.plannedIndex{top:12px;font-variant-numeric:tabular-nums}
+.plannedPending{bottom:12px;font-size:9px}
+.plannedVideo{position:absolute;z-index:2;left:50%;top:50%;display:grid;place-items:center;width:64px;height:64px;border:1px solid #ffffff90;border-radius:50%;background:#0008;color:#fff;font-size:22px;padding-left:4px;transform:translate(-50%,-50%);pointer-events:none;transition:transform .5s var(--ease),background .3s}
+.plannedWork:hover .plannedVideo{transform:translate(-50%,-50%) scale(1.08);background:#000b}
 /* ---------- MOBILE HEADER / RIGHT DRAWER ---------- */
 @media(max-width:760px){
   .shell{width:calc(100% - 24px)}
@@ -353,7 +356,7 @@ html.lenis,html.lenis body{height:auto}
   .mobileMenuToggle span{width:17px;height:1.5px;background:currentColor;border-radius:2px}
   .mobileMenuToggle:hover{border-color:#eee;background:#26272d}
   .mobileNavBackdrop{display:block;position:fixed;inset:0;padding:0;border:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);z-index:100;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .32s,visibility .32s}
-  .mobileNavPanel{display:flex;flex-direction:column;position:fixed;right:0;top:0;bottom:0;isolation:isolate;width:min(388px,91vw);height:100dvh;max-height:none;overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(150deg,#202126 0%,#17181c 31%,#121317 100%);border-left:1px solid #50515a;box-shadow:-24px 0 90px #000c;z-index:101;transform:translate3d(105%,0,0);visibility:hidden;pointer-events:none;padding:max(32px,env(safe-area-inset-top)) 27px max(30px,env(safe-area-inset-bottom));transition:transform .38s var(--ease),visibility .38s}
+  .mobileNavPanel{display:flex;flex-direction:column;position:fixed;right:0;top:0;bottom:0;isolation:isolate;width:min(388px,91vw);height:100vh;height:100dvh;max-height:none;overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(150deg,#202126 0%,#17181c 31%,#121317 100%);border-left:1px solid #50515a;box-shadow:-24px 0 90px #000c;z-index:101;transform:translate3d(105%,0,0);visibility:hidden;pointer-events:none;padding:max(32px,env(safe-area-inset-top)) 27px max(30px,env(safe-area-inset-bottom));transition:transform .38s var(--ease),visibility .38s}
   body.mobileNavOpen{overflow:hidden}
   body.mobileNavOpen .mobileNavBackdrop{opacity:1;visibility:visible;pointer-events:auto}
   body.mobileNavOpen .mobileNavPanel{transform:translateX(0);visibility:visible;pointer-events:auto}
@@ -368,12 +371,13 @@ html.lenis,html.lenis body{height:auto}
   .mobileNavPrimary:hover,.mobileSeriesLink:hover{color:var(--accent)}
   .mobileNavIndex{font-size:10px;font-weight:550;letter-spacing:.07em;color:#888b95;min-width:23px}
   .mobileNavArrow{margin-left:auto;color:#7a7d87;font-size:18px;font-weight:400;transition:transform .2s,color .2s}
-  .mobileNavSeries{position:relative;margin:0 2px 20px 34px;padding:15px 13px 14px;border:1px solid #41434b;border-radius:11px;background:linear-gradient(120deg,#28292f,#1f2026);box-shadow:0 6px 16px #0002}
-  .mobileNavSeriesCaption{display:flex;align-items:center;justify-content:space-between;font-size:10px;letter-spacing:.13em;color:#a8a9b1;margin-bottom:11px}
-  .mobileSeriesLink{display:flex;align-items:center;gap:12px;min-height:57px;padding:11px 8px;border-top:1px solid #44464f;font-size:17px;font-weight:650;line-height:1.2;transition:background .22s,color .22s}
+  .mobileNavSeries{margin:-6px 0 14px 44px;padding:0}
+  .mobileNavSeriesCaption{display:flex;align-items:center;justify-content:space-between;font-size:10px;letter-spacing:.16em;color:#888b95;padding:0 7px 6px}
+  .mobileSeriesLink{display:flex;align-items:center;gap:12px;min-height:52px;padding:9px 7px;border-top:1px solid #2c2d33;color:#c9cad1;font-size:16px;font-weight:650;letter-spacing:-.02em;line-height:1.2;transition:color .22s,transform .22s}
   .mobileSeriesNumber{color:#9d9faa;font-size:10px;font-weight:500}
-  .mobileSeriesLink small{display:block;margin-top:4px;color:#8b8e99;font-size:9px;font-weight:450;letter-spacing:.025em;line-height:1.4}
-  .mobileSeriesArrow{margin-left:auto;color:#9799a2;font-size:17px}
+  .mobileSeriesLink small{display:block;margin-top:3px;color:#7d808a;font-size:9px;font-weight:450;letter-spacing:.08em;line-height:1.4;text-transform:uppercase}
+  .mobileSeriesArrow{margin-left:auto;color:#7a7d87;font-size:15px}
+  .mobileSeriesLink:hover{transform:translateX(3px)}
   .mobileNavFooter{margin-top:28px;padding-top:20px;border-top:1px solid #40424a;color:#9698a2;font-size:10px;letter-spacing:.16em;line-height:1.8}
   .mobileNavPanel:before{content:"";position:absolute;left:27px;top:0;width:61px;height:3px;background:var(--accent);border-radius:0 0 3px 3px}
   .mobileNavBrand sup{font-size:11px;font-weight:650;letter-spacing:0;position:relative;top:-15px;margin-left:3px}
@@ -385,7 +389,7 @@ html.lenis,html.lenis body{height:auto}
   .mobileNavPrimary:hover,.mobileNavPrimary:focus-visible{transform:translateX(3px)}
   .mobileNavPrimary:hover .mobileNavArrow{transform:translate(2px,-2px);color:var(--accent)}
   .mobileNavSeriesCaption span{font-variant-numeric:tabular-nums;color:#b3b4bc}
-  .mobileSeriesLink.is-active{color:#fff;background:linear-gradient(90deg,#393a40 0%,transparent 96%)}
+  .mobileSeriesLink.is-active{color:#fff}
   .mobileSeriesLink.is-active .mobileSeriesNumber,.mobileSeriesLink.is-active .mobileSeriesArrow{color:var(--accent)}
   .mobileMenuToggle:focus-visible,.mobileNavClose:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
@@ -400,15 +404,15 @@ html.lenis,html.lenis body{height:auto}
   .tools #yearSel,.tools #sortSel{width:100%;min-width:0;max-width:100%}
   .tools .seg{grid-column:1/-1;justify-self:end}
   .workGrid{margin-top:18px}
-  .wenxinPanel .wenxinTools{grid-template-columns:minmax(0,1fr) auto;gap:9px;margin:18px 0 12px}
-  .wenxinPanel .wenxinTools .searchBox{grid-column:1/-1}
-  .wenxinPanel .wenxinTools .select{grid-column:1;min-width:0;width:100%}
-  .wenxinPanel .wenxinTools .seg{grid-column:2;justify-self:end}
-  .wenxinPanel .workGrid:not(.list){grid-template-columns:minmax(0,1fr);gap:30px 20px}
+  .seriesPanel .seriesTools{grid-template-columns:minmax(0,1fr) auto;gap:9px;margin:18px 0 12px}
+  .seriesPanel .seriesTools .searchBox{grid-column:1/-1}
+  .seriesPanel .seriesTools .select{grid-column:1;min-width:0;width:100%}
+  .seriesPanel .seriesTools .seg{grid-column:2;justify-self:end}
+  .seriesPanel .workGrid:not(.list){grid-template-columns:minmax(0,1fr);gap:30px 20px}
 
 
-  .wenxinPanel .wenxinPlaceholderIndex{top:9px;left:9px;font-size:9px}
-  .wenxinPanel .wenxinPending{bottom:9px;left:9px;font-size:8px;letter-spacing:.02em}
+  .seriesPanel .plannedIndex{top:9px;left:9px;font-size:9px}
+  .seriesPanel .plannedPending{bottom:9px;left:9px;font-size:8px;letter-spacing:.02em}
 }
 @media(min-width:761px){.mobileNavPanel,.mobileNavBackdrop,.mobileMenuToggle{display:none!important}}
 @media(prefers-reduced-motion:reduce){.mobileNavBackdrop,.mobileNavPanel{transition:none}}
