@@ -4,6 +4,9 @@
   const root=new URL('../../',loaderUrl);
   const assetVersion=loaderUrl.searchParams.get('v')||window.SITE_ASSET_VERSION||'';
   const md=window.markdownit({html:true,linkify:true});
+  // Background character field starts right away, independent of the Markdown content.
+  const bg=document.createElement('script');const bgUrl=new URL('assets/js/bgfield.js',root);
+  if(assetVersion)bgUrl.searchParams.set('v',assetVersion);bg.src=bgUrl.href;document.body.append(bg);
   async function read(file){
     const response=await fetch(new URL(file,root),{cache:'no-store'});
     if(!response.ok)throw Error(`${file}: HTTP ${response.status}`);
