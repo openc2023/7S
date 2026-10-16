@@ -234,6 +234,8 @@ html.lenis,html.lenis body{height:auto}
 /* ASCII loader (loader.js adds .ascii): character bar + 5×7 character-pixel counter. */
 #loader.ascii{font-family:ui-monospace,"SFMono-Regular",Consolas,monospace}
 #loader.ascii .bar{width:auto;height:auto;margin:0;transform:translate(-50%,-50%);background:none;color:#c9cad1;font-size:clamp(11px,1.4vw,14px);letter-spacing:.06em;white-space:pre}
+#loader.ascii[data-style="block"] .num,#loader.ascii[data-style="binary"] .num{font-weight:400}
+#loader.ascii[data-style="block"] .num{color:#d8d9de}
 #loader.ascii .num{left:clamp(16px,3vw,40px);bottom:clamp(16px,3vw,40px);margin:0;font-size:clamp(8px,2.4vw,30px);font-weight:700;letter-spacing:0;line-height:1;white-space:pre;color:#f7f7f8}
 /* 标题逐词上浮 */
 .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
