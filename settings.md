@@ -12,7 +12,7 @@
 | title | 浏览器标签页的网站标题 |
 | description | 网页搜索引擎描述；首页可见简介另在 pages/home.md 的 intro 修改 |
 | period | 作品页顶部的展示年份范围 |
-| email | 联系页邮箱，请替换演示邮箱 |
+| email | 联系页邮箱 |
 | contactNote | 联系页说明文字，填写英文 |
 | socials | 社交链接，例如 [{"name": "Instagram", "url": "https://www.instagram.com/your-name/"}]；留空 [] 显示英文占位提示 |
 | weather.enabled | true 显示天气，false 隐藏天气 |
@@ -33,7 +33,7 @@
   "title": "07S — Creative Studio",
   "description": "Art, Design, Moving Image & Digital Experiences.",
   "period": "2025 — 2026",
-  "email": "hello@your-domain.com",
+  "email": "angell1993@naver.com",
   "contactNote": "For collaborations and project inquiries, please get in touch by email.",
   "socials": [],
   "weather": {
