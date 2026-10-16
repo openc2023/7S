@@ -327,7 +327,7 @@ mobileNav.setAttribute('aria-hidden','true');
 mobileNav.inert=true;
 const navLinks=$$('[data-nav]',nav);
 const seriesNavItems=series.map((item,i)=>'<a class="mobileSeriesLink" href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="mobileSeriesNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+'<small>'+esc(item.subtitle||item.type||'')+'</small></span><span class="mobileSeriesArrow">↗</span></a>').join('');
-mobileNav.innerHTML='<div class="mobileNavHeader"><div class="mobileNavBrand">'+esc(copy.shared.brand)+'<sup>'+esc(copy.shared.brandSuffix)+'</sup><span>'+esc(raw('shared','menuIndex'))+' / '+esc(copy.shared.brand)+'</span></div><button type="button" class="mobileNavClose" aria-label="'+esc(raw('shared','menuClose'))+'">×</button></div>'+
+mobileNav.innerHTML='<div class="mobileNavHeader"><div class="mobileNavBrand">'+(window.SITE_LOGO_MARK||'')+esc(copy.shared.brand)+'<sup>'+esc(copy.shared.brandSuffix)+'</sup><span>'+esc(raw('shared','menuIndex'))+' / '+esc(copy.shared.brand)+'</span></div><button type="button" class="mobileNavClose" aria-label="'+esc(raw('shared','menuClose'))+'">×</button></div>'+
   '<div class="mobileNavBody">'+
   navLinks.map((a,i)=>'<div class="mobileNavItem"><a class="mobileNavPrimary" href="'+esc(a.href)+'"><span class="mobileNavIndex">'+pad(i+1)+'</span>'+esc(a.textContent)+'<span class="mobileNavArrow">↗</span></a>'+
     (a.dataset.nav==='works'&&series.length?'<div class="mobileNavSeries"><div class="mobileNavSeriesCaption">'+esc(raw('shared','menuSeries'))+' <span>'+pad(series.length)+'</span></div>'+seriesNavItems+'</div>':'')+

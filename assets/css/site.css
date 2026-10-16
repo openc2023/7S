@@ -22,9 +22,14 @@ a{color:inherit;text-decoration:none}
 .top.scrolled{padding:12px 0}
 .top.hide{transform:translateY(-110%)}
 .top.scrolled:before{opacity:1}
-.logo{font-size:28px;font-weight:850;letter-spacing:-2px;display:inline-flex}
+.logo{font-size:28px;font-weight:850;letter-spacing:-2px;display:inline-flex;align-items:center;gap:11px}
+/* Studio 7 mark: lime split circle, the 7 is the page showing through; hover lights the 7 white. */
+.logoMark{width:32px;height:32px;flex:none;transition:transform .7s var(--ease)}
+.logoMark .seg{fill:var(--accent);transition:fill .35s}
+.logoMark .mark7{fill:var(--white);opacity:0;transition:opacity .35s}
+.logo:hover .logoMark{transform:rotate(-8deg) scale(1.06)}
+.logo:hover .logoMark .mark7{opacity:1}
 .logo sup{font-size:12px;margin-top:6px}
-.logo:hover .seven{animation:spin .7s var(--ease)}
 .seven{display:inline-block}
 @keyframes spin{to{transform:rotateY(360deg)}}
 .nav{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
@@ -346,7 +351,8 @@ html.lenis,html.lenis body{height:auto}
   .shell{width:calc(100% - 24px)}
   .top,.top.scrolled{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:13px 0;transform:none}
   .top.hide{transform:none}
-  .top .logo{font-size:25px;white-space:nowrap}
+  .top .logo{font-size:25px;white-space:nowrap;gap:9px}
+  .top .logoMark{width:28px;height:28px}
   .top .nav{min-width:0;justify-content:flex-end;gap:0;flex-wrap:nowrap}
   .top .nav>a,.top .nav .worksNavGroup{display:none}
   .top .conditions{display:inline-flex;justify-content:flex-end;min-width:0;max-width:100%;gap:7px;white-space:nowrap;overflow:hidden}
@@ -362,6 +368,7 @@ html.lenis,html.lenis body{height:auto}
   body.mobileNavOpen .mobileNavPanel{transform:translateX(0);visibility:visible;pointer-events:auto}
   .mobileNavHeader{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:24px;border-bottom:1px solid #404148}
   .mobileNavBrand{font-size:34px;font-weight:850;letter-spacing:-.095em;line-height:1}
+  .mobileNavBrand .logoMark{width:34px;height:34px;margin-right:12px;vertical-align:-4px}
   .mobileNavBrand span{display:block;margin-top:9px;color:#90919c;font-size:10px;font-weight:500;letter-spacing:.21em}
   .mobileNavClose{display:grid;place-items:center;width:43px;height:43px;flex:none;border:1px solid #555760;border-radius:50%;background:#25262c;color:#f7f7f7;font-size:26px;font-weight:300;line-height:1;transition:transform .18s,border-color .18s,background .18s}
   .mobileNavClose:hover{border-color:#ddd}

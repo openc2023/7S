@@ -60,6 +60,9 @@
   document.querySelector('meta[name="description"]').content=page==='project'?current.desc:page==='series'?currentSeries.description:page==='contact'?text.contact.metaDescription:site.description;
   const set=(selector,value)=>{document.querySelector(selector).textContent=value;};
   set('.logo .seven',text.shared.brand);set('.logo sup',text.shared.brandSuffix);
+  // Studio 7 split-circle mark (7slogo concept C); colours come from site.css.
+  window.SITE_LOGO_MARK='<svg class="logoMark" viewBox="104 104 816 816" aria-hidden="true" focusable="false"><path class="seg" d="M161.001,304C234.469,180.024,367.89,104,512,104s277.531,76.024,350.999,200H161.001z"/><path class="seg" d="M111.92,432H585L301.519,861.517C154.021,772.693,78.16,600.836,111.92,432z"/><path class="seg" d="M744,432h168.08c26.899,134.521-15.606,273.554-113.127,370.038s-237.001,137.5-371.226,109.164L744,432z"/><path class="mark7" d="M161.001,304h701.997c23.463,39.593,40.057,82.87,49.081,128H744L427.727,911.202c-44.547-9.404-87.205-26.198-126.208-49.685L585,432H111.92C120.944,386.87,137.539,343.593,161.001,304z"/></svg>';
+  document.querySelector('.logo').insertAdjacentHTML('afterbegin',window.SITE_LOGO_MARK);
   for(const name of ['home','works','studio','contact'])set(`[data-nav="${name}"]`,text.shared['nav'+name[0].toUpperCase()+name.slice(1)]);
   const footer=document.querySelector('footer');
   footer.firstElementChild.prepend(document.createTextNode(text.shared.footerCopyright+' '));
