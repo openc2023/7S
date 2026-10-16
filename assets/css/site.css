@@ -23,12 +23,11 @@ a{color:inherit;text-decoration:none}
 .top.hide{transform:translateY(-110%)}
 .top.scrolled:before{opacity:1}
 .logo{font-size:28px;font-weight:850;letter-spacing:-2px;display:inline-flex;align-items:center;gap:11px}
-/* Studio 7 mark: lime split circle, the 7 is the page showing through; hover lights the 7 white. */
+/* Studio 7 mark: white split circle, the 7 is the page showing through. */
 .logoMark{width:32px;height:32px;flex:none;transition:transform .7s var(--ease)}
-.logoMark .seg{fill:var(--accent);transition:fill .35s}
-.logoMark .mark7{fill:var(--white);opacity:0;transition:opacity .35s}
+.logoMark .seg{fill:var(--white)}
+.logoMark .mark7{fill:none}
 .logo:hover .logoMark{transform:rotate(-8deg) scale(1.06)}
-.logo:hover .logoMark .mark7{opacity:1}
 .logo sup{font-size:12px;margin-top:6px}
 .seven{display:inline-block}
 @keyframes spin{to{transform:rotateY(360deg)}}
