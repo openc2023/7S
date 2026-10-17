@@ -31,11 +31,18 @@
   "location": "Web",
   "technology": "Web, ink, sound",
   "description": "A web work of ink and sound.",
-  "cover": "media/cover.svg",
+  "cover": "media/live.png",
   "gallery": [],
   "video": "",
   "status": "publish",
   "order": 8,
-  "added": "2024-02-01"
+  "added": "2024-02-01",
+  "link": "https://openc2023.github.io/web-media/personal/works/shanhai/",
+  "capture": {
+    "selector": "#stage",
+    "wait": 6000
+  },
+  "livePreview": true,
+  "coverPosition": "center 80%"
 }
 ```

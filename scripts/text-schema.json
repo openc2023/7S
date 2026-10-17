@@ -182,6 +182,10 @@
     "menuClose": {
       "type": "string",
       "placeholders": []
+    },
+    "live": {
+      "type": "string",
+      "placeholders": []
     }
   },
   "home": {
@@ -620,6 +624,10 @@
       "placeholders": []
     },
     "lightboxClose": {
+      "type": "string",
+      "placeholders": []
+    },
+    "launch": {
       "type": "string",
       "placeholders": []
     }

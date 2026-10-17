@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Re-capture live covers of interactive works every day (03:00 KST).
+  schedule:
+    - cron: '0 18 * * *'
 permissions:
   contents: read
   pages: write
@@ -19,6 +22,9 @@ jobs:
         with:
           node-version: '22'
       - run: npm ci --ignore-scripts
+      - name: Capture live covers of interactive works
+        run: npm run capture
+        continue-on-error: true
       - run: npm run package
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

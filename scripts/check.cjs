@@ -113,6 +113,7 @@ const projects=fs.readdirSync(path.join(root,'works'),{withFileTypes:true}).filt
   if(!Number.isFinite(p.order)||!Array.isArray(p.gallery))throw Error(`${slug}: invalid order or gallery`);
   const created=Date.parse(p.added);
   if(!Number.isFinite(created))throw Error(`${slug}: added must be an ISO date`);
+  if(p.link!==undefined&&(typeof p.link!=='string'||!/^https?:\/\//i.test(p.link)))throw Error(`${slug}: link must be an http(s) address`);
   if(p.video&&!/^https?:\/\//i.test(p.video))throw Error(`${slug}: video must be an http(s) link; use content.md for local video`);
   if(p.series!==undefined){
     if(!Array.isArray(p.series)||p.series.some(id=>!seriesIds.includes(id)))throw Error(`${slug}: series must list folder names from works/index.md seriesIds`);

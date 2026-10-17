@@ -31,11 +31,17 @@
   "location": "Web",
   "technology": "WebAR, image tracking",
   "description": "Image-recognition AR for Violence in Childlike Play.",
-  "cover": "media/cover.svg",
+  "cover": "media/live.png",
   "gallery": [],
   "video": "",
   "status": "publish",
   "order": 7,
-  "added": "2024-03-01"
+  "added": "2024-03-01",
+  "link": "https://openc2023.github.io/web-media/personal/works/top/",
+  "capture": {
+    "selector": "img.paper",
+    "wait": 2500
+  },
+  "livePreview": true
 }
 ```

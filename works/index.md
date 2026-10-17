@@ -18,7 +18,8 @@ seriesIds 是系列 / 展览文件夹名（复制 templates/series），顺序�
     "metaverse-ai-park",
     "top-ar",
     "shanhai",
-    "voice-three-control"
+    "voice-three-control",
+    "sound-ttakji"
   ],
   "seriesIds": [
     "wenxin",

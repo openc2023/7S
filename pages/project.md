@@ -28,6 +28,7 @@
 | keyboardHint | 作品翻页键盘提示 |
 | linkCopied | 复制成功提示 |
 | lightboxClose | 大图关闭按钮 |
+| launch | 作品页打开互动网址的按钮 |
 
 ```json text
 {
@@ -51,7 +52,8 @@
   "related": "RELATED",
   "keyboardHint": "← → Use arrow keys to navigate",
   "linkCopied": "Link copied",
-  "lightboxClose": "ESC ×"
+  "lightboxClose": "ESC ×",
+  "launch": "LAUNCH INTERACTIVE ↗︎"
 }
 ```
 
@@ -79,7 +81,8 @@
   "moreIn": "更多 · {category}",
   "related": "相关作品",
   "keyboardHint": "← → 使用方向键切换",
-  "linkCopied": "链接已复制"
+  "linkCopied": "链接已复制",
+  "launch": "打开互动作品 ↗︎"
 }
 ```
 
@@ -103,6 +106,7 @@
   "moreIn": "{category} 더 보기",
   "related": "관련 작업",
   "keyboardHint": "← → 방향키로 이동",
-  "linkCopied": "링크가 복사되었습니다"
+  "linkCopied": "링크가 복사되었습니다",
+  "launch": "인터랙티브 열기 ↗︎"
 }
 ```

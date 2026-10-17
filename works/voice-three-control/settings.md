@@ -31,11 +31,20 @@
   "location": "NEU · Web",
   "technology": "Three.js, microphone input",
   "description": "Talk, hum or blow into the mic and a Three.js windmill scene answers.",
-  "cover": "media/cover.svg",
+  "cover": "media/live.png",
   "gallery": [],
   "video": "",
   "status": "publish",
   "order": 9,
-  "added": "2024-01-01"
+  "added": "2024-01-01",
+  "link": "https://openc2023.github.io/web-media/neu/voice-three-control/",
+  "capture": {
+    "selector": "body > canvas",
+    "hide": [
+      "main.app-shell"
+    ],
+    "wait": 6000
+  },
+  "livePreview": true
 }
 ```

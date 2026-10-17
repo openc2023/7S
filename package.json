@@ -5,7 +5,8 @@
     "preview": "node scripts/run.cjs preview",
     "check": "node scripts/run.cjs check",
     "smoke": "node scripts/browser-smoke.cjs",
-    "package": "node scripts/run.cjs package"
+    "package": "node scripts/run.cjs package",
+    "capture": "node scripts/capture.cjs"
   },
   "engines": {
     "node": ">=20"

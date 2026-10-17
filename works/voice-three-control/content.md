@@ -3,4 +3,3 @@
 ## About the project
 Talk, hum or blow into the mic and a Three.js windmill scene answers.
 
-[Open the live work ↗︎](https://openc2023.github.io/web-media/neu/voice-three-control/)

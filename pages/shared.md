@@ -48,6 +48,7 @@
 | showers | 阵雨 |
 | snowShowers | 阵雪 |
 | thunderstorm | 雷暴 |
+| live | 作品卡片上的「可互动」标记 |
 
 ```json text
 {
@@ -94,7 +95,8 @@
   "snow": "Snow",
   "showers": "Rain showers",
   "snowShowers": "Snow showers",
-  "thunderstorm": "Thunderstorm"
+  "thunderstorm": "Thunderstorm",
+  "live": "LIVE ↗︎"
 }
 ```
 
@@ -141,7 +143,8 @@
   "snow": "雪",
   "showers": "阵雨",
   "snowShowers": "阵雪",
-  "thunderstorm": "雷雨"
+  "thunderstorm": "雷雨",
+  "live": "可互动 ↗︎"
 }
 ```
 
@@ -184,6 +187,7 @@
   "snow": "눈",
   "showers": "소나기",
   "snowShowers": "소낙눈",
-  "thunderstorm": "뇌우"
+  "thunderstorm": "뇌우",
+  "live": "라이브 ↗︎"
 }
 ```

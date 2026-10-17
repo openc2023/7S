@@ -3,4 +3,3 @@
 ## About the project
 A web work of ink and sound.
 
-[Open the live work ↗︎](https://openc2023.github.io/web-media/personal/works/shanhai/)

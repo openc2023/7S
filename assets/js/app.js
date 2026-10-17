@@ -32,8 +32,8 @@ const head=(a,b,c)=>`<div class="eyebrow"><span>${txt('shared','prefix')}${a}</s
 
 /* ================= 卡片 ================= */
 function workCard(p,i=0,q=''){
-  return `<a href="${projectUrl(p.id)}" class="work" style="--i:${i}" data-project="${esc(p.id)}" tabindex="0">
-    <div class="cover"><img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">${p.featured?`<span class="badge">${txt('shared','featured')}</span>`:''}<span class="view">${txt('shared','viewProject')}</span></div>
+  return `<a href="${projectUrl(p.id)}" class="work" style="--i:${i}" data-project="${esc(p.id)}"${p.livePreview&&safeUrl(p.link||'')?` data-live="${esc(safeUrl(p.link))}"`:''} tabindex="0">
+    <div class="cover"><img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy"${/^[a-z0-9 %.-]+$/i.test(p.coverPosition||'')?` style="object-position:${p.coverPosition}"`:''}>${p.featured?`<span class="badge">${txt('shared','featured')}</span>`:''}${p.link?`<span class="badge live">${txt('shared','live')}</span>`:''}<span class="view">${txt('shared','viewProject')}</span></div>
     <span class="idx">${pad(i+1)}</span>
     <div class="workName"><span>${hl(p.title,q)}</span><span class="arr">↗︎</span></div>
     <div class="workMeta"><span class="ct">${hl(p.cat,q)}</span><span class="loc">${hl(p.location||'',q)}</span><span class="yr">${esc(p.year)}</span></div>
@@ -246,7 +246,7 @@ function detail(id){
     <h1 class="pageTitle">${esc(p.title)}</h1><p class="lead">${esc(p.cat)} / ${esc(p.technology||raw('project','technologyFallback'))}</p>
     <div class="feature" style="margin:35px 0" data-lb="0"><img src="${esc(p.image)}" alt="${esc(p.title)}"></div>
     <div class="cols"><div class="reveal"><div class="small muted">${txt('project','overview')}</div><p class="editorial" style="font-size:24px">${esc(p.desc)}</p>
-      <div class="actions"><button class="pill" id="share">${txt('project','copyLink')}</button>${p.video?`<a class="pill" href="${esc(safeUrl(p.video))}" target="_blank" rel="noopener noreferrer">${txt('project','watchVideo')}</a>`:''}</div></div>
+      <div class="actions">${safeUrl(p.link||'')?`<a class="action primary launch" href="${esc(safeUrl(p.link))}" target="_blank" rel="noopener noreferrer">${txt('project','launch')}</a>`:''}<button class="pill" id="share">${txt('project','copyLink')}</button>${p.video?`<a class="pill" href="${esc(safeUrl(p.video))}" target="_blank" rel="noopener noreferrer">${txt('project','watchVideo')}</a>`:''}</div></div>
       <div class="reveal"><div class="small muted">${txt('project','details')}</div>${[[raw('project','year'),p.year],[raw('project','category'),p.cat],[raw('project','location'),p.location||'—'],[raw('project','technology'),p.technology||'—']].map(([a,b])=>`<div class="projectMeta"><span class="muted">${esc(a)}</span><span>${esc(b)}</span></div>`).join('')}${p.series.length?`<div class="projectMeta"><span class="muted">${txt('project','series')}</span><span>${seriesList.filter(x=>p.series.includes(x.id)).map(x=>`<a class="ulink" href="${projectUrl(x.id)}">${esc(x.title)} ↗︎</a>`).join(', ')}</span></div>`:''}</div></div>
     <div class="projectContent">${p.content||''}</div>
     ${embedUrl(p.video)?`<div class="line"></div><div class="small muted">${txt('project','film')}</div><div class="video"><iframe src="${esc(embedUrl(p.video))}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="${txt('project','videoTitle',{title:p.title})}"></iframe></div>`:''}
@@ -373,6 +373,27 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if
 document.querySelector('.top').append(menuToggle);
 document.body.append(mobileBackdrop,mobileNav);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')setMobileNav(false)});
+
+/* Live preview: on desktop, hovering a card with data-live loads the interactive page, scaled into the cover. */
+if(matchMedia('(hover: hover) and (pointer: fine)').matches){
+  let liveTimer=null;
+  const stopLive=card=>{clearTimeout(liveTimer);card.querySelector('.liveFrame')?.remove()};
+  document.addEventListener('pointerover',e=>{
+    const card=e.target.closest('.workGrid:not(.list) .work[data-live]');
+    if(!card||card.querySelector('.liveFrame')||card.contains(e.relatedTarget))return;
+    clearTimeout(liveTimer);
+    liveTimer=setTimeout(()=>{
+      const cover=card.querySelector('.cover');if(!cover||!card.matches(':hover'))return;
+      const frame=document.createElement('iframe');
+      frame.className='liveFrame';frame.src=card.dataset.live;frame.tabIndex=-1;frame.setAttribute('aria-hidden','true');
+      frame.setAttribute('sandbox','allow-scripts allow-same-origin');frame.setAttribute('allow','autoplay');
+      frame.style.transform=`scale(${cover.clientWidth/1200})`;
+      frame.onload=()=>frame.classList.add('on');
+      cover.append(frame);
+    },450);
+  });
+  document.addEventListener('pointerout',e=>{const card=e.target.closest('.work[data-live]');if(card&&!card.contains(e.relatedTarget))stopLive(card)});
+}
 
 /* ================= 全局交互 ================= */
 let pageKeys=null,cleanups=[];
