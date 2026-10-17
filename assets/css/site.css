@@ -441,6 +441,7 @@ html.lenis,html.lenis body{height:auto}
 .langSwitch button[aria-pressed=true]{background:var(--white);color:#08090b}
 @media(max-width:760px){
   .top .nav .langSwitch{display:none}
-  .mobileNavPanel .langSwitch{display:flex;align-self:flex-start;margin-top:22px}
+  .mobileNavPanel>*{flex-shrink:0}
+  .mobileNavPanel .langSwitch{display:flex;align-self:flex-start;margin-top:18px}
   .mobileNavPanel .langSwitch button{font-size:12px;padding:9px 16px}
 }

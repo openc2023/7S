@@ -368,7 +368,7 @@ mobileBackdrop.onclick=()=>setMobileNav(false);
 // Language switch (EN / 中 / 한): saved per browser, page reloads with that copy.
 const langSwitch=()=>'<div class="langSwitch" role="group" aria-label="Language">'+[['en','EN'],['zh','中'],['ko','한']].map(([code,label])=>'<button type="button" data-lang="'+code+'" aria-pressed="'+(window.SITE_DATA.lang===code)+'">'+label+'</button>').join('')+'</div>';
 nav.insertAdjacentHTML('beforeend',langSwitch());
-mobileNav.querySelector('.mobileNavFooter').insertAdjacentHTML('beforebegin',langSwitch());
+mobileNav.querySelector('.mobileNavBody').insertAdjacentHTML('beforebegin',langSwitch());
 document.addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(!b||b.getAttribute('aria-pressed')==='true')return;try{localStorage.setItem('07s-lang',b.dataset.lang)}catch(err){}location.reload()});
 document.querySelector('.top').append(menuToggle);
 document.body.append(mobileBackdrop,mobileNav);
