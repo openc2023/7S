@@ -9,8 +9,10 @@ const font=await new FontLoader().loadAsync('https://cdn.jsdelivr.net/npm/three@
 
 window.HERO3D=function(el){
   let renderer;
-  try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'})}catch(e){return()=>{}}
-  renderer.setPixelRatio(Math.min(2,devicePixelRatio||1));renderer.setClearColor(0,0);
+  // Phones: no MSAA and a lower pixel ratio keep the 3D letters smooth without heating the device.
+  const small=matchMedia('(max-width: 760px), (hover: none)').matches;
+  try{renderer=new THREE.WebGLRenderer({antialias:!small,alpha:true,powerPreference:small?'low-power':'high-performance'})}catch(e){return()=>{}}
+  renderer.setPixelRatio(Math.min(small?1.5:2,devicePixelRatio||1));renderer.setClearColor(0,0);
   renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.95;
   el.prepend(renderer.domElement);
 

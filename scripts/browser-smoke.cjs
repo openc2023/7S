@@ -98,9 +98,9 @@ function browserChecks(){
           assert(document.querySelectorAll('#grid .work').length>=7,'works-category-reset');}
         const seriesCards=()=>document.querySelectorAll('#seriesGrid .seriesCard').length;
         assert(seriesCards()===3,'works-series-section:'+seriesCards());
-        assert(document.querySelectorAll('#seriesPills [data-series-type]').length===4,'series-type-pills');
-        document.querySelector('#seriesPills [data-series-type="Solo exhibition"]').click();
-        assert(seriesCards()===1,'series-type-filter');
+        assert(document.querySelectorAll('#seriesPills [data-series-type]').length===3,'series-type-pills');
+        document.querySelector('#seriesPills [data-series-type="Group exhibition"]').click();
+        assert(seriesCards()===2,'series-type-filter');
         document.querySelector('#seriesPills [data-series-type="All"]').click();
 
       }

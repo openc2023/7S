@@ -97,3 +97,93 @@
   "thunderstorm": "Thunderstorm"
 }
 ```
+
+## 中文 / 한국어 版本
+
+<!-- 中文编辑提示：网页右上角可切换 EN / 中 / 한。下面两个代码块只写需要翻译的字段，没写的字段自动用上面的英文。字段名与英文块相同，{花括号} 占位符要保留。 -->
+
+```json text-zh
+{
+  "navHome": "首页",
+  "navWorks": "作品",
+  "navStudio": "工作室",
+  "navContact": "联系",
+  "menuTitle": "菜单",
+  "menuIndex": "导航",
+  "menuSeries": "项目系列",
+  "menuWorksAll": "全部作品",
+  "menuOpen": "打开菜单",
+  "menuClose": "关闭菜单",
+  "footerSlogan": "七，不止是一个数字。",
+  "backTop": "回到顶部",
+  "featured": "★ 精选",
+  "viewProject": "查看作品 ↗",
+  "emptySelected": "暂无精选作品。",
+  "undo": "撤销",
+  "copyFailed": "无法复制，请从页面或地址栏手动复制。",
+  "weatherPlaceholder": "天气 —",
+  "weatherUseLocation": "显示你所在城市的天气和当地时间（使用 Open-Meteo 和 BigDataCloud）",
+  "weatherCredit": "天气：Open-Meteo",
+  "weatherLocal": "本地",
+  "weatherTitle": "{location}：{condition}。点击使用当前位置（会向 Open-Meteo 和 BigDataCloud 发送大致坐标）。",
+  "weatherAria": "{location}天气：{condition}，{temperature} 摄氏度。点击使用当前位置。",
+  "weatherFailedTitle": "天气暂不可用，点击尝试使用当前位置。",
+  "weatherFailedAria": "天气暂不可用，尝试使用当前位置。",
+  "weatherInsecure": "定位需要 HTTPS 和浏览器支持，显示默认地点。",
+  "weatherDenied": "定位权限被拒绝，使用当前显示的地点。",
+  "weatherUnavailable": "无法获取位置，使用当前显示的地点。",
+  "clear": "晴",
+  "overcast": "阴",
+  "cloudy": "多云",
+  "fog": "雾",
+  "drizzle": "毛毛雨",
+  "rain": "雨",
+  "snow": "雪",
+  "showers": "阵雨",
+  "snowShowers": "阵雪",
+  "thunderstorm": "雷雨"
+}
+```
+
+```json text-ko
+{
+  "navHome": "홈",
+  "navWorks": "작업",
+  "navStudio": "스튜디오",
+  "navContact": "연락",
+  "menuTitle": "메뉴",
+  "menuIndex": "내비게이션",
+  "menuSeries": "프로젝트 시리즈",
+  "menuWorksAll": "전체 작업",
+  "menuOpen": "메뉴 열기",
+  "menuClose": "메뉴 닫기",
+  "footerSlogan": "7은 숫자 그 이상이다.",
+  "backTop": "맨 위로",
+  "featured": "★ 추천",
+  "viewProject": "작업 보기 ↗",
+  "emptySelected": "아직 추천 작업이 없습니다.",
+  "undo": "실행 취소",
+  "copyFailed": "복사할 수 없습니다. 페이지나 주소창에서 직접 복사해 주세요.",
+  "weatherPlaceholder": "날씨 —",
+  "weatherUseLocation": "내 도시의 날씨와 현지 시간 보기 (Open-Meteo, BigDataCloud 사용)",
+  "weatherCredit": "날씨: Open-Meteo",
+  "weatherLocal": "현지",
+  "weatherTitle": "{location}: {condition}. 현재 위치 사용 (대략적인 좌표가 Open-Meteo와 BigDataCloud로 전송됩니다).",
+  "weatherAria": "{location} 날씨: {condition}, 섭씨 {temperature}도. 현재 위치 사용.",
+  "weatherFailedTitle": "날씨를 불러올 수 없습니다. 클릭해 현재 위치로 다시 시도하세요.",
+  "weatherFailedAria": "날씨를 불러올 수 없습니다. 현재 위치로 시도.",
+  "weatherInsecure": "위치 기능은 HTTPS와 브라우저 지원이 필요합니다. 기본 위치를 표시합니다.",
+  "weatherDenied": "위치 권한이 거부되었습니다. 표시된 위치를 사용합니다.",
+  "weatherUnavailable": "위치를 확인할 수 없습니다. 표시된 위치를 사용합니다.",
+  "clear": "맑음",
+  "overcast": "흐림",
+  "cloudy": "구름 조금",
+  "fog": "안개",
+  "drizzle": "이슬비",
+  "rain": "비",
+  "snow": "눈",
+  "showers": "소나기",
+  "snowShowers": "소낙눈",
+  "thunderstorm": "뇌우"
+}
+```

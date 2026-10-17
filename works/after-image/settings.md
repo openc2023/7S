@@ -34,9 +34,8 @@
   "cover": "media/cover.svg",
   "gallery": [],
   "video": "",
-  "status": "publish",
+  "status": "draft",
   "order": 6,
-  "added": "2026-01-07",
-  "series": ["seoul-light-2026"]
+  "added": "2026-01-07"
 }
 ```

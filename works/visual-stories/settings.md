@@ -34,9 +34,8 @@
   "cover": "media/cover.svg",
   "gallery": [],
   "video": "",
-  "status": "publish",
+  "status": "draft",
   "order": 0,
-  "added": "2026-01-01",
-  "series": ["busan-media-week-2025"]
+  "added": "2026-01-01"
 }
 ```

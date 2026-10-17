@@ -35,7 +35,10 @@
   "period": "2025 — 2026",
   "email": "angell1993@naver.com",
   "contactNote": "For collaborations and project inquiries, please get in touch by email.",
-  "socials": [],
+  "socials": [
+    {"name": "Portfolio (Notion)", "url": "https://art717.notion.site/box"},
+    {"name": "Tian Han · Web Media", "url": "https://openc2023.github.io/web-media/"}
+  ],
   "weather": {
     "enabled": true,
     "defaultLabel": "BUSAN",
@@ -98,9 +101,9 @@
     "title": "SELECTED WORKS",
     "linkLabel": "ALL WORKS",
     "projectIds": [
-      "visual-stories",
-      "light-field",
-      "echo-chamber"
+      "ulsan-museum",
+      "this-is-not-busan",
+      "shanhai"
     ]
   }
 }

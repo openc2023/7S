@@ -100,3 +100,103 @@
   "allWorks": "ALL WORKS"
 }
 ```
+
+## 中文 / 한국어 版本
+
+<!-- 中文编辑提示：网页右上角可切换 EN / 中 / 한。下面两个代码块只写需要翻译的字段，没写的字段自动用上面的英文。字段名与英文块相同，{花括号} 占位符要保留。 -->
+
+```json text-zh
+{
+  "browserTitle": "作品 — 07S",
+  "eyebrow": "精选作品",
+  "title": "作品",
+  "intro": "探索艺术、技术与叙事的边界。",
+  "all": "全部",
+  "search": "搜索标题、技术、地点…",
+  "clear": "清除",
+  "year": "年份",
+  "allYears": "全部年份",
+  "sort": "排序",
+  "view": "视图",
+  "twoColumns": "两列",
+  "threeColumns": "三列",
+  "list": "列表",
+  "sortManual": "推荐",
+  "sortNew": "年份 · 新到旧",
+  "sortOld": "年份 · 旧到新",
+  "sortAZ": "标题 · A–Z",
+  "sortZA": "标题 · Z–A",
+  "sortRecent": "最近添加",
+  "noResults": "没有结果",
+  "noMatches": "没有符合条件的作品。",
+  "reset": "重置筛选",
+  "filters": "筛选：",
+  "clearAll": "全部清除",
+  "count": "显示 {shown} / {total} 件作品 · {sort}",
+  "seriesEyebrow": "02 / 系列 · 展览",
+  "seriesTitle": "系列",
+  "seriesAll": "全部",
+  "seriesWorks": "{count} 件作品",
+  "viewSeries": "查看系列 ↗",
+  "seriesLabel": "系列",
+  "aboutSeries": "关于本系列",
+  "inThisSeries": "本系列作品",
+  "seriesWorksTitle": "作品",
+  "seriesSearch": "在本系列中搜索…",
+  "seriesEmpty": "本系列暂无作品。",
+  "seriesSummary": "{shown} 件 · 已发布 {published} · 计划中 {planned}",
+  "planned": "计划中",
+  "imagePending": "图片 · 即将上线",
+  "videoPending": "视频 · 即将上线",
+  "previewPending": "即将上线",
+  "allWorks": "全部作品"
+}
+```
+
+```json text-ko
+{
+  "browserTitle": "작업 — 07S",
+  "eyebrow": "선정 작업",
+  "title": "작업",
+  "intro": "아트, 기술, 스토리텔링의 경계를 탐구합니다.",
+  "all": "전체",
+  "search": "제목, 기술, 장소 검색…",
+  "clear": "지우기",
+  "year": "연도",
+  "allYears": "전체 연도",
+  "sort": "정렬",
+  "view": "보기",
+  "twoColumns": "2열",
+  "threeColumns": "3열",
+  "list": "목록",
+  "sortManual": "추천순",
+  "sortNew": "연도 · 최신순",
+  "sortOld": "연도 · 오래된순",
+  "sortAZ": "제목 · A–Z",
+  "sortZA": "제목 · Z–A",
+  "sortRecent": "최근 추가순",
+  "noResults": "결과 없음",
+  "noMatches": "조건에 맞는 작업이 없습니다.",
+  "reset": "필터 초기화",
+  "filters": "필터: ",
+  "clearAll": "모두 지우기",
+  "count": "{total}개 중 {shown}개 작업 · {sort}",
+  "seriesEyebrow": "02 / 시리즈 · 전시",
+  "seriesTitle": "시리즈",
+  "seriesAll": "전체",
+  "seriesWorks": "작업 {count}개",
+  "viewSeries": "시리즈 보기 ↗",
+  "seriesLabel": "시리즈",
+  "aboutSeries": "시리즈 소개",
+  "inThisSeries": "이 시리즈의 작업",
+  "seriesWorksTitle": "작업",
+  "seriesSearch": "이 시리즈에서 검색…",
+  "seriesEmpty": "이 시리즈에는 아직 작업이 없습니다.",
+  "seriesSummary": "작업 {shown}개 · 공개 {published} · 예정 {planned}",
+  "planned": "예정",
+  "imagePending": "이미지 · 준비 중",
+  "videoPending": "영상 · 준비 중",
+  "previewPending": "준비 중",
+  "allWorks": "전체 작업"
+}
+```

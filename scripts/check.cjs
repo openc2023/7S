@@ -4,12 +4,12 @@ const markdown=require('markdown-it')({html:true,linkify:true});
 
 const root=path.resolve(__dirname, '..');
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
-function settings(file, sections){
+function settings(file, sections, optional=[]){
   const result={};
   for(const token of markdown.parse(read(file),{})){
     if(token.type!=='fence'||!token.info.trim().startsWith('json '))continue;
     const key=token.info.trim().slice(5).trim();
-    if(!sections.includes(key))throw Error(`${file}: unknown settings block ${key}`);
+    if(!sections.includes(key)&&!optional.includes(key))throw Error(`${file}: unknown settings block ${key}`);
     if(Object.hasOwn(result,key))throw Error(`${file}: duplicate settings block ${key}`);
     try{result[key]=JSON.parse(token.content);}catch(error){throw Error(`${file} (${key}): ${error.message}`);}
     if(!result[key]||typeof result[key]!=='object'||Array.isArray(result[key]))throw Error(`${file} (${key}): settings must be an object`);
@@ -21,7 +21,15 @@ const {site,home}=settings('settings.md',['site','home']);
 const text={};
 for(const [scope,fields] of Object.entries(require('./text-schema.json'))){
   const file=`pages/${scope}.md`;
-  const values=settings(file,['text']).text;
+  const blocks=settings(file,['text'],['text-zh','text-ko']);
+  const values=blocks.text;
+  // Translations are partial: each field present must exist in English and keep its type and placeholders.
+  for(const lang of ['text-zh','text-ko'])for(const [key,value] of Object.entries(blocks[lang]||{})){
+    const rule=fields[key];
+    if(!rule)throw Error(`${file} (${lang}): unknown field ${key}`);
+    if(rule.type==='array'?!Array.isArray(value)||value.some(x=>typeof x!=='string'):typeof value!==rule.type)throw Error(`${file} (${lang}): invalid ${key}`);
+    for(const placeholder of rule.placeholders)if(!value.includes(`{${placeholder}}`))throw Error(`${file} (${lang}): ${key} must keep {${placeholder}}`);
+  }
   for(const [key,rule] of Object.entries(fields)){
     const value=values[key];
     if(rule.type==='array'?!Array.isArray(value)||value.some(x=>typeof x!=='string'):typeof value!==rule.type)throw Error(`${file}: invalid or missing ${key}`);

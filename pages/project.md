@@ -54,3 +54,55 @@
   "lightboxClose": "ESC ×"
 }
 ```
+
+## 中文 / 한국어 版本
+
+<!-- 中文编辑提示：网页右上角可切换 EN / 中 / 한。下面两个代码块只写需要翻译的字段，没写的字段自动用上面的英文。字段名与英文块相同，{花括号} 占位符要保留。 -->
+
+```json text-zh
+{
+  "backWorks": "← 作品",
+  "technologyFallback": "创意工作室",
+  "overview": "作品概述",
+  "copyLink": "复制链接 ⧉",
+  "watchVideo": "观看视频 ↗",
+  "details": "作品信息",
+  "year": "年份",
+  "category": "类别",
+  "location": "地点",
+  "technology": "技术",
+  "series": "系列",
+  "film": "影片",
+  "videoTitle": "{title} 视频",
+  "gallery": "作品图集 · {count}",
+  "galleryAlt": "图集第 {number} 张",
+  "moreIn": "更多 · {category}",
+  "related": "相关作品",
+  "keyboardHint": "← → 使用方向键切换",
+  "linkCopied": "链接已复制"
+}
+```
+
+```json text-ko
+{
+  "backWorks": "← 작업",
+  "technologyFallback": "크리에이티브 스튜디오",
+  "overview": "프로젝트 개요",
+  "copyLink": "링크 복사 ⧉",
+  "watchVideo": "영상 보기 ↗",
+  "details": "프로젝트 정보",
+  "year": "연도",
+  "category": "분류",
+  "location": "장소",
+  "technology": "기술",
+  "series": "시리즈",
+  "film": "영상",
+  "videoTitle": "{title} 영상",
+  "gallery": "프로젝트 갤러리 · {count}",
+  "galleryAlt": "갤러리 이미지 {number}",
+  "moreIn": "{category} 더 보기",
+  "related": "관련 작업",
+  "keyboardHint": "← → 방향키로 이동",
+  "linkCopied": "링크가 복사되었습니다"
+}
+```

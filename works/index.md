@@ -10,14 +10,20 @@ seriesIds 是系列 / 展览文件夹名（复制 templates/series），顺序�
 ```json works
 {
   "projectIds": [
-    "visual-stories",
-    "light-field",
-    "spatial-form",
-    "responsive-field",
-    "echo-chamber",
-    "paper-signals",
-    "after-image"
+    "changbaishan-hwaseong",
+    "ulsan-museum",
+    "this-is-not-busan",
+    "bokcheon-provisional-capital",
+    "new-mediations",
+    "metaverse-ai-park",
+    "top-ar",
+    "shanhai",
+    "voice-three-control"
   ],
-  "seriesIds": ["wenxin", "seoul-light-2026", "busan-media-week-2025"]
+  "seriesIds": [
+    "wenxin",
+    "this-is-not-busan-2024",
+    "new-mediations-2022"
+  ]
 }
 ```

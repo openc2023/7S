@@ -4,6 +4,10 @@
 (()=>{
   const overlay=document.getElementById('loader');
   if(!overlay)return;
+  // Play once per browser session; later page changes open straight away (?loader=<style> always shows it).
+  const forcedStyle=new URLSearchParams(location.search).get('loader');
+  let seen=false;try{seen=sessionStorage.getItem('07s-loader-seen')==='1';sessionStorage.setItem('07s-loader-seen','1')}catch(e){}
+  if(seen&&!forcedStyle){overlay.remove();return;}
   const number=document.getElementById('ldNum'),bar=document.getElementById('ldBar').parentNode;
   const DIGITS={
     0:['01110','10001','10011','10101','11001','10001','01110'],
@@ -26,7 +30,7 @@
     binary:{ink:(r,c,t)=>(((r*5+c+t)>>1)&1?'10':'01'),off:'  ',spin:'01',bar:(f,n)=>'['+'1'.repeat(f)+'0'.repeat(n-f)+']'},
     slash:{ink:(r,c,t)=>((c+r+t)%4<2?'//':'\\\\'),off:'  ',spin:'<^>v',bar:(f,n)=>'{'+'/'.repeat(f)+' '.repeat(n-f)+'}'}
   };
-  const forced=new URLSearchParams(location.search).get('loader');
+  const forced=forcedStyle;
   const names=Object.keys(STYLES);
   const name=STYLES[forced]?forced:names[Math.floor(Math.random()*names.length)];
   const style=STYLES[name];

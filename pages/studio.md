@@ -49,3 +49,61 @@
   "contactLink": "START A CONVERSATION"
 }
 ```
+
+## 中文 / 한국어 版本
+
+<!-- 中文编辑提示：网页右上角可切换 EN / 中 / 한。下面两个代码块只写需要翻译的字段，没写的字段自动用上面的英文。字段名与英文块相同，{花括号} 占位符要保留。 -->
+
+```json text-zh
+{
+  "browserTitle": "工作室 — 07S",
+  "eyebrow": "关于我们",
+  "title": "工作室",
+  "intro": "独立创意工作室。",
+  "heroLines": [
+    "七，",
+    "不止是",
+    "一个数字。"
+  ],
+  "body": "07S 是一个跨领域创意工作室，探索艺术、设计、动态影像与新兴技术的交汇。",
+  "projects": "作品",
+  "disciplines": "领域",
+  "years": "活跃年份",
+  "luckyLabel": "幸运数字",
+  "servicesLabel": "我们做什么",
+  "services": [
+    "创意与视觉设计",
+    "艺术与装置",
+    "影像与动态",
+    "数字与互动"
+  ],
+  "contactLink": "开始对话"
+}
+```
+
+```json text-ko
+{
+  "browserTitle": "스튜디오 — 07S",
+  "eyebrow": "소개",
+  "title": "스튜디오",
+  "intro": "독립 크리에이티브 스튜디오.",
+  "heroLines": [
+    "7은",
+    "숫자",
+    "그 이상."
+  ],
+  "body": "07S는 아트, 디자인, 무빙 이미지, 새로운 기술의 교차점을 탐구하는 다학제 크리에이티브 스튜디오입니다.",
+  "projects": "프로젝트",
+  "disciplines": "분야",
+  "years": "활동 연수",
+  "luckyLabel": "행운의 숫자",
+  "servicesLabel": "하는 일",
+  "services": [
+    "크리에이티브 & 비주얼 디자인",
+    "아트 & 설치",
+    "영상 & 모션",
+    "디지털 & 인터랙티브"
+  ],
+  "contactLink": "대화 시작하기"
+}
+```

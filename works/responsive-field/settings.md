@@ -34,7 +34,7 @@
   "cover": "media/cover.svg",
   "gallery": [],
   "video": "",
-  "status": "publish",
+  "status": "draft",
   "order": 3,
   "added": "2026-01-04"
 }

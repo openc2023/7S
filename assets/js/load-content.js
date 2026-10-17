@@ -24,7 +24,17 @@
   const scopes=['shared','home','works','studio','contact','project'];
   const [settings,catalog,...pages]=await Promise.all(['settings.md','works/index.md',...scopes.map(s=>`pages/${s}.md`)].map(read));
   const site=parse(settings,'site','settings.md'),home=parse(settings,'home','settings.md');
-  const text=Object.fromEntries(scopes.map((s,i)=>[s,parse(pages[i],'text',`pages/${s}.md`)]));
+  // Language: saved choice, else the browser language; zh / ko blocks override English per field.
+  const LANGS=['en','zh','ko'];
+  let lang='';try{lang=localStorage.getItem('07s-lang')||''}catch(e){}
+  if(!LANGS.includes(lang)){const nav=(navigator.language||'').toLowerCase();lang=nav.startsWith('zh')?'zh':nav.startsWith('ko')?'ko':'en';}
+  document.documentElement.lang=lang==='zh'?'zh-CN':lang;
+  const translated=(source,file)=>{
+    const tokens=md.parse(source,{}).filter(t=>t.type==='fence'&&t.info.trim()==='json text-'+lang);
+    if(lang==='en'||!tokens.length)return {};
+    try{return JSON.parse(tokens[0].content);}catch{throw Error(`${file}: invalid JSON in text-${lang}`);}
+  };
+  const text=Object.fromEntries(scopes.map((s,i)=>[s,{...parse(pages[i],'text',`pages/${s}.md`),...translated(pages[i],`pages/${s}.md`)}]));
   const worksConfig=parse(catalog,'works','works/index.md');
   const ids=worksConfig.projectIds;
   const seriesIds=worksConfig.seriesIds||[];
@@ -53,7 +63,7 @@
   for(const name of usedTypes)if(!seriesTypes.has(name))seriesTypes.set(name,true);
   const currentSeries=series.find(s=>s.id===document.body.dataset.series);
   if(page==='series'&&!currentSeries)throw Error('works/index.md: add this series folder to seriesIds');
-  window.SITE_DATA={site,home,text,projects,series,
+  window.SITE_DATA={site,home,text,lang,projects,series,
     seriesTypes:[...seriesTypes].filter(([name,on])=>on&&(!site.hideEmptyCategories||usedTypes.has(name))).map(([name])=>name),
     categories:[...categories].filter(([name,on])=>on&&(!site.hideEmptyCategories||used.has(name))).map(([name])=>name)};
   // A copied work shell derives its identity from its folder, with no HTML edits.

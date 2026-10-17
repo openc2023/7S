@@ -28,7 +28,7 @@
 
   function resize(){
     W=innerWidth;H=innerHeight;
-    const dpr=Math.min(devicePixelRatio||1,2);
+    const dpr=Math.min(devicePixelRatio||1,W<640?1.5:2);
     cell=W<640?18:16;fs=W<640?10:11;
     canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);
     ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -40,7 +40,7 @@
 
   function frame(now){
     requestAnimationFrame(frame);
-    if(document.hidden||now-last<32)return;   // 约 30fps 就够了
+    if(document.hidden||now-last<(touch||W<640?55:32))return;   // 桌面约 30fps，手机约 18fps 省电
     last=now;
     const t=now/1000,sy=scrollY;
     vel+=((sy-lastY)-vel)*.25;lastY=sy;

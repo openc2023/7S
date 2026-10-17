@@ -37,3 +37,45 @@
   "socialEmpty": "Social links coming soon."
 }
 ```
+
+## 中文 / 한국어 版本
+
+<!-- 中文编辑提示：网页右上角可切换 EN / 中 / 한。下面两个代码块只写需要翻译的字段，没写的字段自动用上面的英文。字段名与英文块相同，{花括号} 占位符要保留。 -->
+
+```json text-zh
+{
+  "browserTitle": "联系 — 07S",
+  "metaDescription": "联系 07S 工作室",
+  "eyebrow": "联系我们",
+  "title": "联系",
+  "intro": "有项目想法？一起把它做出来。",
+  "headingLines": [
+    "一起",
+    "聊聊。"
+  ],
+  "inquiries": "一般咨询",
+  "copyEmail": "复制邮箱 ⧉",
+  "emailCopied": "邮箱已复制",
+  "social": "社交",
+  "socialEmpty": "社交链接即将上线。"
+}
+```
+
+```json text-ko
+{
+  "browserTitle": "연락 — 07S",
+  "metaDescription": "07S 스튜디오 연락처",
+  "eyebrow": "연락하기",
+  "title": "연락",
+  "intro": "구상 중인 프로젝트가 있나요? 함께 만들어요.",
+  "headingLines": [
+    "이야기",
+    "해요."
+  ],
+  "inquiries": "일반 문의",
+  "copyEmail": "이메일 복사 ⧉",
+  "emailCopied": "이메일이 복사되었습니다",
+  "social": "소셜",
+  "socialEmpty": "소셜 링크는 곧 추가됩니다."
+}
+```
