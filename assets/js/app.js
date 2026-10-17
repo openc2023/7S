@@ -35,7 +35,7 @@ function workCard(p,i=0,q=''){
   return `<a href="${projectUrl(p.id)}" class="work" style="--i:${i}" data-project="${esc(p.id)}" tabindex="0">
     <div class="cover"><img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">${p.featured?`<span class="badge">${txt('shared','featured')}</span>`:''}<span class="view">${txt('shared','viewProject')}</span></div>
     <span class="idx">${pad(i+1)}</span>
-    <div class="workName"><span>${hl(p.title,q)}</span><span class="arr">↗</span></div>
+    <div class="workName"><span>${hl(p.title,q)}</span><span class="arr">↗︎</span></div>
     <div class="workMeta"><span class="ct">${hl(p.cat,q)}</span><span class="loc">${hl(p.location||'',q)}</span><span class="yr">${esc(p.year)}</span></div>
   </a>`;
 }
@@ -55,13 +55,13 @@ function home(){
     <div class="heroArt" data-brand="${txt('shared','brand')}" id="heroArt"><i></i><span class="hint">${txt('home','artHint')}</span></div>
     <div class="foot"><span>${txt('home','artFoot')}</span><a href="${siteUrl('works/')}" class="ulink">${txt('home','explore')}</a></div>
     <div class="marquee"><div>${[...words,...words].map(w=>`<span>${esc(w)}</span>`).join('')}</div></div>
-    <div class="sectiontop reveal"><div><div class="small muted">${esc(selected.eyebrow)}</div><h2>${esc(selected.title)}</h2></div><a href="${siteUrl('works/')}" class="small ulink">${esc(selected.linkLabel)} (${pub().length}) ↗</a></div>
+    <div class="sectiontop reveal"><div><div class="small muted">${esc(selected.eyebrow)}</div><h2>${esc(selected.title)}</h2></div><a href="${siteUrl('works/')}" class="small ulink">${esc(selected.linkLabel)} (${pub().length}) ↗︎</a></div>
     <div class="workGrid">${featured.map((p,i)=>workCard(p,i)).join('')||`<p class="muted">${txt('shared','emptySelected')}</p>`}</div>
     <div class="line"></div>
     <div class="reveal"><div class="small muted">${txt('home','aboutLabel')}</div><p class="editorial">${txt('home','aboutText')}</p></div>
     <div class="pillrow reveal">${cats.map(c=>`<a class="pill" href="${siteUrl('works/')}" data-gocat="${esc(c)}">${esc(c)} <span class="n">${pub().filter(p=>p.cat===c).length}</span></a>`).join('')}</div>
     <div class="line"></div>
-    <div class="reveal"><div class="small muted">${txt('home','collaborateLabel')}</div><h2 class="pageTitle">${txt('home','collaborateTitle')}</h2><a href="${siteUrl('contact/')}" class="action primary">${txt('home','collaborateLink')} <span class="arr">↗</span></a></div>
+    <div class="reveal"><div class="small muted">${txt('home','collaborateLabel')}</div><h2 class="pageTitle">${txt('home','collaborateTitle')}</h2><a href="${siteUrl('contact/')}" class="action primary">${txt('home','collaborateLink')} <span class="arr">↗︎</span></a></div>
   </section>`;
   bindCards();
   $$('[data-gocat]').forEach(a=>a.onclick=()=>{ws.filter=a.dataset.gocat;saveWs()});
@@ -130,7 +130,7 @@ function seriesCard(s,i){
   return `<a href="${projectUrl(s.id)}" class="work seriesCard" style="--i:${i}" data-series-card="${esc(s.id)}">
     <div class="cover"><img src="${esc(s.cover||svg('#111','#2a2a2a','#555'))}" alt="${esc(s.title)}" loading="lazy"><span class="view">${txt('works','viewSeries')}</span></div>
     <span class="idx">${pad(i+1)}</span>
-    <div class="workName"><span>${esc(s.title)}</span><span class="arr">↗</span></div>
+    <div class="workName"><span>${esc(s.title)}</span><span class="arr">↗︎</span></div>
     <div class="workMeta"><span class="ct">${esc(s.type)}</span><span class="loc">${esc([s.dates,s.venue].filter(Boolean).join(' · '))}</span><span class="yr">${txt('works','seriesWorks',{count:n})}</span></div>
   </a>`;
 }
@@ -177,13 +177,13 @@ function plannedCard(p,i,q,total,chapters){
   return `<article class="work plannedWork" style="--i:${i}" aria-label="${esc(p.title)} — ${esc(pending)}">
     <div class="cover">
       <img src="${esc(p.cover)}" alt="${esc(p.title)}" loading="lazy">
-      ${isVideo?'<span class="plannedVideo" aria-hidden="true">▶</span>':''}
+      ${isVideo?'<span class="plannedVideo" aria-hidden="true">▶︎</span>':''}
       <span class="plannedIndex">${pad(i+1)} / ${pad(total)}</span>
       <span class="plannedPending">${esc(pending)}</span>
       <span class="view">${txt('works','previewPending')}</span>
     </div>
     <span class="idx">${pad(i+1)}</span>
-    <div class="workName"><span>${hl(p.title,q)}</span><span class="arr" aria-hidden="true">↗</span></div>
+    <div class="workName"><span>${hl(p.title,q)}</span><span class="arr" aria-hidden="true">↗︎</span></div>
     <div class="workMeta"><span class="ct">${esc(chapter)}</span><span class="loc">${txt('works','planned')}</span><span class="yr">${isVideo?'VIDEO':'IMAGE'}</span></div>
   </article>`;
 }
@@ -247,7 +247,7 @@ function detail(id){
     <div class="feature" style="margin:35px 0" data-lb="0"><img src="${esc(p.image)}" alt="${esc(p.title)}"></div>
     <div class="cols"><div class="reveal"><div class="small muted">${txt('project','overview')}</div><p class="editorial" style="font-size:24px">${esc(p.desc)}</p>
       <div class="actions"><button class="pill" id="share">${txt('project','copyLink')}</button>${p.video?`<a class="pill" href="${esc(safeUrl(p.video))}" target="_blank" rel="noopener noreferrer">${txt('project','watchVideo')}</a>`:''}</div></div>
-      <div class="reveal"><div class="small muted">${txt('project','details')}</div>${[[raw('project','year'),p.year],[raw('project','category'),p.cat],[raw('project','location'),p.location||'—'],[raw('project','technology'),p.technology||'—']].map(([a,b])=>`<div class="projectMeta"><span class="muted">${esc(a)}</span><span>${esc(b)}</span></div>`).join('')}${p.series.length?`<div class="projectMeta"><span class="muted">${txt('project','series')}</span><span>${seriesList.filter(x=>p.series.includes(x.id)).map(x=>`<a class="ulink" href="${projectUrl(x.id)}">${esc(x.title)} ↗</a>`).join(', ')}</span></div>`:''}</div></div>
+      <div class="reveal"><div class="small muted">${txt('project','details')}</div>${[[raw('project','year'),p.year],[raw('project','category'),p.cat],[raw('project','location'),p.location||'—'],[raw('project','technology'),p.technology||'—']].map(([a,b])=>`<div class="projectMeta"><span class="muted">${esc(a)}</span><span>${esc(b)}</span></div>`).join('')}${p.series.length?`<div class="projectMeta"><span class="muted">${txt('project','series')}</span><span>${seriesList.filter(x=>p.series.includes(x.id)).map(x=>`<a class="ulink" href="${projectUrl(x.id)}">${esc(x.title)} ↗︎</a>`).join(', ')}</span></div>`:''}</div></div>
     <div class="projectContent">${p.content||''}</div>
     ${embedUrl(p.video)?`<div class="line"></div><div class="small muted">${txt('project','film')}</div><div class="video"><iframe src="${esc(embedUrl(p.video))}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy" title="${txt('project','videoTitle',{title:p.title})}"></iframe></div>`:''}
     <div class="line"></div><div class="small muted">${txt('project','gallery',{count:imgs.length})}</div>
@@ -280,15 +280,15 @@ function studio(){
     <p class="editorial reveal">${txt('studio','body')}</p>
     <div class="stats reveal"><div class="stat"><b data-count="${n}">0</b><span>${txt('studio','projects')}</span></div><div class="stat"><b data-count="${cats.length}">0</b><span>${txt('studio','disciplines')}</span></div><div class="stat"><b data-count="${yrs}">0</b><span>${txt('studio','years')}</span></div><div class="stat"><b data-count="${Number(copy.studio.luckyNumber)}">0</b><span>${txt('studio','luckyLabel')}</span></div></div>
     <div class="heroArt" data-brand="${txt('shared','brand')}" id="heroArt" style="height:290px"><i></i></div>
-    <div class="small muted">${txt('studio','servicesLabel')}</div>${copy.studio.services.map((s,i)=>`<div class="service reveal"><span>${pad(i+1)} &nbsp; ${esc(s)}</span><span class="arr">↗</span></div>`).join('')}
-    <div class="line"></div><a class="action primary" href="${siteUrl('contact/')}">${txt('studio','contactLink')} <span class="arr">↗</span></a></section>`;
+    <div class="small muted">${txt('studio','servicesLabel')}</div>${copy.studio.services.map((s,i)=>`<div class="service reveal"><span>${pad(i+1)} &nbsp; ${esc(s)}</span><span class="arr">↗︎</span></div>`).join('')}
+    <div class="line"></div><a class="action primary" href="${siteUrl('contact/')}">${txt('studio','contactLink')} <span class="arr">↗︎</span></a></section>`;
 }
 async function copyText(value,message){
   try{await navigator.clipboard.writeText(value);toast(message)}catch{toast(raw('shared','copyFailed'))}
 }
 function contact(){
   const s=window.SITE_DATA.site;
-  app.innerHTML=`<section class="panel">${head(txt('contact','eyebrow'),txt('contact','title'),txt('contact','intro'))}<div class="line"></div><div class="cols"><div><h2 class="pageTitle">${copy.contact.headingLines.map(esc).join('<br>')}</h2><div class="small muted">${txt('contact','inquiries')}</div><p><a class="action primary" href="mailto:${esc(s.email)}">${esc(s.email)} ↗</a></p><button class="pill" id="copyMail">${txt('contact','copyEmail')}</button></div><div><div class="small muted">${txt('contact','social')}</div><p>${s.socials.filter(x=>safeUrl(x.url)).map(x=>`<a class="ulink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name)} ↗</a>`).join('<br>')||txt('contact','socialEmpty')}</p><p class="lead">${esc(s.contactNote)}</p></div></div></section>`;
+  app.innerHTML=`<section class="panel">${head(txt('contact','eyebrow'),txt('contact','title'),txt('contact','intro'))}<div class="line"></div><div class="cols"><div><h2 class="pageTitle">${copy.contact.headingLines.map(esc).join('<br>')}</h2><div class="small muted">${txt('contact','inquiries')}</div><p><a class="action primary" href="mailto:${esc(s.email)}">${esc(s.email)} ↗︎</a></p><button class="pill" id="copyMail">${txt('contact','copyEmail')}</button></div><div><div class="small muted">${txt('contact','social')}</div><p>${s.socials.filter(x=>safeUrl(x.url)).map(x=>`<a class="ulink" href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name)} ↗︎</a>`).join('<br>')||txt('contact','socialEmpty')}</p><p class="lead">${esc(s.contactNote)}</p></div></div></section>`;
   $('#copyMail').onclick=()=>copyText(s.email,raw('contact','emailCopied'));
 }
 
@@ -308,8 +308,8 @@ worksLink.setAttribute('aria-haspopup','true');
 const seriesMenu=document.createElement('div');
 seriesMenu.className='worksDropdown';
 seriesMenu.innerHTML='<span class="dropdownEyebrow">'+esc(raw('shared','menuSeries'))+'</span>'+
-  '<a class="dropdownAll" href="'+siteUrl('works/')+'">' + esc(raw('shared','menuWorksAll')) + ' <span>↗</span></a>'+
-  series.map((item,i)=>'<a href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="dropdownNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+' <small>'+esc(item.subtitle||item.type||'')+'</small></span><span>↗</span></a>').join('');
+  '<a class="dropdownAll" href="'+siteUrl('works/')+'">' + esc(raw('shared','menuWorksAll')) + ' <span>↗︎</span></a>'+
+  series.map((item,i)=>'<a href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="dropdownNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+' <small>'+esc(item.subtitle||item.type||'')+'</small></span><span>↗︎</span></a>').join('');
 worksMenu.append(seriesMenu);
 
 const menuToggle=document.createElement('button');
@@ -326,10 +326,10 @@ mobileNav.setAttribute('aria-label',raw('shared','menuIndex'))
 mobileNav.setAttribute('aria-hidden','true');
 mobileNav.inert=true;
 const navLinks=$$('[data-nav]',nav);
-const seriesNavItems=series.map((item,i)=>'<a class="mobileSeriesLink" href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="mobileSeriesNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+'<small>'+esc(item.subtitle||item.type||'')+'</small></span><span class="mobileSeriesArrow">↗</span></a>').join('');
+const seriesNavItems=series.map((item,i)=>'<a class="mobileSeriesLink" href="'+siteUrl('works/'+encodeURIComponent(item.id)+'/')+'"><span class="mobileSeriesNumber">'+pad(i+1)+'</span><span>'+esc(item.title)+'<small>'+esc(item.subtitle||item.type||'')+'</small></span><span class="mobileSeriesArrow">↗︎</span></a>').join('');
 mobileNav.innerHTML='<div class="mobileNavHeader"><div class="mobileNavBrand">'+(window.SITE_LOGO_MARK||'')+esc(copy.shared.brand)+'<sup>'+esc(copy.shared.brandSuffix)+'</sup><span>'+esc(raw('shared','menuIndex'))+' / '+esc(copy.shared.brand)+'</span></div><button type="button" class="mobileNavClose" aria-label="'+esc(raw('shared','menuClose'))+'">×</button></div>'+
   '<div class="mobileNavBody">'+
-  navLinks.map((a,i)=>'<div class="mobileNavItem"><a class="mobileNavPrimary" href="'+esc(a.href)+'"><span class="mobileNavIndex">'+pad(i+1)+'</span>'+esc(a.textContent)+'<span class="mobileNavArrow">↗</span></a>'+
+  navLinks.map((a,i)=>'<div class="mobileNavItem"><a class="mobileNavPrimary" href="'+esc(a.href)+'"><span class="mobileNavIndex">'+pad(i+1)+'</span>'+esc(a.textContent)+'<span class="mobileNavArrow">↗︎</span></a>'+
     (a.dataset.nav==='works'&&series.length?'<div class="mobileNavSeries"><div class="mobileNavSeriesCaption">'+esc(raw('shared','menuSeries'))+' <span>'+pad(series.length)+'</span></div>'+seriesNavItems+'</div>':'')+
     '</div>').join('')+
   '</div><div class="mobileNavFooter">'+esc(raw('shared','footerSlogan'))+'</div>';

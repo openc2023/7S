@@ -33,7 +33,7 @@
   "intro": "Art, Design, Moving Image & Digital Experiences.",
   "artHint": "MOVE · CLICK",
   "artFoot": "INFINITE IDEAS. NEW PERSPECTIVES.",
-  "explore": "EXPLORE WORKS ↗",
+  "explore": "EXPLORE WORKS ↗︎",
   "marquee": [
     "ART DIRECTION",
     "✦",
@@ -70,7 +70,7 @@
   "intro": "艺术、设计、动态影像与数字体验。",
   "artHint": "移动 · 点击",
   "artFoot": "无限想法，全新视角。",
-  "explore": "浏览作品 ↗",
+  "explore": "浏览作品 ↗︎",
   "marquee": [
     "艺术指导",
     "✦",
@@ -103,7 +103,7 @@
   "intro": "아트, 디자인, 무빙 이미지와 디지털 경험.",
   "artHint": "움직이기 · 클릭",
   "artFoot": "무한한 아이디어, 새로운 시선.",
-  "explore": "작업 보기 ↗",
+  "explore": "작업 보기 ↗︎",
   "marquee": [
     "아트 디렉션",
     "✦",

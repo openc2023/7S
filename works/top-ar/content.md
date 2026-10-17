@@ -3,4 +3,4 @@
 ## About the project
 Image-recognition AR for Violence in Childlike Play.
 
-[Open the live work ↗](https://openc2023.github.io/web-media/personal/works/top/)
+[Open the live work ↗︎](https://openc2023.github.io/web-media/personal/works/top/)
