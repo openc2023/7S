@@ -420,9 +420,54 @@ function splitWords(el){
   let d=0;el.innerHTML=el.innerHTML.split(/<br\s*\/?>/).map(line=>line.trim().split(/\s+/).map(w=>`<span class="w"><span style="--d:${d++}">${w}</span></span>`).join(' ')).join('<br>');
   el.classList.add('sw');
 }
+/* Cover field: a liquid dot screen over every grid cover (same family as the page background) where 07S
+   words surface at random, glitch in, settle and fade. One shared ~24fps loop; only covers on screen draw. */
+const coverField=(()=>{
+  const hash=(x,y)=>{const v=Math.sin(x*127.1+y*311.7)*43758.5453;return v-Math.floor(v)};
+  const ease=v=>v<=0?0:v>=1?1:v*v*(3-2*v);
+  const noise=(x,y)=>{const ix=Math.floor(x),iy=Math.floor(y),fx=ease(x-ix),fy=ease(y-iy),a=hash(ix,iy),b=hash(ix+1,iy),c=hash(ix,iy+1),d=hash(ix+1,iy+1);return a+(b-a)*fx+(c-a)*fy+(a-b-c+d)*fx*fy};
+  const GLITCH='07S#%/\\<>=+*',live=new Set(),seen=new WeakSet();
+  const vis=new IntersectionObserver(es=>es.forEach(e=>{const f=e.target._field;if(f)e.isIntersecting?live.add(f):live.delete(f)}),{rootMargin:'80px'});
+  let last=0;
+  function mount(cover){
+    if(seen.has(cover))return;seen.add(cover);
+    const canvas=document.createElement('canvas');canvas.className='coverField';canvas.setAttribute('aria-hidden','true');
+    cover.append(canvas);
+    const f={cover,canvas,ctx:canvas.getContext('2d'),seed:Math.random()*100,w:0,h:0,word:null};
+    cover._field=f;vis.observe(cover);
+  }
+  function draw(f,t){
+    const {canvas,ctx,cover}=f,W=cover.clientWidth,H=cover.clientHeight;if(!W||!H)return;
+    if(W!==f.w||H!==f.h){const dpr=Math.min(devicePixelRatio||1,2);canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);f.w=W;f.h=H}
+    ctx.clearRect(0,0,W,H);
+    // Dark scrim (mask) so the light dots and 07S words read on any cover; hover removes it with the field.
+    ctx.globalAlpha=.34;ctx.fillStyle='#08090b';ctx.fillRect(0,0,W,H);
+    const cell=W<360?6:7,cols=Math.ceil(W/cell),rows=Math.ceil(H/cell),T=t+f.seed;
+    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+      // Domain-warped noise reads as slow liquid: one noise field bends the coordinates of the next.
+      const q=noise(c*.07+T*.05,r*.07-T*.04);
+      const v=noise(c*.1+q*2.4+T*.12,r*.1-q*1.8-T*.09);
+      if(v>.58){ctx.globalAlpha=Math.min(.75,(v-.58)*2.4);ctx.fillStyle='#f7f7f8';ctx.fillRect(c*cell+2,r*cell+2,2,2)}
+      else if(v<.3){ctx.globalAlpha=Math.min(.55,(.3-v)*1.8);ctx.fillStyle='#08090b';ctx.fillRect(c*cell+1.5,r*cell+1.5,3,3)}
+    }
+    // A 07S word surfaces somewhere every few seconds: scrambled first, then it settles and fades out.
+    if(!f.word||t-f.word.t0>2.4){if(hash(Math.floor(T*.7),f.seed)>.45)f.word={t0:t,x:8+hash(T,1)*(W-60),y:14+hash(1,T)*(H-34)};else f.word={t0:t+1.2,x:-99,y:-99}}
+    const age=t-f.word.t0;
+    if(age>0&&f.word.x>0){
+      ctx.font='700 13px ui-monospace,Consolas,monospace';ctx.textBaseline='top';ctx.fillStyle='#f7f7f8';
+      ctx.globalAlpha=Math.min(1,Math.sin(Math.min(1,age/2.4)*Math.PI)*1.3);
+      for(let i=0;i<3;i++){const ch=age>.35+i*.12?'07S'[i]:GLITCH[Math.floor(hash(i+Math.floor(t*14),f.seed)*GLITCH.length)];ctx.fillText(ch,f.word.x+i*9,f.word.y)}
+    }
+    ctx.globalAlpha=1;
+  }
+  (function loop(now){requestAnimationFrame(loop);if(document.hidden||now-last<42)return;last=now;const t=now/1000;
+    for(const f of live){if(!f.cover.isConnected){live.delete(f);continue}draw(f,t)}})(0);
+  return root=>$$('.workGrid:not(.list) .work .cover',root).forEach(mount);
+})();
 const observe=(root=app)=>{
   $$('.pageTitle,.sectiontop h2,.editorial',root).forEach(splitWords);
   $$('.reveal,.sw,.work',root).forEach(el=>io.observe(el));
+  coverField(root);
 };
 function countUp(el){const to=+el.dataset.count,t0=performance.now();const step=t=>{const k=Math.min(1,(t-t0)/900);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
 // List模式预览图
