@@ -24,10 +24,10 @@
   const scopes=['shared','home','works','studio','contact','project'];
   const [settings,catalog,...pages]=await Promise.all(['settings.md','works/index.md',...scopes.map(s=>`pages/${s}.md`)].map(read));
   const site=parse(settings,'site','settings.md'),home=parse(settings,'home','settings.md');
-  // Language: saved choice, else the browser language; zh / ko blocks override English per field.
+  // Language: English unless the visitor picked 中 / 한 in the switch; zh / ko blocks override English per field.
   const LANGS=['en','zh','ko'];
-  let lang='';try{lang=localStorage.getItem('07s-lang')||''}catch(e){}
-  if(!LANGS.includes(lang)){const nav=(navigator.language||'').toLowerCase();lang=nav.startsWith('zh')?'zh':nav.startsWith('ko')?'ko':'en';}
+  let lang='en';try{lang=localStorage.getItem('07s-lang')||'en'}catch(e){}
+  if(!LANGS.includes(lang))lang='en';
   document.documentElement.lang=lang==='zh'?'zh-CN':lang;
   const translated=(source,file)=>{
     const tokens=md.parse(source,{}).filter(t=>t.type==='fence'&&t.info.trim()==='json text-'+lang);
