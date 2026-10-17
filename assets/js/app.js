@@ -426,6 +426,7 @@ const coverField=(()=>{
   const hash=(x,y)=>{const v=Math.sin(x*127.1+y*311.7)*43758.5453;return v-Math.floor(v)};
   const ease=v=>v<=0?0:v>=1?1:v*v*(3-2*v);
   const noise=(x,y)=>{const ix=Math.floor(x),iy=Math.floor(y),fx=ease(x-ix),fy=ease(y-iy),a=hash(ix,iy),b=hash(ix+1,iy),c=hash(ix,iy+1),d=hash(ix+1,iy+1);return a+(b-a)*fx+(c-a)*fy+(a-b-c+d)*fx*fy};
+  const fbm=(x,y)=>noise(x,y)*.65+noise(x*2.3+7.3,y*2.3-3.1)*.35;
   const GLITCH='07S#%/\\<>=+*',live=new Set(),seen=new WeakSet();
   const vis=new IntersectionObserver(es=>es.forEach(e=>{const f=e.target._field;if(f)e.isIntersecting?live.add(f):live.delete(f)}),{rootMargin:'80px'});
   let last=0;
@@ -442,14 +443,22 @@ const coverField=(()=>{
     ctx.clearRect(0,0,W,H);
     // Dark scrim (mask) so the light dots and 07S words read on any cover; hover removes it with the field.
     ctx.globalAlpha=.34;ctx.fillStyle='#08090b';ctx.fillRect(0,0,W,H);
-    const cell=W<360?6:7,cols=Math.ceil(W/cell),rows=Math.ceil(H/cell),T=t+f.seed;
-    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
-      // Domain-warped noise reads as slow liquid: one noise field bends the coordinates of the next.
-      const q=noise(c*.07+T*.05,r*.07-T*.04);
-      const v=noise(c*.1+q*2.4+T*.12,r*.1-q*1.8-T*.09);
-      if(v>.58){ctx.globalAlpha=Math.min(.75,(v-.58)*2.4);ctx.fillStyle='#f7f7f8';ctx.fillRect(c*cell+2,r*cell+2,2,2)}
-      else if(v<.3){ctx.globalAlpha=Math.min(.55,(.3-v)*1.8);ctx.fillStyle='#08090b';ctx.fillRect(c*cell+1.5,r*cell+1.5,3,3)}
+    const cell=W<360?7:8,cols=Math.ceil(W/cell),rows=Math.ceil(H/cell),T=t+f.seed;
+    // Two-level domain warp of layered noise (folds, stretches and splits like ink in water), sampled on a
+    // coarse grid every 3 cells and interpolated, so a card costs a few hundred warps per frame.
+    const S=3,gc=Math.ceil(cols/S)+2,gr=Math.ceil(rows/S)+2,g=f.grid&&f.grid.length===gc*gr?f.grid:(f.grid=new Float32Array(gc*gr));
+    for(let j=0;j<gr;j++)for(let i=0;i<gc;i++){
+      const x=i*S*.055,y=j*S*.055;
+      const qx=fbm(x+T*.07,y-T*.05),qy=fbm(x+5.2-T*.06,y+1.3+T*.04);
+      const rx=fbm(x+3.1*qx+1.7+T*.11,y+3.1*qy+9.2),ry=fbm(x+3.1*qx+8.3,y+3.1*qy+2.8-T*.09);
+      g[j*gc+i]=fbm(x+3.6*rx,y+3.6*ry);
     }
+    for(let r=0;r<rows;r++){const gy=r/S,j0=Math.floor(gy),fy=gy-j0;
+      for(let c=0;c<cols;c++){const gx=c/S,i0=Math.floor(gx),fx=gx-i0,k0=j0*gc+i0;
+        const v=(g[k0]*(1-fx)+g[k0+1]*fx)*(1-fy)+(g[k0+gc]*(1-fx)+g[k0+gc+1]*fx)*fy;
+        if(v>.52){const k=Math.min(1,(v-.52)*4.2);ctx.globalAlpha=.25+k*.6;ctx.fillStyle='#f7f7f8';const d=.8+k*2.6;ctx.fillRect(c*cell+(cell-d)/2,r*cell+(cell-d)/2,d,d)}
+        else if(v<.36){const k=Math.min(1,(.36-v)*4);ctx.globalAlpha=.2+k*.45;ctx.fillStyle='#08090b';const d=1.5+k*2.8;ctx.fillRect(c*cell+(cell-d)/2,r*cell+(cell-d)/2,d,d)}
+      }}
     // A 07S word surfaces somewhere every few seconds: scrambled first, then it settles and fades out.
     if(!f.word||t-f.word.t0>2.4){if(hash(Math.floor(T*.7),f.seed)>.45)f.word={t0:t,x:8+hash(T,1)*(W-60),y:14+hash(1,T)*(H-34)};else f.word={t0:t+1.2,x:-99,y:-99}}
     const age=t-f.word.t0;
