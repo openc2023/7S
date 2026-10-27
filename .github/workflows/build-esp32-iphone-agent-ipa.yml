@@ -1,0 +1,82 @@
+name: Build ESP32 iPhone Agent IPA
+
+on:
+  push:
+    branches:
+      - automation/build-esp32-ipa-20261027
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unsigned-ipa:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - name: Download official ESP32 iPhone Agent source
+        uses: actions/checkout@v4
+        with:
+          repository: onehumanbeing/esp32-iphone-agent
+          ref: main
+          path: source
+
+      - name: Configure unsigned iOS build
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          cat > source/ios/Config/Local.xcconfig <<'CONFIG'
+          DEVELOPMENT_TEAM =
+          IA_BUNDLE_ID = com.openc2023.esp32agent
+          IA_ENTITLEMENTS =
+          IA_WIDGET_ENTITLEMENTS =
+          IA_PRESET_BASE_URL =
+          IA_PRESET_MODEL =
+          IA_PRESET_KEY =
+          CONFIG
+          if [ ! -e source/ios/IPhoneAgent.xcodeproj/project.pbxproj ]; then
+            brew install xcodegen
+            (cd source/ios && xcodegen generate)
+          fi
+          (cd source && git rev-parse HEAD) | tee source-commit.txt
+
+      - name: Build unsigned device app
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -project source/ios/IPhoneAgent.xcodeproj \
+            -scheme IPhoneAgent \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$RUNNER_TEMP/esp32-agent-build" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            build
+
+      - name: Package IPA for SideStore
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP="$RUNNER_TEMP/esp32-agent-build/Build/Products/Release-iphoneos/IPhoneAgent.app"
+          test -d "$APP" || { echo "iPhone app not found"; exit 1; }
+          mkdir -p output/Payload
+          ditto "$APP" output/Payload/IPhoneAgent.app
+          (cd output && zip -qry ESP32-iPhone-Agent-unsigned.ipa Payload)
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist"
+          unzip -t output/ESP32-iPhone-Agent-unsigned.ipa | tail -1
+          cp source-commit.txt output/
+
+      - name: Publish downloadable IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ESP32-iPhone-Agent-IPA
+          path: |
+            output/ESP32-iPhone-Agent-unsigned.ipa
+            output/source-commit.txt
+          if-no-files-found: error
+          retention-days: 14
